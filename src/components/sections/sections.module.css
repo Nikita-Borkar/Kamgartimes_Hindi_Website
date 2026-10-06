@@ -1,0 +1,308 @@
+/* ==========================================================================
+   sections.module.css — page composition
+   --------------------------------------------------------------------------
+   Only grid geometry lives here. The card treatments come from ui.module.css
+   so a story looks the same wherever it appears.
+   ========================================================================== */
+
+/* ---------- Section rhythm -------------------------------------------------
+   The reference gives every <section> one vertical stack with 24px between
+   its heading and its content. Sections whose root is already a single grid
+   (.latestTrending, .pair, .videoPanel) carry their own gap instead.
+   -------------------------------------------------------------------------- */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ---------- Lead grid: ad rail | hero story | two stacked stories ---------- */
+.leadGrid {
+  display: grid;
+  grid-template-columns: 256px 1fr 420px;
+  gap: var(--space-6);
+}
+
+.leadHero {
+  display: flex;
+  height: 420px;
+}
+
+/* The fixed heights live on these wrappers, so the card anchor must fill them.
+   Without this the overlay collapses to the height of its own text and the
+   image stops matching the reference crop. */
+.leadHero > a,
+.leadStackItem > a,
+.tile > a,
+.picksHero > a,
+.picksStackItem > a {
+  flex: 1;
+  min-width: 0;
+}
+
+.leadStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.leadStackItem {
+  display: flex;
+  height: 198px;
+}
+
+/* ---------- Four-up tile row --------------------------------------------- */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+}
+
+.tile {
+  display: flex;
+  height: 260px;
+}
+
+/* ---------- ताज्या बातम्या | ट्रेंडिंग ------------------------------------- */
+.latestTrending {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-10);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ---------- राजकारण: two features + brief list ---------------------------- */
+.politics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 400px;
+  gap: var(--space-6);
+}
+
+/* ---------- Two-column topic pairs ---------------------------------------- */
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+/* ---------- विशेष लेख व मते: three features + tall ad -------------------- */
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) 260px;
+  gap: var(--space-6);
+}
+
+/* ---------- संपादकांची निवड ---------------------------------------------- */
+.picks {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.picksHero {
+  display: flex;
+  height: 440px;
+}
+
+.picksStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.picksStackItem {
+  display: flex;
+  height: 208px;
+}
+
+/* Text-only column: hairline separated, no thumbnails. */
+.reads {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.read {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: var(--space-4);
+  border-bottom: var(--rule);
+  text-decoration: none;
+  color: inherit;
+}
+
+.read:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.readTitle {
+  color: var(--text);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.read:hover .readTitle,
+.read:focus-visible .readTitle {
+  color: var(--brand);
+}
+
+/* ---------- व्हिडिओ: the one inverted-surface panel on the page ----------- */
+.videoPanel {
+  background: var(--surface);
+  border-radius: var(--r-md);
+  padding: var(--space-8) var(--space-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.videoGrid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: var(--space-6);
+}
+
+.videoMain {
+  grid-row: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  text-decoration: none;
+  color: inherit;
+}
+
+.videoSmall {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  text-decoration: none;
+  color: inherit;
+}
+
+.thumb {
+  position: relative;
+  overflow: hidden;
+  background: var(--image-dark);
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbMain {
+  height: 340px;
+}
+
+.thumbSmall {
+  height: 150px;
+}
+
+.thumbMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.videoMain:hover .thumbMedia,
+.videoMain:focus-visible .thumbMedia,
+.videoSmall:hover .thumbMedia,
+.videoSmall:focus-visible .thumbMedia {
+  transform: scale(1.05);
+}
+
+.play {
+  position: relative;
+  z-index: 1;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-full);
+  background: var(--scrim-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--dur-base) var(--ease-out),
+    background var(--dur-base) var(--ease-out);
+}
+
+.videoMain:hover .play,
+.videoSmall:hover .play {
+  transform: scale(1.08);
+  background: var(--scrim);
+}
+
+.duration {
+  position: absolute;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  z-index: 1;
+  background: var(--scrim-duration);
+  color: var(--overlay-text);
+  font: var(--fw-medium) var(--fs-eyebrow) / var(--lh-eyebrow) var(--font-sans);
+  padding: 2px 6px;
+  border-radius: var(--r-sm);
+}
+
+.videoMainTitle {
+  color: var(--text);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.videoMain:hover .videoMainTitle,
+.videoMain:focus-visible .videoMainTitle,
+.videoSmall:hover .videoMainTitle,
+.videoSmall:focus-visible .videoMainTitle {
+  color: var(--brand);
+}
+
+/* ---------- फोटो गॅलरी -------------------------------------------------- */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+/* The gallery applies the height to the anchor itself, so no flex fill needed. */
+.galleryItem {
+  height: 420px;
+}
+
+/* ---------- Compact viewport ---------------------------------------------
+   Grid collapses to one column. Card heights are deliberately left alone:
+   the reference keeps every fixed height on mobile, so the rhythm survives
+   the narrower measure. Only the gallery and the video panel adjust.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1100px) {
+  .leadGrid,
+  .tiles,
+  .latestTrending,
+  .politics,
+  .pair,
+  .features,
+  .picks,
+  .videoGrid,
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .videoMain {
+    grid-row: auto;
+  }
+
+  .videoPanel {
+    padding: var(--space-6);
+  }
+
+  .galleryItem {
+    height: 300px;
+  }
+}
