@@ -7,6 +7,7 @@ const variantClass: Record<Ad["variant"], string> = {
   tower: styles.adTower,
   rail: styles.adRail,
   leaderboard: styles.adLeaderboard,
+  content: styles.adContent,
 };
 
 /**
@@ -38,9 +39,9 @@ export function AdSlot({
         className={styles.adMedia}
       />
       <span className={styles.adLabel}>{ad.label}</span>
-      {ad.headline ? (
+      {ad.headline ?
         <p className={styles.adHeadline}>{ad.headline}</p>
-      ) : null}
+      : null}
     </a>
   );
 }

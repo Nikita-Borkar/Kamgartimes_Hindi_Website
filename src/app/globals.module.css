@@ -9,8 +9,19 @@
   gap: var(--space-12);
 }
 
+.heroLive {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(250px, 3fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
 @media (max-width: 1100px) {
   .main {
     padding: var(--space-6) var(--shell-pad-compact) 0;
+  }
+
+  .heroLive {
+    grid-template-columns: 1fr;
   }
 }

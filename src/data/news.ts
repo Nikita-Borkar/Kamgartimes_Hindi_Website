@@ -431,8 +431,78 @@ export const editorsPicks = {
 };
 
 /* ---------------------------------------------------------------------------
-   व्हिडिओ — one feature reel in a tinted panel, four shorts.
+   व्हिडिओ — editorial picks, trending clips, and the full video library.
    ------------------------------------------------------------------------- */
+export const videoDiscovery = {
+  recommended: [
+    {
+      id: "rec-vid-1",
+      image: "/img/img24.png",
+      duration: "१०:४६",
+      title: "मान्सूनच्या वाटेवर: गावागावांतील बदल",
+      meta: "महाराष्ट्र · दीर्घ व्हिडिओ",
+    },
+    {
+      id: "rec-vid-2",
+      image: "/img/img27.png",
+      duration: "०:५४",
+      title: "आजच्या सामन्यातील निर्णायक क्षण",
+      meta: "क्रीडा · शॉर्ट",
+    },
+    {
+      id: "rec-vid-4",
+      image: "/img/img02.png",
+      duration: "०५:३०",
+      title: "ठाण्यातील नव्या जलवाहिनीचा आराखडा",
+      meta: "नागरी प्रश्न · दीर्घ व्हिडिओ",
+    },
+    {
+      id: "rec-vid-3",
+      image: "/img/img01.png",
+      duration: "०६:१८",
+      title: "गृहनिर्माण विधेयकाचा शहरांवर काय परिणाम?",
+      meta: "राजकारण · दीर्घ व्हिडिओ",
+    },
+  ] satisfies VideoItem[],
+  trending: [
+    {
+      id: "trend-vid-1",
+      image: "/img/img10.png",
+      duration: "०:३८",
+      title: "दिवाळीपूर्वी जुन्या पेठेतील लगबग",
+      meta: "संस्कृती · १२ हजार दृश्ये",
+    },
+    {
+      id: "trend-vid-2",
+      image: "/img/img04.png",
+      duration: "०५:४८",
+      title: "नव्या चिपमुळे मोबाइलमध्ये काय बदलणार?",
+      meta: "तंत्रज्ञान · ९ हजार दृश्ये",
+    },
+    {
+      id: "trend-vid-4",
+      image: "/img/img09.jpg",
+      duration: "०४:१२",
+      title: "लघुउद्योगांना सणासुदीत वाढती मागणी",
+      meta: "अर्थ · ६ हजार दृश्ये",
+    },
+    {
+      id: "trend-vid-5",
+      image: "/img/img05.png",
+      duration: "०:४५",
+      title: "पावसाळ्यातील आजारांपासून बचाव कसा?",
+      meta: "आरोग्य · ५ हजार दृश्ये",
+    },
+    {
+      id: "trend-vid-3",
+      image: "/img/img11.png",
+      duration: "०:४२",
+      title: "डर्बीतील शेवटच्या मिनिटाचा गोल",
+      meta: "क्रीडा · ७ हजार दृश्ये",
+    },
+  ] satisfies VideoItem[],
+};
+
 export const videos = {
   feature: {
     id: "vid-1",
@@ -443,7 +513,7 @@ export const videos = {
     excerpt:
       "आमचे व्हिडिओ पथक शेतकरी, नावाडी आणि शहर नियोजकांसोबत ऋतुबदल टिपते.",
   },
-  shorts: [
+  longVideos: [
     {
       id: "vid-2",
       image: "/img/img27.png",
@@ -471,6 +541,43 @@ export const videos = {
       duration: "७:३०",
       title: "मुलाखत: चिप डिझाइनर्स",
       meta: "तंत्रज्ञान · ३ तासांपूर्वी",
+    },
+  ] satisfies VideoItem[],
+  shorts: [
+    {
+      id: "short-1",
+      image: "/img/img10.png",
+      duration: "०:३८",
+      title: "दिवाळीपूर्वी जुन्या पेठेतील लगबग",
+      meta: "संस्कृती · शॉर्ट",
+    },
+    {
+      id: "short-2",
+      image: "/img/img27.png",
+      duration: "०:४२",
+      title: "डर्बीतील शेवटच्या मिनिटाचा गोल",
+      meta: "क्रीडा · शॉर्ट",
+    },
+    {
+      id: "short-3",
+      image: "/img/img04.png",
+      duration: "०:५१",
+      title: "नव्या चिपची खासियत अर्ध्या मिनिटात",
+      meta: "तंत्रज्ञान · शॉर्ट",
+    },
+    {
+      id: "short-4",
+      image: "/img/img01.png",
+      duration: "०:४७",
+      title: "आजच्या पाच महत्त्वाच्या बातम्या",
+      meta: "महाराष्ट्र · शॉर्ट",
+    },
+    {
+      id: "short-5",
+      image: "/img/img02.png",
+      duration: "०:४९",
+      title: "ठाण्यातील नव्या जलवाहिनीचा आराखडा",
+      meta: "नागरी प्रश्न · शॉर्ट",
     },
   ] satisfies VideoItem[],
 };

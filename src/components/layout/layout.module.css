@@ -231,11 +231,177 @@
   border-radius: var(--r-sm);
 }
 
+/* ---------- Market ticker ----------------------------------------------- */
+.marketTicker {
+  background: var(--surface);
+  color: var(--text);
+  border-bottom: var(--rule);
+}
+
+.marketInner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+
+.marketHeading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  font: var(--fw-bold) var(--fs-body) / var(--lh-snug) var(--font-serif);
+  white-space: nowrap;
+}
+
+.marketNote {
+  color: var(--muted);
+  font: var(--fw-medium) var(--fs-eyebrow) / var(--lh-eyebrow) var(--font-sans);
+}
+
+.marketQuotes {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.marketQuotes::-webkit-scrollbar {
+  display: none;
+}
+
+.marketQuote {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-5);
+  border-inline-start: var(--rule);
+  white-space: nowrap;
+}
+
+.marketName {
+  color: var(--muted);
+  font: var(--fw-semi) var(--fs-meta) / var(--lh-meta) var(--font-sans);
+}
+
+.marketNumbers {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.marketValue {
+  font: var(--fw-semi) var(--fs-meta) / var(--lh-meta) var(--font-sans);
+}
+
+.marketChange {
+  font: var(--fw-medium) var(--fs-eyebrow) / var(--lh-eyebrow) var(--font-sans);
+}
+
+.marketUp {
+  color: var(--market-up);
+}
+
+.marketDown {
+  color: var(--brand);
+}
+
+/* ---------- Notification teaser ----------------------------------------- */
+.notificationPrompt {
+  position: fixed;
+  top: var(--space-4);
+  left: 50%;
+  z-index: 60;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  width: min(680px, calc(100vw - 32px));
+  padding: var(--space-4);
+  border: var(--rule);
+  border-top: 3px solid var(--brand);
+  border-radius: var(--r-md);
+  background: var(--ink);
+  color: var(--on-ink);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - var(--space-5)));
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out),
+    visibility var(--dur-base);
+}
+
+.notificationPrompt[data-visible="true"] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+.notificationIcon {
+  color: var(--brand);
+}
+
+.notificationCopy {
+  min-width: 0;
+}
+
+.notificationCopy strong {
+  font: var(--fw-bold) var(--fs-body) / var(--lh-snug) var(--font-serif);
+}
+
+.notificationCopy p {
+  margin: var(--space-1) 0 0;
+  color: var(--on-ink-muted);
+  font-size: var(--fs-meta);
+  line-height: var(--lh-meta);
+}
+
+.notificationDismiss {
+  min-height: 40px;
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: var(--r-sm);
+  background: var(--brand);
+  color: var(--on-ink);
+  font: var(--fw-semi) var(--fs-meta) / var(--lh-meta) var(--font-sans);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.notificationDismiss:focus-visible {
+  outline: 2px solid var(--on-ink);
+  outline-offset: 2px;
+}
+
 /* ---------- Footer -------------------------------------------------------- */
 .footer {
   margin-top: var(--space-12);
   background: var(--surface);
   border-top: var(--rule);
+}
+
+@media (max-width: 560px) {
+  .notificationPrompt {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-3);
+    padding: var(--space-3);
+  }
+
+  .notificationDismiss {
+    grid-column: 2;
+    justify-self: start;
+  }
 }
 
 .footerInner {
@@ -408,6 +574,22 @@
 
 /* ---------- Compact viewport --------------------------------------------- */
 @media (max-width: 1100px) {
+  .marketInner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .marketQuotes {
+    width: 100%;
+    flex: none;
+  }
+
+  .marketQuote:first-child {
+    border-inline-start: 0;
+    padding-left: 0;
+  }
+
   .topBar {
     grid-template-columns: 1fr;
     justify-items: center;
