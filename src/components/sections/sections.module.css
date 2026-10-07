@@ -246,6 +246,7 @@
 .weatherAside {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: var(--space-5);
   min-width: 0;
 }
@@ -253,7 +254,7 @@
 .weatherPeek {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-8);
 }
 
 .weatherPeekLocation {
