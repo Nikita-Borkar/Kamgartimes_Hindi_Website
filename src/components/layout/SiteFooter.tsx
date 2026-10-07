@@ -7,9 +7,13 @@ export function SiteFooter() {
       <div className={`${styles.shell} ${styles.footerInner}`}>
         <div>
           <p className={styles.footerBrand}>
-            <span className={styles.mark} aria-hidden="true">
-              {site.mark}
-            </span>
+            <img
+              className={styles.logoImg}
+              src="/img/logo.png"
+              alt=""
+              width={42}
+              height={42}
+            />
             {site.name}
           </p>
           <p className={styles.footerBlurb}>{site.tagline}</p>

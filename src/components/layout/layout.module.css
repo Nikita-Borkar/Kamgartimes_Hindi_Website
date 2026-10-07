@@ -66,6 +66,16 @@
   flex: none;
 }
 
+/* The actual masthead logo: the transparent circle lockup sits beside the
+   wordmark. object-fit: contain keeps the whole mark visible. */
+.logoImg {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r-full);
+  object-fit: contain;
+  flex: none;
+}
+
 .actions {
   display: flex;
   gap: var(--space-3);

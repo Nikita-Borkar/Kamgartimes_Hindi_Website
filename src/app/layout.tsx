@@ -21,6 +21,9 @@ const serif = Noto_Serif_Devanagari({
 export const metadata: Metadata = {
   title: `${site.name} – मुख्यपृष्ठ`,
   description: site.description,
+  icons: {
+    icon: "/img/logo.png",
+  },
 };
 
 /**

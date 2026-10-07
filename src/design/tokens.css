@@ -13,7 +13,11 @@
   --image: #dcd9d2;
   --image-dark: #8c8982;
   --ink: #121212;
-  --brand: #c8102e;
+  /* Brand red + gold accent, matched to the masthead logo (Kāmgār Tāims):
+     crimson #E31E25 passes AA (4.69:1) on paper; the gold is a decorative
+     accent only (too low-contrast for small text on paper). */
+  --brand: #e31e25;
+  --brand-gold: #ffc200;
   --market-up: #137a49;
   --border: #e2dfd8;
   --text: #141414;
@@ -121,7 +125,7 @@
     --ink: #000000;
     /* Lifted for dark. The light brand only reaches 3.2:1 on --bg, which
        fails AA for the hover headlines and nav links that use it. */
-    --brand: #e23b4e;
+    --brand: #e63b4e;
     --market-up: #58c98a;
     --border: #2e2d2a;
     --text: #f2f0eb;
@@ -138,7 +142,7 @@
   --surface: #1c1c1c;
   --image: #2c2b28;
   --ink: #000000;
-  --brand: #e23b4e;
+  --brand: #e63b4e;
   --market-up: #58c98a;
   --border: #2e2d2a;
   --text: #f2f0eb;

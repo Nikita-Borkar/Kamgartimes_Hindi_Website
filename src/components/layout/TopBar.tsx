@@ -10,9 +10,13 @@ import styles from "./layout.module.css";
 function Logo() {
   return (
     <h1 className={styles.wordmark}>
-      <span className={styles.mark} aria-hidden="true">
-        {site.mark}
-      </span>
+      <img
+        className={styles.logoImg}
+        src="/img/logo.png"
+        alt=""
+        width={42}
+        height={42}
+      />
       {site.name}
     </h1>
   );
