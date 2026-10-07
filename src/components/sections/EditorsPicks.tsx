@@ -20,7 +20,7 @@ export function EditorsPicks() {
           <OverlayCard
             article={editorsPicks.hero}
             headlineSize="l"
-            sizes="(max-width: 1100px) 100vw, 33vw"
+            sizes="(max-width: 900px) 100vw, 33vw"
           />
         </div>
 
@@ -33,7 +33,7 @@ export function EditorsPicks() {
             >
               <OverlayCard
                 article={article}
-                sizes="(max-width: 1100px) 100vw, 33vw"
+                sizes="(max-width: 900px) 100vw, 33vw"
               />
             </div>
           ))}

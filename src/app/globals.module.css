@@ -16,7 +16,16 @@
   align-items: start;
 }
 
+/* ---------- Small-desktop / tablet-landscape (mezzanine) ------------------ */
+/* The hero + live feed stay side by side; only the gutter tightens. */
 @media (max-width: 1100px) {
+  .main {
+    padding: var(--space-6) var(--shell-pad-md) 0;
+  }
+}
+
+/* ---------- Full mobile collapse ------------------------------------------ */
+@media (max-width: 900px) {
   .main {
     padding: var(--space-6) var(--shell-pad-compact) 0;
   }

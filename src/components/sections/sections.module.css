@@ -911,12 +911,38 @@
   height: 420px;
 }
 
-/* ---------- Compact viewport ---------------------------------------------
+/* ---------- Small-desktop / tablet-landscape (mezzanine) ------------------
+   Compositions stay multi-column; fixed rails are tightened so each grid
+   fits the ~944px measure at 1024px. Nothing here falls to one column.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1100px) {
+  /* Lead band: ad rail + hero story on the first row. The two-story stack
+     drops into a full-width second row, laid side by side, so the 420px rail
+     no longer crushes the hero at the narrower measure. */
+  .leadGrid {
+    grid-template-columns: 230px minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .leadStack {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  /* राजकारण rail tightens so the two features keep a readable column. */
+  .politics {
+    grid-template-columns: 1fr 1fr 340px;
+  }
+}
+
+/* ---------- Mobile ---------------------------------------------
    Grid collapses to one column. Card heights are deliberately left alone:
    the reference keeps every fixed height on mobile, so the rhythm survives
    the narrower measure. Only the gallery and the video panel adjust.
    -------------------------------------------------------------------------- */
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
   .leadGrid,
   .tiles,
   .latestTrending,

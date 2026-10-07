@@ -11,7 +11,7 @@ export function StoryCard({
   article,
   tall = false,
   showExcerpt = true,
-  sizes = "(max-width: 1100px) 100vw, 33vw",
+  sizes = "(max-width: 900px) 100vw, 33vw",
 }: {
   article: Article;
   tall?: boolean;

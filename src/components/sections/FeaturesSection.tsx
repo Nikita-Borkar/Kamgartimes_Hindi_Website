@@ -18,7 +18,7 @@ export function FeaturesSection() {
           <div key={article.id} className="reveal" style={stagger(i)}>
             <StoryCard
               article={article}
-              sizes="(max-width: 1100px) 100vw, 24vw"
+              sizes="(max-width: 900px) 100vw, 24vw"
             />
           </div>
         ))}

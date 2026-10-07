@@ -34,7 +34,7 @@ function VideoCard({
         <Media
           src={item.image}
           alt=""
-          sizes={short ? "160px" : "(max-width: 1100px) 100vw, 24vw"}
+          sizes={short ? "160px" : "(max-width: 900px) 100vw, 24vw"}
           className={styles.thumbMedia}
         />
         <PlayGlyph />
@@ -71,7 +71,7 @@ export function VideoSection() {
                 <Media
                   src={feature.image}
                   alt=""
-                  sizes="(max-width: 1100px) 100vw, 40vw"
+                  sizes="(max-width: 900px) 100vw, 40vw"
                   className={styles.thumbMedia}
                 />
                 <PlayGlyph />

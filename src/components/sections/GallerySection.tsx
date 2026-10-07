@@ -24,7 +24,7 @@ export function GallerySection() {
             <Media
               src={item.image}
               alt=""
-              sizes="(max-width: 1100px) 100vw, 33vw"
+              sizes="(max-width: 900px) 100vw, 33vw"
               className={ui.overlayMedia}
             />
             <div className={ui.overlayBody}>

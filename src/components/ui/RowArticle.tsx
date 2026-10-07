@@ -19,7 +19,7 @@ export function RowArticle({
   wide = false,
   headlineSize = "s",
   showExcerpt = false,
-  sizes = "(max-width: 1100px) 220px, 220px",
+  sizes = "(max-width: 900px) 220px, 220px",
 }: {
   article: Article;
   wide?: boolean;

@@ -24,7 +24,7 @@ export function VideoDiscovery() {
                   <Media
                     src={video.image}
                     alt=""
-                    sizes="(max-width: 1100px) 100vw, 34vw"
+                    sizes="(max-width: 900px) 100vw, 34vw"
                     className={styles.discoveryMedia}
                   />
                   <span className={styles.play} aria-hidden="true">

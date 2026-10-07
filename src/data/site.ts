@@ -57,7 +57,7 @@ export const footer = {
     "क्रीडा",
     "आरोग्य",
   ],
-  actions: ["देणगी द्या", "जाहिरातीसाठी संपर्क"],
+  actions: ["Donet Us", "Pay for Advertisement"],
   stores: ["App Store", "Google Play"],
   copyright: "© २०२६ दैनिक पल्स. सर्व हक्क राखीव.",
 } as const;

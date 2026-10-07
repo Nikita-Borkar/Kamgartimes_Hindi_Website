@@ -15,7 +15,7 @@ export function LeadGrid() {
           <OverlayCard
             article={leadStory}
             headlineSize="l"
-            sizes="(max-width: 1100px) 100vw, 40vw"
+            sizes="(max-width: 900px) 100vw, 40vw"
           />
         </div>
         <div className={styles.leadStack}>
@@ -27,7 +27,7 @@ export function LeadGrid() {
             >
               <OverlayCard
                 article={article}
-                sizes="(max-width: 1100px) 100vw, 30vw"
+                sizes="(max-width: 900px) 100vw, 30vw"
               />
             </div>
           ))}
@@ -39,7 +39,7 @@ export function LeadGrid() {
           <div key={article.id} className={styles.tile}>
             <OverlayCard
               article={article}
-              sizes="(max-width: 1100px) 100vw, 22vw"
+              sizes="(max-width: 900px) 100vw, 22vw"
             />
           </div>
         ))}

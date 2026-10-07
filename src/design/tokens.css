@@ -80,6 +80,9 @@
 
   --shell-max: 1440px;
   --shell-pad: 80px;
+  /* Mezzanine (small desktop / tablet-landscape, ~901px–1100px). Between the
+     relaxed desktop gutter and the tight mobile one. */
+  --shell-pad-md: 40px;
   --shell-pad-compact: 24px;
 
   /* ---- Radius ----------------------------------------------------------- */

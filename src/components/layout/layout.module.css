@@ -572,8 +572,38 @@
   animation: liftArrow 1.4s var(--ease-in-out) infinite;
 }
 
-/* ---------- Compact viewport --------------------------------------------- */
+/* ---------- Small-desktop / tablet-landscape (mezzanine) ------------------
+   The chrome stays multi-column: the masthead keeps all three zones, the nav
+   keeps every link on one (non-scrolling) row, and the footer keeps its three
+   link columns. Only the gutters tighten from 80px to 40px. The heavy
+   single-column collapse lives at the mobile breakpoint below.               */
 @media (max-width: 1100px) {
+  .shell {
+    padding-left: var(--shell-pad-md);
+    padding-right: var(--shell-pad-md);
+  }
+
+  .navInner {
+    padding-left: var(--shell-pad-md);
+    padding-right: var(--shell-pad-md);
+  }
+
+  .footerInner {
+    gap: var(--space-8);
+  }
+
+  .copy {
+    padding: var(--space-4) var(--shell-pad-md);
+  }
+}
+
+/* ---------- Mobile: collapse the chrome ----------------------------------- */
+@media (max-width: 900px) {
+  .shell {
+    padding-left: var(--shell-pad-compact);
+    padding-right: var(--shell-pad-compact);
+  }
+
   .marketInner {
     align-items: flex-start;
     flex-direction: column;
@@ -636,5 +666,9 @@
 
   .footerBlurb {
     max-width: none;
+  }
+
+  .copy {
+    padding: var(--space-4) var(--shell-pad-compact);
   }
 }

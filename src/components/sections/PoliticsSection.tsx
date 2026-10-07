@@ -18,7 +18,7 @@ export function PoliticsSection() {
             <StoryCard
               article={article}
               tall
-              sizes="(max-width: 1100px) 100vw, 32vw"
+              sizes="(max-width: 900px) 100vw, 32vw"
             />
           </div>
         ))}

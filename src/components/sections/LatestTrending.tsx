@@ -19,7 +19,7 @@ export function LatestTrending() {
               wide
               headlineSize="m"
               showExcerpt
-              sizes="(max-width: 1100px) 100vw, 220px"
+              sizes="(max-width: 900px) 100vw, 220px"
             />
           </div>
         ))}
