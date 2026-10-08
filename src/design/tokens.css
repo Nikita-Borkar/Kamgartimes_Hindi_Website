@@ -1,0 +1,153 @@
+/* ==========================================================================
+   tokens.css — the single source of truth for the theme
+   --------------------------------------------------------------------------
+   Change a value here and it changes everywhere. No component file contains
+   a raw hex value. Layout geometry lives in the component CSS modules; only
+   theme values (colour, type, spacing, radius, motion, depth) live here.
+   ========================================================================== */
+
+:root {
+  /* ---- Palette: light (paper) ------------------------------------------- */
+  --bg: #ffffff;
+  --surface: #f4f2ee;
+  --image: #dcd9d2;
+  --image-dark: #8c8982;
+  --ink: #121212;
+  /* Brand red + gold accent, matched to the masthead logo (Kāmgār Tāims):
+     crimson #E31E25 passes AA (4.69:1) on paper; the gold is a decorative
+     accent only (too low-contrast for small text on paper). */
+  --brand: #e31e25;
+  --brand-gold: #ffc200;
+  --market-up: #137a49;
+  --border: #e2dfd8;
+  --text: #141414;
+  --muted: #6b6862;
+  --on-ink: #ffffff;
+  --on-ink-muted: #c4c0b9;
+
+  /* ---- Derived: everything that sits on top of imagery ------------------- */
+  --scrim: rgba(0, 0, 0, 0.8);
+  --scrim-soft: rgba(0, 0, 0, 0.6);
+  --scrim-chip: rgba(0, 0, 0, 0.5);
+  --scrim-duration: rgba(0, 0, 0, 0.75);
+  --overlay-text: #ffffff;
+
+  /* ---- Typography: families --------------------------------------------- */
+  --font-sans:
+    var(--next-font-sans), "Noto Sans Devanagari", system-ui, -apple-system,
+    sans-serif;
+  --font-serif:
+    var(--next-font-serif), "Noto Serif Devanagari", Georgia, "Times New Roman",
+    serif;
+
+  /* ---- Typography: scale ----------------------------------------------- */
+  --fs-eyebrow: 11px;
+  --fs-cat: 11px;
+  --fs-meta: 12px;
+  --fs-excerpt: 13px;
+  --fs-body: 14px;
+  --fs-h-s: 16px;
+  --fs-h-m: 19px;
+  --fs-h-l: 26px;
+  --fs-h-x: 38px;
+  --fs-sh: 24px;
+  --fs-logo: 26px;
+  --fs-ad: 44px;
+
+  --lh-eyebrow: 14px;
+  --lh-meta: 16px;
+  --lh-excerpt: 20px;
+  --lh-sh: 30px;
+  --lh-tight: 1.4;
+  --lh-snug: 1.45;
+  --lh-title: 1.5;
+  --lh-body: 1.6;
+
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semi: 600;
+  --fw-bold: 700;
+
+  /* The only tracked-out style on the page. Reserved for true eyebrows. */
+  --track-eyebrow: 0.08em;
+
+  /* ---- Spacing scale ---------------------------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  --shell-max: 1440px;
+  --shell-pad: 80px;
+  /* Mezzanine (small desktop / tablet-landscape, ~901px–1100px). Between the
+     relaxed desktop gutter and the tight mobile one. */
+  --shell-pad-md: 40px;
+  --shell-pad-compact: 24px;
+
+  /* ---- Radius ----------------------------------------------------------- */
+  --r-sm: 4px;
+  --r-md: 8px;
+  --r-pill: 99px;
+  --r-full: 50%;
+
+  /* ---- Depth: hairlines only. The paper metaphor carries no drop shadow. */
+  --rule: 1px solid var(--border);
+  --shadow-sticky: 0 1px 0 var(--border);
+
+  /* ---- Motion ----------------------------------------------------------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 160ms;
+  --dur-base: 260ms;
+  --dur-slow: 600ms;
+  --dur-reveal: 700ms;
+  --rise: 12px;
+  --stagger: 60ms;
+
+  /* ---- Safe areas ------------------------------------------------------- */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ---- Palette: dark (ink) -------------------------------------------------
+   Applies when the OS asks for dark, unless the reader pinned light via
+   data-theme="light" on <html>.                                             */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121212;
+    --surface: #1c1c1c;
+    --image: #2c2b28;
+    --ink: #000000;
+    /* Lifted for dark. The light brand only reaches 3.2:1 on --bg, which
+       fails AA for the hover headlines and nav links that use it. */
+    --brand: #e63b4e;
+    --market-up: #58c98a;
+    --border: #2e2d2a;
+    --text: #f2f0eb;
+    --muted: #a09d96;
+    --on-ink: #ffffff;
+
+    --scrim: rgba(0, 0, 0, 0.82);
+  }
+}
+
+/* Explicit reader choice, both directions. */
+:root[data-theme="dark"] {
+  --bg: #121212;
+  --surface: #1c1c1c;
+  --image: #2c2b28;
+  --ink: #000000;
+  --brand: #e63b4e;
+  --market-up: #58c98a;
+  --border: #2e2d2a;
+  --text: #f2f0eb;
+  --muted: #a09d96;
+  --on-ink: #ffffff;
+
+  --scrim: rgba(0, 0, 0, 0.82);
+}

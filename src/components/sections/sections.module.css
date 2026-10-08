@@ -1,0 +1,1001 @@
+/* ==========================================================================
+   sections.module.css — page composition
+   --------------------------------------------------------------------------
+   Only grid geometry lives here. The card treatments come from ui.module.css
+   so a story looks the same wherever it appears.
+   ========================================================================== */
+
+/* ---------- Section rhythm -------------------------------------------------
+   The reference gives every <section> one vertical stack with 24px between
+   its heading and its content. Sections whose root is already a single grid
+   (.latestTrending, .pair, .videoPanel) carry their own gap instead.
+   -------------------------------------------------------------------------- */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ---------- Lead grid: ad rail | hero story | two stacked stories ---------- */
+.leadGrid {
+  display: grid;
+  grid-template-columns: 256px 1fr 420px;
+  gap: var(--space-6);
+}
+
+.leadHero {
+  display: flex;
+  height: 420px;
+}
+
+/* The fixed heights live on these wrappers, so the card anchor must fill them.
+   Without this the overlay collapses to the height of its own text and the
+   image stops matching the reference crop. */
+.leadHero > a,
+.leadStackItem > a,
+.tile > a,
+.picksHero > a,
+.picksStackItem > a {
+  flex: 1;
+  min-width: 0;
+}
+
+.leadStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.leadStackItem {
+  display: flex;
+  height: 198px;
+}
+
+/* ---------- Four-up tile row --------------------------------------------- */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+}
+
+.tile {
+  display: flex;
+  height: 260px;
+}
+
+/* ---------- ताज्या बातम्या | ट्रेंडिंग ------------------------------------- */
+.latestTrending {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-10);
+}
+
+/* ---------- हवामान आणि आजचा प्रश्न -------------------------------------- */
+.weatherPoll {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-8);
+}
+
+.weatherColumn,
+.pollColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  min-width: 0;
+}
+
+.weatherBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: stretch;
+}
+
+.weatherCurrent,
+.weatherPeek {
+  background: var(--surface);
+  border-radius: var(--r-md);
+  padding: var(--space-5);
+}
+
+.weatherCurrent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.weatherLocation,
+.weatherPeekLocation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.weatherLocation h3,
+.weatherPeek h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font: var(--fw-bold) var(--fs-h-s) / var(--lh-snug) var(--font-serif);
+}
+
+.weatherLocation svg,
+.weatherPeekLocation svg {
+  flex: none;
+  color: var(--brand);
+}
+
+.weatherUpdated {
+  color: var(--muted);
+  font-size: var(--fs-eyebrow);
+  white-space: nowrap;
+}
+
+.weatherNow {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.weatherSky {
+  color: var(--brand);
+}
+
+.weatherTemperature {
+  font: var(--fw-bold) 54px / 1 var(--font-serif);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.weatherCondition {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.weatherCondition strong,
+.weatherPeekCondition strong {
+  font: var(--fw-semi) var(--fs-body) / var(--lh-snug) var(--font-serif);
+}
+
+.weatherCondition span,
+.weatherPeekCondition span {
+  color: var(--muted);
+  font-size: var(--fs-meta);
+}
+
+.weatherStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3) var(--space-4);
+  padding-top: var(--space-4);
+  border-top: var(--rule);
+}
+
+.weatherStat {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--space-2);
+  row-gap: 2px;
+  min-width: 0;
+}
+
+.weatherStat svg {
+  color: var(--muted);
+  grid-row: span 2;
+}
+
+.weatherStat span {
+  color: var(--muted);
+  font-size: var(--fs-meta);
+}
+
+.weatherStat strong {
+  font-size: var(--fs-body);
+  font-variant-numeric: tabular-nums;
+}
+
+.forecast {
+  display: flex;
+  flex-direction: column;
+  border-top: var(--rule);
+}
+
+.forecastRow {
+  display: grid;
+  grid-template-columns: minmax(28px, 1fr) 24px auto auto auto;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  border-bottom: var(--rule);
+  font-size: var(--fs-meta);
+}
+
+.forecastRow:last-child {
+  border-bottom: 0;
+}
+
+.forecastRow svg {
+  color: var(--text);
+}
+
+.forecastHigh,
+.forecastLow,
+.forecastRain {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.forecastHigh {
+  color: var(--market-up);
+}
+
+.forecastLow {
+  color: var(--brand);
+}
+
+.forecastRain {
+  color: var(--muted);
+}
+
+.weatherAside {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.weatherPeek {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.weatherPeekLocation {
+  justify-content: flex-start;
+}
+
+.weatherPeekCondition {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.weatherPeekTemperature {
+  font: var(--fw-bold) 42px / 1 var(--font-serif);
+  font-variant-numeric: tabular-nums;
+}
+
+.weatherAd,
+.pollAd {
+  min-width: 0;
+}
+
+.pollContent {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.pollQuestion h3 {
+  margin: 0 0 var(--space-4);
+  font: var(--fw-bold) var(--fs-h-l) / var(--lh-tight) var(--font-serif);
+  text-wrap: balance;
+}
+
+.pollQuestion p {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  text-wrap: pretty;
+}
+
+.pollMeta {
+  margin-top: var(--space-5);
+  padding-top: var(--space-3);
+  border-top: var(--rule);
+  color: var(--muted);
+  font-size: var(--fs-meta);
+}
+
+.pollResults {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pollOption {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.pollOptionLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  font: var(--fw-semi) var(--fs-body) / var(--lh-snug) var(--font-serif);
+}
+
+.pollOptionLabel span:first-child {
+  min-width: 0;
+}
+
+.pollPercent {
+  color: var(--muted);
+  font: var(--fw-medium) var(--fs-meta) / var(--lh-meta) var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  flex: none;
+}
+
+.pollTrack {
+  height: 10px;
+  overflow: hidden;
+  background: var(--border);
+  border-radius: var(--r-pill);
+}
+
+.pollFill {
+  display: block;
+  height: 100%;
+  background: var(--brand);
+  border-radius: inherit;
+}
+
+.pollOption:not(:first-child) .pollFill {
+  background: var(--image-dark);
+}
+
+.pollVotes {
+  margin: var(--space-5) 0 0;
+  color: var(--muted);
+  font-size: var(--fs-meta);
+}
+
+/* ---------- लाईव्ह अपडेट्स beside the hero ------------------------------- */
+.liveUpdates {
+  min-height: 552px;
+  padding: var(--space-5);
+  background: var(--surface);
+  border-radius: var(--r-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.liveHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--rule);
+}
+
+.liveHeading h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font: var(--fw-bold) var(--fs-h-m) / var(--lh-snug) var(--font-serif);
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: var(--r-full);
+  background: var(--brand);
+}
+
+.liveBadge {
+  color: var(--brand);
+  font: var(--fw-bold) var(--fs-eyebrow) / var(--lh-eyebrow) var(--font-sans);
+}
+
+.liveEventTitle {
+  margin: 0;
+  font: var(--fw-bold) var(--fs-h-m) / var(--lh-snug) var(--font-serif);
+  text-wrap: balance;
+}
+
+.liveEventMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--muted);
+  font-size: var(--fs-meta);
+}
+
+.liveList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.liveItem {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-top: var(--rule);
+}
+
+.liveTime {
+  padding-top: 2px;
+  color: var(--muted);
+  font: var(--fw-medium) var(--fs-meta) / var(--lh-meta) var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+
+.liveItem p {
+  margin: 0;
+  font: var(--fw-medium) var(--fs-meta) / var(--lh-title) var(--font-serif);
+}
+
+.liveFoot {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: var(--rule);
+  color: var(--muted);
+  font-size: var(--fs-eyebrow);
+}
+
+/* ---------- Personalized and trending video discovery ------------------- */
+.videoDiscovery {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.videoDiscoveryHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--rule);
+}
+
+.videoDiscoveryHead h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
+  font: var(--fw-bold) var(--fs-sh) / var(--lh-sh) var(--font-serif);
+}
+
+.videoDiscoveryHead h2::before {
+  width: 4px;
+  height: 24px;
+  background: var(--brand);
+  content: "";
+}
+
+.videoDiscoveryHead p {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--fs-meta);
+}
+
+.videoDiscoveryGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(260px, 1fr);
+  gap: var(--space-8);
+}
+
+.recommendedVideos,
+.trendingVideos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.videoSubhead {
+  margin: 0;
+  font: var(--fw-bold) var(--fs-h-m) / var(--lh-snug) var(--font-serif);
+}
+
+.recommendedGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.discoveryCard {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: inherit;
+  text-decoration: none;
+}
+
+.discoveryThumb {
+  position: relative;
+  height: 176px;
+  overflow: hidden;
+  background: var(--image);
+  border-radius: var(--r-sm);
+}
+
+.discoveryThumb .play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.discoveryMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.discoveryCard:hover .discoveryMedia,
+.discoveryCard:focus-visible .discoveryMedia {
+  transform: scale(1.04);
+}
+
+.discoveryCard:hover .play,
+.discoveryCard:focus-visible .play {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.discoveryDuration {
+  position: absolute;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  z-index: 1;
+  padding: 2px 6px;
+  border-radius: var(--r-sm);
+  background: var(--scrim-duration);
+  color: var(--overlay-text);
+  font: var(--fw-medium) var(--fs-eyebrow) / var(--lh-eyebrow) var(--font-sans);
+}
+
+.discoveryTitle {
+  margin: 0;
+  font: var(--fw-semi) var(--fs-h-s) / var(--lh-title) var(--font-serif);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.discoveryCard:hover .discoveryTitle,
+.discoveryCard:focus-visible .discoveryTitle {
+  color: var(--brand);
+}
+
+.discoveryMeta {
+  color: var(--muted);
+  font: var(--fw-medium) var(--fs-meta) / var(--lh-meta) var(--font-sans);
+}
+
+.trendingVideoList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trendingVideo {
+  display: grid;
+  grid-template-columns: 24px 100px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-top: var(--rule);
+  color: inherit;
+  text-decoration: none;
+}
+
+.trendingRank {
+  color: var(--brand);
+  font: var(--fw-bold) var(--fs-h-m) / 1 var(--font-serif);
+  font-variant-numeric: tabular-nums;
+}
+
+.trendingThumb {
+  position: relative;
+  height: 68px;
+  overflow: hidden;
+  background: var(--image);
+  border-radius: var(--r-sm);
+}
+
+.trendingThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.trendingVideoText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.trendingVideoText strong {
+  font: var(--fw-semi) var(--fs-meta) / var(--lh-title) var(--font-serif);
+}
+
+.trendingVideo:hover .trendingVideoText strong,
+.trendingVideo:focus-visible .trendingVideoText strong {
+  color: var(--brand);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ---------- राजकारण: two features + brief list ---------------------------- */
+.politics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 400px;
+  gap: var(--space-6);
+}
+
+/* ---------- Two-column topic pairs ---------------------------------------- */
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+/* ---------- विशेष लेख व मते: three features + tall ad -------------------- */
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) 260px;
+  gap: var(--space-6);
+}
+
+/* ---------- संपादकांची निवड ---------------------------------------------- */
+.picks {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.picksHero {
+  display: flex;
+  height: 440px;
+}
+
+.picksStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.picksStackItem {
+  display: flex;
+  height: 208px;
+}
+
+/* Text-only column: hairline separated, no thumbnails. */
+.reads {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.read {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: var(--space-4);
+  border-bottom: var(--rule);
+  text-decoration: none;
+  color: inherit;
+}
+
+.read:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.readTitle {
+  color: var(--text);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.read:hover .readTitle,
+.read:focus-visible .readTitle {
+  color: var(--brand);
+}
+
+/* ---------- व्हिडिओ: the one inverted-surface panel on the page ----------- */
+.videoPanel {
+  background: var(--surface);
+  border-radius: var(--r-md);
+  padding: var(--space-8) var(--space-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.videoGroups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.videoGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.videoGroupHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.videoGroupHead h3 {
+  margin: 0;
+  font: var(--fw-bold) var(--fs-h-m) / var(--lh-snug) var(--font-serif);
+}
+
+.videoGroupHead span {
+  color: var(--muted);
+  font-size: var(--fs-meta);
+}
+
+.videoLongGrid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.videoShortGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.videoShortGrid > * {
+  min-width: 0;
+}
+
+.videoMain {
+  grid-row: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  text-decoration: none;
+  color: inherit;
+}
+
+.videoSmall {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  text-decoration: none;
+  color: inherit;
+}
+
+.videoShortCard {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: inherit;
+  text-decoration: none;
+}
+
+.thumb {
+  position: relative;
+  overflow: hidden;
+  background: var(--image-dark);
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbMain {
+  height: 340px;
+}
+
+.thumbSmall {
+  height: 150px;
+}
+
+.thumbLong {
+  height: 176px;
+}
+
+.thumbShort {
+  height: 236px;
+}
+
+.thumbMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.videoMain:hover .thumbMedia,
+.videoMain:focus-visible .thumbMedia,
+.videoSmall:hover .thumbMedia,
+.videoSmall:focus-visible .thumbMedia,
+.videoShortCard:hover .thumbMedia,
+.videoShortCard:focus-visible .thumbMedia {
+  transform: scale(1.05);
+}
+
+.play {
+  position: relative;
+  z-index: 1;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-full);
+  background: var(--scrim-soft);
+  color: var(--overlay-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    background var(--dur-base) var(--ease-out);
+}
+
+.videoMain:hover .play,
+.videoSmall:hover .play,
+.videoShortCard:hover .play {
+  transform: scale(1.08);
+  background: var(--scrim);
+}
+
+.duration {
+  position: absolute;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  z-index: 1;
+  background: var(--scrim-duration);
+  color: var(--overlay-text);
+  font: var(--fw-medium) var(--fs-eyebrow) / var(--lh-eyebrow) var(--font-sans);
+  padding: 2px 6px;
+  border-radius: var(--r-sm);
+}
+
+.videoMainTitle {
+  color: var(--text);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.videoMain:hover .videoMainTitle,
+.videoMain:focus-visible .videoMainTitle,
+.videoSmall:hover .videoMainTitle,
+.videoSmall:focus-visible .videoMainTitle,
+.videoShortCard:hover .videoMainTitle,
+.videoShortCard:focus-visible .videoMainTitle {
+  color: var(--brand);
+}
+
+/* ---------- फोटो गॅलरी -------------------------------------------------- */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+/* The gallery applies the height to the anchor itself, so no flex fill needed. */
+.galleryItem {
+  height: 420px;
+}
+
+/* ---------- Small-desktop / tablet-landscape (mezzanine) ------------------
+   Compositions stay multi-column; fixed rails are tightened so each grid
+   fits the ~944px measure at 1024px. Nothing here falls to one column.
+   -------------------------------------------------------------------------- */
+@media (max-width: 1100px) {
+  /* Lead band: ad rail + hero story on the first row. The two-story stack
+     drops into a full-width second row, laid side by side, so the 420px rail
+     no longer crushes the hero at the narrower measure. */
+  .leadGrid {
+    grid-template-columns: 230px minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+
+  .leadStack {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6);
+  }
+
+  /* राजकारण rail tightens so the two features keep a readable column. */
+  .politics {
+    grid-template-columns: 1fr 1fr 340px;
+  }
+}
+
+/* ---------- Mobile ---------------------------------------------
+   Grid collapses to one column. Card heights are deliberately left alone:
+   the reference keeps every fixed height on mobile, so the rhythm survives
+   the narrower measure. Only the gallery and the video panel adjust.
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .leadGrid,
+  .tiles,
+  .latestTrending,
+  .weatherPoll,
+  .weatherBody,
+  .pollContent,
+  .videoDiscoveryGrid,
+  .politics,
+  .pair,
+  .features,
+  .picks,
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .videoMain {
+    grid-row: auto;
+  }
+
+  .videoLongGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .videoShortGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .liveUpdates {
+    min-height: 0;
+  }
+
+  .videoPanel {
+    padding: var(--space-6);
+  }
+
+  .galleryItem {
+    height: 300px;
+  }
+}
+
+@media (max-width: 620px) {
+  .recommendedGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .videoShortGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .videoDiscoveryHead,
+  .videoGroupHead {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+}
