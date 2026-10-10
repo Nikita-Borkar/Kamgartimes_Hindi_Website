@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { User } from "lucide-react";
 import { site, socialLinks } from "@/data/site";
 import { ThemeToggle } from "./ThemeToggle";
 import styles from "./layout.module.css";
@@ -42,7 +43,13 @@ export function TopBar() {
         <a className={styles.wa} href="#">
           व्हॉट्सॲपवर जोडा
         </a>
-        <span className={`${styles.dot} ${styles.avatar}`} aria-hidden="true" />
+        <Link
+          className={`${styles.dot} ${styles.avatar}`}
+          href="/login"
+          aria-label="लॉग इन किंवा नोंदणी"
+        >
+          <User size={18} strokeWidth={2} aria-hidden="true" />
+        </Link>
         {socialLinks
           .filter((s) => s.id !== "whatsapp")
           .map((s) => (

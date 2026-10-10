@@ -1,7 +1,9 @@
 import { editorsPicks } from "@/data/news";
+import Link from "next/link";
 import { OverlayCard } from "@/components/ui/OverlayCard";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { stagger } from "@/components/motion/stagger";
+import { articleHref } from "@/lib/links";
 import ui from "@/components/ui/ui.module.css";
 import styles from "./sections.module.css";
 
@@ -41,10 +43,10 @@ export function EditorsPicks() {
 
         <div className={`${styles.reads} reveal`} style={stagger(2)}>
           {editorsPicks.reads.map((article) => (
-            <a
+            <Link
               key={article.id}
               className={styles.read}
-              href="#"
+              href={articleHref(article.id)}
               aria-label={article.headline}
             >
               <div className={ui.cat}>{article.category}</div>
@@ -53,7 +55,7 @@ export function EditorsPicks() {
               </h3>
               <p className={ui.excerpt}>{article.excerpt}</p>
               <div className={ui.meta}>{article.meta}</div>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

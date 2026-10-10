@@ -1,4 +1,6 @@
 import type { Article } from "@/data/types";
+import Link from "next/link";
+import { articleHref } from "@/lib/links";
 import { Media } from "./Media";
 import styles from "./ui.module.css";
 
@@ -36,7 +38,7 @@ export function StoryCard({
   }
 
   return (
-    <a className={styles.card} href="#" aria-label={article.headline}>
+    <Link className={styles.card} href={articleHref(article.id)} aria-label={article.headline}>
       <Media
         src={article.image}
         alt=""
@@ -44,6 +46,6 @@ export function StoryCard({
         className={`${styles.cardThumb}${tall ? ` ${styles.cardThumbTall}` : ""}`}
       />
       {body}
-    </a>
+    </Link>
   );
 }
