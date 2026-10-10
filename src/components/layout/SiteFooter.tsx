@@ -1,5 +1,16 @@
-import { footer, site, socialLinks } from "@/data/site";
+import Link from "next/link";
+import { categories, footer, site, socialLinks } from "@/data/site";
 import styles from "./layout.module.css";
+
+/** Resolves a section label to its /category/[slug] route, or the video desk. */
+function sectionHref(label: string) {
+  const match = categories.find((category) => category.label === label);
+  if (match) return `/category/${match.slug}`;
+  if (label === "व्हिडिओ") return "/videos";
+  if (label === "शॉर्ट्स") return "/shorts";
+  if (label === "फोटो") return "/gallery";
+  return "#";
+}
 
 export function SiteFooter() {
   return (
@@ -34,36 +45,39 @@ export function SiteFooter() {
         <div>
           <nav className={styles.footerLinks} aria-label="फुटर">
             {footer.sectionLinks.map((label) => (
-              <a key={label} className={styles.footerLink} href="#">
+              <Link
+                key={label}
+                className={styles.footerLink}
+                href={sectionHref(label)}
+              >
                 {label}
-              </a>
+              </Link>
             ))}
           </nav>
           <div className={styles.footerActions}>
-            {footer.actions.map((label) => (
-              <a key={label} className={styles.footerBtn} href="#">
-                {label}
-              </a>
+            {footer.actions.map((action) => (
+              <Link
+                key={action.href}
+                className={styles.footerBtn}
+                href={action.href}
+              >
+                {action.label}
+              </Link>
             ))}
           </div>
         </div>
 
         <div className={styles.footerCol}>
-          <h4 className={styles.footerColTitle}>
-            {footer.sections[0].title}
-          </h4>
-          {footer.sections[0].links.map((label) => (
-            <a key={label} className={styles.footerLink} href="#">
-              {label}
-            </a>
+          <h4 className={styles.footerColTitle}>{footer.sections[0].title}</h4>
+          {footer.sections[0].links.map((link) => (
+            <Link
+              key={link.href}
+              className={styles.footerLink}
+              href={link.href}
+            >
+              {link.label}
+            </Link>
           ))}
-          <div className={styles.storeRow}>
-            {footer.stores.map((label) => (
-              <a key={label} className={styles.storeBtn} href="#">
-                {label}
-              </a>
-            ))}
-          </div>
         </div>
       </div>
 

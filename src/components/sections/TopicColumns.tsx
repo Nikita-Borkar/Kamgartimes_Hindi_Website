@@ -2,6 +2,7 @@ import { topicPairs, topicPairTitles } from "@/data/news";
 import { RowArticle } from "@/components/ui/RowArticle";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { stagger } from "@/components/motion/stagger";
+import { categoryHref } from "@/lib/links";
 import styles from "./sections.module.css";
 
 /**
@@ -22,7 +23,7 @@ export function TopicColumns() {
               const title = titles[i];
               return (
                 <div key={title} className={`${styles.stack} reveal`}>
-                  <SectionHeader title={title} />
+                  <SectionHeader title={title} href={categoryHref(title)} />
                   {desk.map((article, a) => (
                     <div key={article.id} style={stagger(a)}>
                       <RowArticle article={article} />

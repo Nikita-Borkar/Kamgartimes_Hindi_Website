@@ -1,4 +1,6 @@
 import type { Article } from "@/data/types";
+import Link from "next/link";
+import { articleHref } from "@/lib/links";
 import { Media } from "./Media";
 import styles from "./ui.module.css";
 
@@ -28,7 +30,7 @@ export function OverlayCard({
   priority?: boolean;
 }) {
   return (
-    <a className={styles.overlay} href="#" aria-label={article.headline}>
+    <Link className={styles.overlay} href={articleHref(article.id)} aria-label={article.headline}>
       <Media
         src={article.image}
         alt=""
@@ -43,6 +45,6 @@ export function OverlayCard({
         </h3>
         {showMeta ? <span className={`${styles.meta} ${styles.overlayMeta}`}>{article.meta}</span> : null}
       </div>
-    </a>
+    </Link>
   );
 }

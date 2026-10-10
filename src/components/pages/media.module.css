@@ -1,0 +1,591 @@
+/* ==========================================================================
+   media.module.css — video, shorts and photo-gallery listing pages plus the
+   video watch and gallery detail surfaces. Same paper language as the rest of
+   the site; only geometry and composition live here.
+   ========================================================================== */
+
+.main {
+  max-width: var(--shell-max);
+  margin: 0 auto;
+  padding: var(--space-8) var(--shell-pad) var(--space-12);
+}
+
+/* ---------- Feature item at the top of a listing -------------------------- */
+.feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr);
+  gap: var(--space-8);
+  margin-top: var(--space-10);
+  align-items: center;
+}
+
+.featureMedia {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  background: var(--image-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featureMedia img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.feature:hover .featureMedia img,
+.feature:focus-visible .featureMedia img {
+  transform: scale(1.04);
+}
+
+.featureBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.featureTitle {
+  font: var(--fw-bold) var(--fs-h-l) / var(--lh-tight) var(--font-serif);
+  text-wrap: balance;
+}
+
+.featureExcerpt {
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+/* ---------- Card grid ----------------------------------------------------- */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-6);
+  margin-top: var(--space-10);
+}
+
+.shortGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-5);
+  margin-top: var(--space-10);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.thumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--image-dark);
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbPortrait {
+  aspect-ratio: 9 / 16;
+}
+
+.thumb img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.card:hover .thumb img,
+.card:focus-visible .thumb img {
+  transform: scale(1.05);
+}
+
+.play {
+  position: relative;
+  z-index: 1;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-full);
+  background: var(--scrim-soft);
+  color: var(--overlay-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    background var(--dur-base) var(--ease-out);
+}
+
+.card:hover .play,
+.card:focus-visible .play {
+  transform: scale(1.08);
+  background: var(--scrim);
+}
+
+.duration {
+  position: absolute;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  z-index: 1;
+  padding: 2px 6px;
+  border-radius: var(--r-sm);
+  background: var(--scrim-duration);
+  color: var(--overlay-text);
+  font: var(--fw-medium) var(--fs-eyebrow) / var(--lh-eyebrow) var(--font-sans);
+}
+
+.cardTitle {
+  color: var(--text);
+  font: var(--fw-semi) var(--fs-h-s) / var(--lh-title) var(--font-serif);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.card:hover .cardTitle,
+.card:focus-visible .cardTitle {
+  color: var(--brand);
+}
+
+.cardMeta {
+  color: var(--muted);
+  font: var(--fw-medium) var(--fs-meta) / var(--lh-meta) var(--font-sans);
+}
+
+/* ---------- Video / gallery watch layout ---------------------------------- */
+.watch {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+  gap: var(--space-10);
+  margin-top: var(--space-5);
+  align-items: start;
+}
+
+.watchMain {
+  min-width: 0;
+}
+
+.player {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playerMedia {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.82;
+}
+
+.playerPlay {
+  position: relative;
+  z-index: 1;
+  width: 76px;
+  height: 76px;
+  border-radius: var(--r-full);
+  background: var(--scrim-soft);
+  color: var(--overlay-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    background var(--dur-base) var(--ease-out);
+}
+
+.playerPlay:hover,
+.playerPlay:focus-visible {
+  transform: scale(1.06);
+  background: var(--scrim);
+}
+
+.playerNote {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  text-align: center;
+  background: var(--scrim);
+  color: var(--overlay-text);
+  font: var(--fw-medium) var(--fs-body) / var(--lh-body) var(--font-sans);
+}
+
+.playerDuration {
+  position: absolute;
+  right: var(--space-3);
+  bottom: var(--space-3);
+  z-index: 1;
+  padding: 3px 8px;
+  border-radius: var(--r-sm);
+  background: var(--scrim-duration);
+  color: var(--overlay-text);
+  font: var(--fw-medium) var(--fs-meta) / var(--lh-meta) var(--font-sans);
+}
+
+.playerNoteClose {
+  padding: 8px var(--space-5);
+  border-radius: var(--r-pill);
+  background: var(--brand);
+  color: var(--on-ink);
+  font: var(--fw-semi) var(--fs-body) / 1 var(--font-sans);
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.playerNoteClose:hover {
+  opacity: 0.88;
+}
+
+/* Tag chips shared by the watch and gallery-detail pages. */
+.tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-8);
+  padding-top: var(--space-5);
+  border-top: var(--rule);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px var(--space-3);
+  border: var(--rule);
+  border-radius: var(--r-pill);
+  color: var(--text);
+  font-size: var(--fs-meta);
+  text-decoration: none;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+
+.tag:hover {
+  color: var(--brand);
+  border-color: var(--brand);
+}
+
+.watchTitle {
+  margin-top: var(--space-6);
+  font: var(--fw-bold) var(--fs-h-l) / var(--lh-tight) var(--font-serif);
+  text-wrap: balance;
+}
+
+.watchMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin-top: var(--space-3);
+  color: var(--muted);
+  font: var(--fw-medium) var(--fs-meta) / var(--lh-meta) var(--font-sans);
+}
+
+.watchMeta span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.watchMeta svg {
+  flex: none;
+}
+
+.watchDesc {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  max-width: 72ch;
+}
+
+.watchPara {
+  font-size: var(--fs-body);
+  line-height: 1.75;
+  color: var(--text);
+}
+
+/* Chapters */
+.chapters {
+  margin-top: var(--space-8);
+  border-top: var(--rule);
+}
+
+.chapter {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-3) 0;
+  border-bottom: var(--rule);
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.chapter:hover {
+  color: var(--brand);
+}
+
+.chapterTime {
+  color: var(--brand);
+  font: var(--fw-semi) var(--fs-meta) / var(--lh-meta) var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+
+.chapterLabel {
+  font: var(--fw-medium) var(--fs-body) / var(--lh-snug) var(--font-serif);
+}
+
+/* Watch side rail */
+.watchSide {
+  min-width: 0;
+}
+
+.sideSticky {
+  position: sticky;
+  top: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sideTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: var(--rule);
+  font: var(--fw-bold) var(--fs-h-m) / var(--lh-snug) var(--font-serif);
+}
+
+.sideBar {
+  width: 4px;
+  height: 22px;
+  background: var(--brand);
+  flex: none;
+}
+
+.sideList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ---------- Gallery listing / detail -------------------------------------- */
+.masonry {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-6);
+  margin-top: var(--space-10);
+}
+
+.galleryCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  color: inherit;
+  text-decoration: none;
+}
+
+.galleryMedia {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  background: var(--image);
+}
+
+.galleryMedia img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.galleryCard:hover .galleryMedia img,
+.galleryCard:focus-visible .galleryMedia img {
+  transform: scale(1.04);
+}
+
+.galleryCount {
+  position: absolute;
+  left: var(--space-3);
+  bottom: var(--space-3);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--scrim-duration);
+  color: var(--overlay-text);
+  font: var(--fw-medium) var(--fs-meta) / var(--lh-meta) var(--font-sans);
+}
+
+.galleryCardTitle {
+  font: var(--fw-bold) var(--fs-h-m) / var(--lh-snug) var(--font-serif);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.galleryCard:hover .galleryCardTitle,
+.galleryCard:focus-visible .galleryCardTitle {
+  color: var(--brand);
+}
+
+/* Detail: the photo run */
+.photos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin-top: var(--space-8);
+}
+
+.photo {
+  margin: 0;
+}
+
+.photoMedia {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--r-md);
+  background: var(--image);
+}
+
+.photoCaption {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  color: var(--muted);
+  font: var(--fw-regular) var(--fs-meta) / var(--lh-meta) var(--font-sans);
+}
+
+.photoIndex {
+  color: var(--brand);
+  font-weight: var(--fw-bold);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Related band -------------------------------------------------- */
+.related {
+  margin-top: var(--space-12);
+  padding-top: var(--space-8);
+  border-top: var(--rule);
+}
+
+.relatedTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  font: var(--fw-bold) var(--fs-sh) / var(--lh-sh) var(--font-serif);
+}
+
+.relatedBar {
+  width: 4px;
+  height: 24px;
+  background: var(--brand);
+  flex: none;
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+/* ---------- Mezzanine & mobile -------------------------------------------- */
+@media (max-width: 1100px) {
+  .main {
+    padding-left: var(--shell-pad-md);
+    padding-right: var(--shell-pad-md);
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .shortGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .masonry,
+  .relatedGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .main {
+    padding: var(--space-6) var(--shell-pad-compact) var(--space-10);
+  }
+
+  .feature {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
+  .watch {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+
+  .sideSticky {
+    position: static;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .shortGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .masonry,
+  .relatedGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .grid,
+  .masonry,
+  .relatedGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .shortGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

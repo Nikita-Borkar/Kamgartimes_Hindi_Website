@@ -583,6 +583,56 @@ export const videos = {
 };
 
 /* ---------------------------------------------------------------------------
+   Flat index of every article that carries an image, used by the search page
+   and the /category/[slug] section pages.
+   ------------------------------------------------------------------------- */
+export const allArticles: Article[] = (() => {
+  const seen = new Set<string>();
+  return [
+    leadStory,
+    ...leadStack,
+    ...tiles,
+    ...latestNews,
+    ...trending,
+    ...politics.features,
+    ...politics.briefs,
+    ...topicDesks.flat(),
+    ...features,
+    editorsPicks.hero,
+    ...editorsPicks.stack,
+  ].filter((article) => {
+    if (seen.has(article.id)) return false;
+    seen.add(article.id);
+    return true;
+  });
+})();
+
+/* ---------------------------------------------------------------------------
+   Flat index of every video the site links to, used by /video/[id] routes.
+   ------------------------------------------------------------------------- */
+export const allVideos: VideoItem[] = (() => {
+  const seen = new Set<string>();
+  const feature: VideoItem = {
+    id: videos.feature.id,
+    image: videos.feature.image,
+    duration: videos.feature.duration,
+    title: videos.feature.title,
+    meta: videos.feature.category,
+  };
+  return [
+    feature,
+    ...videos.longVideos,
+    ...videos.shorts,
+    ...videoDiscovery.recommended,
+    ...videoDiscovery.trending,
+  ].filter((video) => {
+    if (seen.has(video.id)) return false;
+    seen.add(video.id);
+    return true;
+  });
+})();
+
+/* ---------------------------------------------------------------------------
    फोटो गॅलरी
    ------------------------------------------------------------------------- */
 export const gallery: GalleryItem[] = [

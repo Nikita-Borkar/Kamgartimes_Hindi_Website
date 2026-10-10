@@ -1,4 +1,6 @@
 import type { Article } from "@/data/types";
+import Link from "next/link";
+import { articleHref } from "@/lib/links";
 import { Media } from "./Media";
 import styles from "./ui.module.css";
 
@@ -28,9 +30,9 @@ export function RowArticle({
   sizes?: string;
 }) {
   return (
-    <a
+    <Link
       className={`${styles.row}${wide ? ` ${styles.rowWide}` : ""}`}
-      href="#"
+      href={articleHref(article.id)}
       aria-label={article.headline}
     >
       <Media
@@ -49,6 +51,6 @@ export function RowArticle({
         ) : null}
         <div className={styles.meta}>{article.meta}</div>
       </div>
-    </a>
+    </Link>
   );
 }

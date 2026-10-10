@@ -2,6 +2,7 @@ import { videos } from "@/data/news";
 import { Media } from "@/components/ui/Media";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { stagger } from "@/components/motion/stagger";
+import { videoHref } from "@/lib/links";
 import { Play } from "lucide-react";
 import ui from "@/components/ui/ui.module.css";
 import styles from "./sections.module.css";
@@ -25,7 +26,7 @@ function VideoCard({
   return (
     <a
       className={short ? styles.videoShortCard : styles.videoSmall}
-      href="#"
+      href={videoHref(item.id)}
       aria-label={item.title}
     >
       <span
@@ -56,7 +57,7 @@ export function VideoSection() {
   return (
     <section className={styles.videoPanel} aria-label="व्हिडिओ">
       <div className="reveal">
-        <SectionHeader title="व्हिडिओ" action="अधिक पहा →" />
+        <SectionHeader title="व्हिडिओ" action="अधिक पहा" href="/videos" />
       </div>
 
       <div className={`${styles.videoGroups} reveal`}>
@@ -66,7 +67,7 @@ export function VideoSection() {
             <span>संपूर्ण वार्तांकन आणि विश्लेषण</span>
           </div>
           <div className={styles.videoLongGrid}>
-            <a className={styles.videoMain} href="#" aria-label={feature.title}>
+            <a className={styles.videoMain} href={videoHref(feature.id)} aria-label={feature.title}>
               <span className={`${styles.thumb} ${styles.thumbMain}`}>
                 <Media
                   src={feature.image}

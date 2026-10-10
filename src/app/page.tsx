@@ -17,6 +17,7 @@ import { WeatherPoll } from "@/components/sections/WeatherPoll";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { HeroCarousel } from "@/components/ui/HeroCarousel";
 import { MarketTicker } from "@/components/layout/MarketTicker";
+import { NoticeTicker } from "@/components/layout/NoticeTicker";
 import { NotificationPrompt } from "@/components/layout/NotificationPrompt";
 import { leaderboardAds } from "@/data/ads";
 import styles from "./globals.module.css";
@@ -79,6 +80,7 @@ export default function Home() {
 
       <SiteFooter />
       <BackToTop />
+      <NoticeTicker />
     </>
   );
 }

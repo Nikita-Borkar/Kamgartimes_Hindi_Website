@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styles from "./ui.module.css";
 
 /**
@@ -6,10 +7,12 @@ import styles from "./ui.module.css";
  */
 export function SectionHeader({
   title,
-  action = "सर्व पहा →",
+  action = "सर्व पहा",
+  href = "#",
 }: {
   title: string;
   action?: string;
+  href?: string;
 }) {
   return (
     <div className={styles.sectionHead}>
@@ -17,9 +20,10 @@ export function SectionHeader({
         <span className={`${styles.sectionBar} revealBar`} aria-hidden="true" />
         {title}
       </h2>
-      <a className={styles.sectionLink} href="#">
+      <Link className={styles.sectionLink} href={href}>
         {action}
-      </a>
+        <span aria-hidden="true"> →</span>
+      </Link>
     </div>
   );
 }

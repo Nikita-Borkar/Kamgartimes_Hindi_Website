@@ -4,6 +4,7 @@ import { AdSlot } from "@/components/ui/AdSlot";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { StoryCard } from "@/components/ui/StoryCard";
 import { stagger } from "@/components/motion/stagger";
+import { categoryHref } from "@/lib/links";
 import styles from "./sections.module.css";
 
 /** विशेष लेख व मते: three features, then a tall ad column. */
@@ -11,7 +12,7 @@ export function FeaturesSection() {
   return (
     <section className={styles.section} aria-label="विशेष लेख व मते">
       <div className="reveal">
-        <SectionHeader title="विशेष लेख व मते" />
+        <SectionHeader title="विशेष लेख व मते" href={categoryHref("विचार")} />
       </div>
       <div className={`${styles.features} reveal`}>
         {features.map((article, i) => (

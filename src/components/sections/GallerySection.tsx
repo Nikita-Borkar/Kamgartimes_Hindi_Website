@@ -2,6 +2,7 @@ import { gallery } from "@/data/news";
 import { Media } from "@/components/ui/Media";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { stagger } from "@/components/motion/stagger";
+import { galleryHref } from "@/lib/links";
 import ui from "@/components/ui/ui.module.css";
 import styles from "./sections.module.css";
 
@@ -10,14 +11,14 @@ export function GallerySection() {
   return (
     <section className={styles.section} aria-label="फोटो गॅलरी">
       <div className="reveal">
-        <SectionHeader title="फोटो गॅलरी" />
+        <SectionHeader title="फोटो गॅलरी" href="/gallery" />
       </div>
       <div className={`${styles.gallery} reveal`}>
         {gallery.map((item, i) => (
           <a
             key={item.id}
             className={`${ui.overlay} ${styles.galleryItem} reveal`}
-            href="#"
+            href={galleryHref(item.id)}
             aria-label={item.headline}
             style={stagger(i)}
           >

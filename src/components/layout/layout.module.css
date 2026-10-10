@@ -119,9 +119,10 @@
   background: var(--image);
 }
 
-/* The reader avatar, tinted with the placeholder colour. */
+/* The reader avatar / account button. */
 .avatar {
-  background: var(--image-dark);
+  background: var(--ink);
+  color: var(--on-ink);
 }
 
 /* Theme toggle sits inside the action row, so it inherits the same rhythm. */
@@ -136,16 +137,27 @@
 }
 
 .navInner {
+  position: relative;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   gap: var(--space-4);
 }
 
 .navList {
+  flex: 1 1 auto;
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   min-width: 0;
+  overflow: hidden;
+}
+
+/* Once the strip has been measured we stop clipping, so the absolutely
+   positioned sub-nav dropdowns are no longer cut off. */
+.nav[data-ready="true"] .navList {
+  overflow: visible;
 }
 
 .navLink {
@@ -178,6 +190,257 @@
 
 .search:hover {
   color: var(--brand);
+}
+
+/* ---------- Nav: sub-nav dropdown ---------------------------------------- */
+.navItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.navCaret {
+  background: none;
+  border: 0;
+  margin-left: -8px;
+  padding: var(--space-3) var(--space-1);
+  color: var(--muted);
+  display: flex;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.navCaret:hover {
+  color: var(--brand);
+}
+
+.subNav {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(160px, 1fr));
+  min-width: 340px;
+  /* Six rows, then scroll — a section with many children stays on screen. */
+  max-height: 260px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin: 0;
+  padding: var(--space-2) 0;
+  list-style: none;
+  background: var(--bg);
+  border: var(--rule);
+  border-top: 3px solid var(--brand);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.14);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out),
+    visibility var(--dur-fast);
+}
+
+.subNav[data-open="true"] {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.subNavLink {
+  display: block;
+  padding: var(--space-2) var(--space-4);
+  color: var(--text);
+  font: var(--fw-medium) var(--fs-body) / var(--lh-body) var(--font-sans);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.subNavLink:hover {
+  background: var(--surface);
+  color: var(--brand);
+}
+
+/* ---------- Nav: overflow measuring + hamburger --------------------------- */
+/* Off-screen ruler: an unclipped copy of the links whose natural widths tell
+   us how many fit on the strip. Clipped by its own box so it never widens the
+   page. */
+.navMeasure {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.navMeasureList {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navMeasureItem {
+  display: flex;
+  align-items: center;
+}
+
+.navMeasureList .navLink {
+  display: inline-block;
+  /* Every ruler span is its own :first-child, so re-apply the real left
+     padding; the first item's extra pad is subtracted in JS. */
+  padding-left: var(--space-4);
+}
+
+/* Matches .navCaret so the ruler measures the same width as the real item. */
+.navMeasureCaret {
+  display: inline-flex;
+  align-items: center;
+  margin-left: -8px;
+  padding: var(--space-3) var(--space-1);
+}
+
+.navActions {
+  flex: none;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.navBurger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: var(--rule);
+  border-radius: var(--r-sm);
+  padding: var(--space-2);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+
+.navBurger:hover {
+  color: var(--brand);
+  border-color: var(--brand);
+}
+
+/* The hamburger only appears when links overflow the bar. */
+.nav[data-overflow="true"] .navBurger {
+  display: flex;
+}
+
+/* ---------- Nav: overflow panel ------------------------------------------ */
+.navPanel {
+  display: none;
+  flex-basis: 100%;
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--dur-base) var(--ease-out);
+}
+
+.nav[data-overflow="true"] .navPanel {
+  display: block;
+}
+
+.navPanel[data-open="true"] {
+  max-height: 70vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-top: var(--rule);
+}
+
+.panelList {
+  margin: 0;
+  padding: var(--space-2) 0;
+  list-style: none;
+}
+
+.panelItem {
+  border-bottom: var(--rule);
+}
+
+.panelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panelLink {
+  flex: 1;
+  padding: var(--space-3) 0;
+  color: var(--text);
+  font: var(--fw-semi) var(--fs-body) / var(--lh-body) var(--font-sans);
+  text-decoration: none;
+}
+
+.panelLink:hover {
+  color: var(--brand);
+}
+
+.panelCaret {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 0;
+  padding: var(--space-2);
+  color: var(--muted);
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.panelCaret[aria-expanded="true"] {
+  transform: rotate(180deg);
+  color: var(--brand);
+}
+
+/* Sub-lists: two columns, six rows, then scroll — a section with many
+   children stays on screen. */
+.panelSub {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--space-4);
+  max-height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+  transition: max-height var(--dur-fast) var(--ease-out);
+}
+
+.panelSub[data-open="true"] {
+  max-height: 240px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: var(--space-3);
+}
+
+.panelSubLink {
+  display: block;
+  padding: var(--space-2) 0 var(--space-2) var(--space-4);
+  color: var(--muted);
+  font: var(--fw-medium) var(--fs-body) / var(--lh-body) var(--font-sans);
+  text-decoration: none;
+  border-left: 2px solid var(--border);
+}
+
+.panelSubLink:hover {
+  color: var(--brand);
+  border-left-color: var(--brand);
 }
 
 /* Sticky only once the reader has left the masthead behind. */
@@ -239,6 +502,45 @@
   font: var(--fw-semi) var(--fs-eyebrow) / var(--lh-body) var(--font-sans);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--r-sm);
+}
+
+.tickerLink {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dur-fast) var(--ease-out);
+}
+
+.tickerLink:hover {
+  border-bottom-color: var(--brand);
+}
+
+/* ---------- Bottom notice ticker ----------------------------------------- */
+/* Keeps the footer clear of the fixed bar while the bar is mounted. */
+:global(body.notice-ticker-on) {
+  padding-bottom: calc(48px + var(--safe-bottom));
+}
+
+.noticeTicker {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  background: var(--ink);
+  color: var(--on-ink);
+  border-top: 3px solid var(--brand);
+  padding-bottom: var(--safe-bottom);
+  overflow: hidden;
+}
+
+.noticeTicker .tickerTrack {
+  animation-duration: 30s;
+}
+
+.noticeTicker:hover .tickerTrack {
+  animation-play-state: paused;
 }
 
 /* ---------- Market ticker ----------------------------------------------- */
@@ -649,16 +951,6 @@
   .navInner {
     padding-left: var(--shell-pad-compact);
     padding-right: var(--shell-pad-compact);
-    overflow: auto;
-    scrollbar-width: none;
-  }
-
-  .navInner::-webkit-scrollbar {
-    display: none;
-  }
-
-  .search {
-    display: none;
   }
 
   .footerInner {

@@ -1,6 +1,7 @@
 import { Play } from "lucide-react";
 import { videoDiscovery } from "@/data/news";
 import { Media } from "@/components/ui/Media";
+import { videoHref } from "@/lib/links";
 import styles from "./sections.module.css";
 
 export function VideoDiscovery() {
@@ -19,7 +20,7 @@ export function VideoDiscovery() {
           <h3 className={styles.videoSubhead}>निवडक व्हिडिओ</h3>
           <div className={styles.recommendedGrid}>
             {videoDiscovery.recommended.map((video) => (
-              <a className={styles.discoveryCard} href="#" key={video.id}>
+              <a className={styles.discoveryCard} href={videoHref(video.id)} key={video.id}>
                 <span className={styles.discoveryThumb}>
                   <Media
                     src={video.image}
@@ -46,7 +47,7 @@ export function VideoDiscovery() {
           <ol className={styles.trendingVideoList}>
             {videoDiscovery.trending.map((video, index) => (
               <li key={video.id}>
-                <a className={styles.trendingVideo} href="#">
+                <a className={styles.trendingVideo} href={videoHref(video.id)}>
                   <span className={styles.trendingRank}>{index + 1}</span>
                   <span className={styles.trendingThumb}>
                     <Media
