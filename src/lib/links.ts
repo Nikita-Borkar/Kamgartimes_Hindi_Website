@@ -6,6 +6,7 @@ import { categories } from "@/data/site";
 export const articleHref = (id: string) => `/article/${id}`;
 export const videoHref = (id: string) => `/video/${id}`;
 export const galleryHref = (id: string) => `/gallery/${id}`;
+export const epaperHref = (id: string) => `/e-paper/${id}`;
 
 /** Resolves a section label (e.g. "क्रीडा") to its /category/[slug] route. */
 export function categoryHref(label: string): string {

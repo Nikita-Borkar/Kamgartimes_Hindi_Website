@@ -51,7 +51,7 @@ export const navItems: NavItem[] = [
     ],
   },
   { label: "तंत्रज्ञान", href: "/category/technology" },
-  { label: "E-Paper", href: "/category/e-paper" },
+  { label: "ई-पेपर", href: "/e-paper" },
   { label: "आरोग्य", href: "/category/health" },
   { label: "शिक्षण", href: "/category/education" },
   { label: "विचार", href: "/category/opinion" },
@@ -142,6 +142,7 @@ export const footer = {
     "जग",
     "क्रीडा",
     "आरोग्य",
+    "ई-पेपर",
   ],
   actions: [
     { label: "Donet Us", href: "/donate" },

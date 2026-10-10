@@ -9,6 +9,7 @@ function sectionHref(label: string) {
   if (label === "व्हिडिओ") return "/videos";
   if (label === "शॉर्ट्स") return "/shorts";
   if (label === "फोटो") return "/gallery";
+  if (label === "ई-पेपर") return "/e-paper";
   return "#";
 }
 
