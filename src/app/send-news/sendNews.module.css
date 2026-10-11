@@ -1,0 +1,245 @@
+.main {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-12);
+}
+
+.shell {
+  max-width: var(--shell-max);
+  margin: 0 auto;
+  padding-left: var(--shell-pad);
+  padding-right: var(--shell-pad);
+}
+
+.hero {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto var(--space-8);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(211, 47, 47, 0.1);
+  color: #d32f2f;
+  border: 1px solid rgba(211, 47, 47, 0.2);
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: var(--space-3);
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 800;
+  margin: 0 0 var(--space-3);
+}
+
+.subtitle {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0;
+}
+
+.cardLayout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: var(--space-8);
+  align-items: flex-start;
+}
+
+.form {
+  background: var(--surface, #ffffff);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.formHeading {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 var(--space-2);
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: var(--space-2);
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.field input,
+.field select,
+.field textarea {
+  padding: 11px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: #d32f2f;
+}
+
+.uploadBox {
+  position: relative;
+  border: 2px dashed rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: var(--space-6);
+  text-align: center;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.uploadBox p {
+  margin: 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.fileInput {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.noteBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #991b1b;
+}
+
+.submitBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #d32f2f;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 8px;
+}
+
+.submitBtn:hover {
+  background: #b71c1c;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.guideCard {
+  background: #f8fafc;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+  padding: var(--space-5);
+}
+
+.guideCard h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  margin-top: 0;
+  margin-bottom: var(--space-3);
+}
+
+.guideCard ul {
+  padding-left: 20px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+.directWaCard {
+  background: #e7fce9;
+  border: 1px solid #bbf7d0;
+  border-radius: 16px;
+  padding: var(--space-5);
+}
+
+.directWaCard h3 {
+  font-size: 17px;
+  margin-top: 0;
+  margin-bottom: var(--space-2);
+  color: #14532d;
+}
+
+.directWaCard p {
+  font-size: 14px;
+  color: #166534;
+  margin: 0 0 var(--space-4);
+}
+
+.waBtn {
+  display: block;
+  text-align: center;
+  background: #25d366;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 15px;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
+@media (max-width: 900px) {
+  .cardLayout {
+    grid-template-columns: 1fr;
+  }
+  .fieldRow {
+    grid-template-columns: 1fr;
+  }
+}

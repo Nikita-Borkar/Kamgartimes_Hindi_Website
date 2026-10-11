@@ -19,8 +19,9 @@
 /* ---------- Lead grid: ad rail | hero story | two stacked stories ---------- */
 .leadGrid {
   display: grid;
-  grid-template-columns: 256px 1fr 420px;
+  grid-template-columns: 240px minmax(0, 1fr);
   gap: var(--space-6);
+  align-items: start;
 }
 
 .leadHero {
@@ -31,6 +32,11 @@
 /* The fixed heights live on these wrappers, so the card anchor must fill them.
    Without this the overlay collapses to the height of its own text and the
    image stops matching the reference crop. */
+.leadHero > div,
+.leadStackItem > div,
+.tile > div,
+.picksHero > div,
+.picksStackItem > div,
 .leadHero > a,
 .leadStackItem > a,
 .tile > a,
@@ -38,6 +44,9 @@
 .picksStackItem > a {
   flex: 1;
   min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .leadStack {
@@ -911,17 +920,14 @@
   height: 420px;
 }
 
-/* ---------- Small-desktop / tablet-landscape (mezzanine) ------------------
+/* ---------- Small-desktop / tablet-landscape / small laptop ----------------
    Compositions stay multi-column; fixed rails are tightened so each grid
-   fits the ~944px measure at 1024px. Nothing here falls to one column.
+   fits the ~944px - 1180px measure at 1280px and 1366px laptops.
    -------------------------------------------------------------------------- */
-@media (max-width: 1100px) {
-  /* Lead band: ad rail + hero story on the first row. The two-story stack
-     drops into a full-width second row, laid side by side, so the 420px rail
-     no longer crushes the hero at the narrower measure. */
+@media (max-width: 1340px) {
   .leadGrid {
     grid-template-columns: 230px minmax(0, 1fr);
-    gap: var(--space-6);
+    gap: var(--space-4);
   }
 
   .leadStack {
@@ -931,9 +937,9 @@
     gap: var(--space-6);
   }
 
-  /* राजकारण rail tightens so the two features keep a readable column. */
+  /* Rajkaran rail tightens so features keep a readable column. */
   .politics {
-    grid-template-columns: 1fr 1fr 340px;
+    grid-template-columns: 1fr 1fr 320px;
   }
 }
 
@@ -997,5 +1003,392 @@
     align-items: flex-start;
     flex-direction: column;
     gap: var(--space-2);
+  }
+}
+
+/* ---------- Lead Video Slider ------------------------------------------- */
+.videoSliderContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.videoSliderHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  border-left: 4px solid #ff0000;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #ff0000;
+}
+
+.videoHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.liveYoutubeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  font-family: var(--font-mukta, var(--next-font-sans, system-ui, sans-serif));
+}
+
+.videoCountBadge {
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.videoSliderControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sliderDotsInline {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sliderControlBtn {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sliderControlBtn:hover {
+  background: #b70000;
+  color: #ffffff;
+  border-color: #b70000;
+}
+
+.videoStageGrid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 14px;
+  height: 366px;
+}
+
+.primaryVideoCard {
+  position: relative;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  background: #000000;
+}
+
+.iframeWrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.videoIframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.videoCoverStage {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.videoGradientOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.85) 100%);
+  pointer-events: none;
+}
+
+.videoCategoryBadge {
+  position: relative;
+  z-index: 2;
+  align-self: flex-start;
+  background: #b70000;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 4px;
+}
+
+.videoPlayBtn {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(225, 29, 72, 0.95);
+  border: 3px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 25px rgba(225, 29, 72, 0.5);
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.videoCoverStage:hover .videoPlayBtn {
+  transform: translate(-50%, -50%) scale(1.12);
+  background: #ff0000;
+}
+
+.videoMetaContent {
+  position: relative;
+  z-index: 2;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.videoStageTitle {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.35;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  font-family: var(--font-mukta, var(--next-font-sans, system-ui, sans-serif));
+}
+
+.videoSubMetaRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #e2e8f0;
+}
+
+.videoTimeMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.videoActionsGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.videoDurationPill {
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.videoShareBtn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 0;
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: background 0.2s ease;
+}
+
+.videoShareBtn:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.videoPlaylistStack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+.playlistItemCard {
+  flex: 1;
+  display: flex;
+  gap: 14px;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.playlistItemCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  border-color: #b70000;
+}
+
+.playlistThumb {
+  width: 150px;
+  height: 100%;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playlistOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.playlistMiniPlay {
+  position: relative;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(225, 29, 72, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.playlistDuration {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.75);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.playlistInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.playlistCategory {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #b70000;
+  text-transform: uppercase;
+}
+
+.playlistTitle {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: var(--font-mukta, var(--next-font-sans, system-ui, sans-serif));
+}
+
+.playlistMeta {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.sliderDotsRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.sliderDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  border: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sliderDotActive {
+  background: #b70000;
+  width: 24px;
+  border-radius: 10px;
+}
+
+@media (max-width: 1100px) {
+  .videoStageGrid {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  .primaryVideoCard {
+    height: 360px;
+  }
+  .videoPlaylistStack {
+    flex-direction: row;
+    height: auto;
+  }
+  .playlistItemCard {
+    flex: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  .videoPlaylistStack {
+    flex-direction: column;
+  }
+  .primaryVideoCard {
+    height: 260px;
+  }
+  .videoStageTitle {
+    font-size: 17px;
   }
 }
