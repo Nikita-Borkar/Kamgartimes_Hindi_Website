@@ -2,50 +2,52 @@ import type { Article } from "@/data/types";
 import Link from "next/link";
 import { articleHref } from "@/lib/links";
 import { Media } from "./Media";
+import { NewsShareBar } from "./NewsShareBar";
 import styles from "./ui.module.css";
 
-/**
- * Image on top, then category, headline, excerpt, wire time. Used by
- * राजकारण features (tall thumb), विशेष लेख व मते (default thumb), and the
- * editor's-picks read list, which passes no image and renders text only.
- */
 export function StoryCard({
   article,
   tall = false,
   showExcerpt = true,
   sizes = "(max-width: 900px) 100vw, 33vw",
+  showShareBar = true,
 }: {
   article: Article;
   tall?: boolean;
   showExcerpt?: boolean;
   sizes?: string;
+  showShareBar?: boolean;
 }) {
-  const body = (
-    <>
-      <div className={styles.cat}>{article.category}</div>
-      <h3 className={`${styles.cardTitle} ${styles.titleM}`}>
-        {article.headline}
-      </h3>
-      {showExcerpt && article.excerpt ? (
-        <p className={styles.excerpt}>{article.excerpt}</p>
-      ) : null}
-      <div className={styles.meta}>{article.meta}</div>
-    </>
-  );
-
-  if (!article.image) {
-    return <div className={styles.card}>{body}</div>;
-  }
+  const targetUrl = articleHref(article.id);
 
   return (
-    <Link className={styles.card} href={articleHref(article.id)} aria-label={article.headline}>
-      <Media
-        src={article.image}
-        alt=""
-        sizes={sizes}
-        className={`${styles.cardThumb}${tall ? ` ${styles.cardThumbTall}` : ""}`}
-      />
-      {body}
-    </Link>
+    <div className={styles.cardWrapper}>
+      <Link className={styles.card} href={targetUrl} aria-label={article.headline}>
+        {article.image ? (
+          <Media
+            src={article.image}
+            alt=""
+            sizes={sizes}
+            className={`${styles.cardThumb}${tall ? ` ${styles.cardThumbTall}` : ""}`}
+          />
+        ) : null}
+        <div className={styles.cat}>{article.category}</div>
+        <h3 className={`${styles.cardTitle} ${styles.titleM}`}>
+          {article.headline}
+        </h3>
+        {showExcerpt && article.excerpt ? (
+          <p className={styles.excerpt}>{article.excerpt}</p>
+        ) : null}
+        <div className={styles.meta}>{article.meta}</div>
+      </Link>
+      {showShareBar ? (
+        <NewsShareBar
+          title={article.headline}
+          url={targetUrl}
+          excerpt={article.excerpt}
+          compact
+        />
+      ) : null}
+    </div>
   );
 }

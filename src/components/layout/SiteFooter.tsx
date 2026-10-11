@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { categories, footer, site, socialLinks } from "@/data/site";
+import { categories, footer, site } from "@/data/site";
+import { FacebookIcon, YoutubeIcon, InstagramIcon, TwitterXIcon, WhatsappIcon, TelegramIcon } from "@/components/ui/SocialIcons";
 import styles from "./layout.module.css";
 
 /** Resolves a section label to its /category/[slug] route, or the video desk. */
@@ -13,33 +14,44 @@ function sectionHref(label: string) {
   return "#";
 }
 
+const colorfulSocials = [
+  { id: "whatsapp", label: "व्हॉट्सॲप", icon: WhatsappIcon, href: "https://whatsapp.com" },
+  { id: "facebook", label: "फेसबुक", icon: FacebookIcon, href: "https://facebook.com" },
+  { id: "youtube", label: "यूट्यूब", icon: YoutubeIcon, href: "https://youtube.com" },
+  { id: "instagram", label: "इन्स्टाग्राम", icon: InstagramIcon, href: "https://instagram.com" },
+  { id: "telegram", label: "टेलिग्राम", icon: TelegramIcon, href: "https://t.me" },
+];
+
 export function SiteFooter() {
   return (
     <footer className={styles.footer}>
       <div className={`${styles.shell} ${styles.footerInner}`}>
         <div>
-          <p className={styles.footerBrand}>
+          <Link href="/" className={styles.footerLogoLink}>
             <img
-              className={styles.logoImg}
-              src="/img/logo.png"
-              alt=""
-              width={42}
-              height={42}
+              src="/img/logo_withtext.jpeg"
+              alt="कामगार टाइम्स - जनसामान्यांचा बुलंद आवाज..."
+              className={styles.footerLogoImg}
             />
-            {site.name}
-          </p>
+          </Link>
           <p className={styles.footerBlurb}>{site.tagline}</p>
-          <div className={styles.socials}>
-            {socialLinks.map((s) => (
-              <a
-                key={s.id}
-                className={styles.social}
-                href={s.href}
-                aria-label={s.label}
-              >
-                {s.short}
-              </a>
-            ))}
+          <div className={styles.socialsGroup}>
+            {colorfulSocials.map((s) => {
+              const Icon = s.icon;
+              return (
+                <a
+                  key={s.id}
+                  className={styles.socialBtn}
+                  href={s.href}
+                  aria-label={s.label}
+                  title={s.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Icon size={20} />
+                </a>
+              );
+            })}
           </div>
         </div>
 

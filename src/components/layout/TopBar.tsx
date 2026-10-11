@@ -1,27 +1,17 @@
 import Link from "next/link";
 import { User } from "lucide-react";
-import { site, socialLinks } from "@/data/site";
+import { site } from "@/data/site";
 import { ThemeToggle } from "./ThemeToggle";
+import { FacebookIcon, YoutubeIcon, InstagramIcon, TwitterXIcon, WhatsappIcon } from "@/components/ui/SocialIcons";
 import styles from "./layout.module.css";
 
-/**
- * The masthead wordmark. It carries the page's single h1, so the site name is
- * the first thing a screen reader and a crawler meet.
- */
-function Logo() {
-  return (
-    <h1 className={styles.wordmark}>
-      <img
-        className={styles.logoImg}
-        src="/img/logo.png"
-        alt=""
-        width={42}
-        height={42}
-      />
-      {site.name}
-    </h1>
-  );
-}
+const colorfulSocials = [
+  { id: "whatsapp", label: "व्हॉट्सॲप", icon: WhatsappIcon, href: "https://whatsapp.com" },
+  { id: "facebook", label: "फेसबुक", icon: FacebookIcon, href: "https://facebook.com" },
+  { id: "youtube", label: "यूट्यूब", icon: YoutubeIcon, href: "https://youtube.com" },
+  { id: "instagram", label: "इन्स्टाग्राम", icon: InstagramIcon, href: "https://instagram.com" },
+  { id: "x", label: "एक्स", icon: TwitterXIcon, href: "https://x.com" },
+];
 
 export function TopBar() {
   return (
@@ -32,31 +22,46 @@ export function TopBar() {
       </p>
 
       <Link
-        className={styles.logo}
+        className={styles.headerLogoLink}
         href="/"
-        aria-label={`${site.name} - मुख्यपृष्ठ`}
+        aria-label={`${site.name} - जनसामान्यांचा बुलंद आवाज...`}
       >
-        <Logo />
+        <img
+          src="/img/logo_withtext.jpeg"
+          alt="कामगार टाइम्स - जनसामान्यांचा बुलंद आवाज..."
+          className={styles.headerLogoImg}
+        />
       </Link>
 
       <div className={styles.actions}>
-        <a className={styles.wa} href="#">
-          व्हॉट्सॲपवर जोडा
-        </a>
+        <div className={styles.topSocials}>
+          {colorfulSocials.map((s) => {
+            const Icon = s.icon;
+            return (
+              <a
+                key={s.id}
+                className={styles.topSocialDot}
+                href={s.href}
+                aria-label={s.label}
+                title={s.label}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Icon size={18} />
+              </a>
+            );
+          })}
+        </div>
+
         <Link
-          className={`${styles.dot} ${styles.avatar}`}
+          className={styles.loginDotHeader}
           href="/login"
-          aria-label="लॉग इन किंवा नोंदणी"
+          aria-label="लॉग इन"
+          title="लॉग इन करा"
         >
           <User size={18} strokeWidth={2} aria-hidden="true" />
         </Link>
-        {socialLinks
-          .filter((s) => s.id !== "whatsapp")
-          .map((s) => (
-            <a key={s.id} className={styles.dot} href={s.href} aria-label={s.label}>
-              {s.short}
-            </a>
-          ))}
+
         <ThemeToggle />
       </div>
     </div>

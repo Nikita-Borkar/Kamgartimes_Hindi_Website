@@ -6,7 +6,9 @@ import { categoryHref } from "@/lib/links";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { Media } from "@/components/ui/Media";
 import { StoryCard } from "@/components/ui/StoryCard";
+import { NewsShareBar } from "@/components/ui/NewsShareBar";
 import { railAd } from "@/data/ads";
+
 import ui from "@/components/ui/ui.module.css";
 import { ArticleActions } from "./ArticleActions";
 import { ArticleToc, type TocItem } from "./ArticleToc";
@@ -101,7 +103,13 @@ export function ArticlePage({
               shareCount={body.stats.shares}
               title={article.headline}
             />
+
+            <NewsShareBar
+              title={article.headline}
+              excerpt={body.intro[0]}
+            />
           </header>
+
 
           <figure className={styles.hero}>
             <Media

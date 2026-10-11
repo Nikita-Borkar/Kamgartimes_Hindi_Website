@@ -1,0 +1,259 @@
+.main {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-12);
+}
+
+.shell {
+  max-width: var(--shell-max);
+  margin: 0 auto;
+  padding-left: var(--shell-pad);
+  padding-right: var(--shell-pad);
+}
+
+.hero {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto var(--space-10);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(211, 47, 47, 0.1);
+  color: #d32f2f;
+  border: 1px solid rgba(211, 47, 47, 0.2);
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: var(--space-3);
+}
+
+.heroTitle {
+  font-size: 38px;
+  font-weight: 800;
+  margin: 0 0 var(--space-3);
+  letter-spacing: -0.5px;
+}
+
+.heroSub {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0;
+}
+
+.packagesSection {
+  margin-bottom: var(--space-12);
+}
+
+.sectionHeading {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: var(--space-6);
+  text-align: center;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-6);
+}
+
+.packageCard {
+  position: relative;
+  background: var(--surface, #ffffff);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.packageCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.pkgTag {
+  align-self: flex-start;
+  background: #d32f2f;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-bottom: var(--space-3);
+}
+
+.pkgTitle {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 var(--space-2);
+}
+
+.pkgPrice {
+  font-size: 26px;
+  font-weight: 800;
+  color: #d32f2f;
+  margin-bottom: var(--space-4);
+}
+
+.pkgFeatures {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.pkgFeatures li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.pkgBtn {
+  display: block;
+  text-align: center;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.pkgBtn:hover {
+  background: #d32f2f;
+}
+
+.inquirySection {
+  background: var(--surface, #f8fafc);
+  padding: var(--space-8);
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.inquiryGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+}
+
+.infoTitle {
+  font-size: 26px;
+  font-weight: 800;
+  margin-top: 0;
+  margin-bottom: var(--space-3);
+}
+
+.infoText {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-bottom: var(--space-6);
+}
+
+.contactList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.contactItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #ffffff;
+  padding: var(--space-4);
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.contactItem strong {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.contactItem p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.formCard {
+  background: #ffffff;
+  padding: var(--space-6);
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.formTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: var(--space-2);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldGroup label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.fieldGroup input,
+.fieldGroup select,
+.fieldGroup textarea {
+  padding: 10px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.submitBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #d32f2f;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 8px;
+}
+
+.submitBtn:hover {
+  background: #b71c1c;
+}
+
+@media (max-width: 900px) {
+  .inquiryGrid {
+    grid-template-columns: 1fr;
+  }
+}
