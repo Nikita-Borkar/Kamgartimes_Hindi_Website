@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { Noto_Sans_Devanagari, Noto_Serif_Devanagari, Mukta } from "next/font/google";
+import {
+  Noto_Sans_Devanagari,
+  Noto_Serif_Devanagari,
+  Mukta,
+} from "next/font/google";
 import { site } from "@/data/site";
 import { ScrollChrome } from "@/components/motion/ScrollChrome";
 import "@/design/tokens.css";
