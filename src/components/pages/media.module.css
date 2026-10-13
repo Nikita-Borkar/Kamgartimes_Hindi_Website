@@ -401,8 +401,8 @@
 /* ---------- Gallery listing / detail -------------------------------------- */
 .masonry {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-6);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-5);
   margin-top: var(--space-10);
 }
 
@@ -452,7 +452,7 @@
 }
 
 .galleryCardTitle {
-  font: var(--fw-bold) var(--fs-h-m) / var(--lh-snug) var(--font-serif);
+  font: var(--fw-bold) var(--fs-h-s) / var(--lh-snug) var(--font-serif);
   transition: color var(--dur-fast) var(--ease-out);
 }
 
@@ -461,12 +461,20 @@
   color: var(--brand);
 }
 
-/* Detail: the photo run */
+/* Detail: the photo run. A single full-width column makes each frame
+   screen-tall on desktop, so from the mezzanine up the run splits in two. */
 .photos {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: var(--space-8);
   margin-top: var(--space-8);
+}
+
+@media (min-width: 1024px) {
+  .photos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-6) var(--space-6);
+  }
 }
 
 .photo {
@@ -539,7 +547,10 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
-  .masonry,
+  .masonry {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .relatedGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
