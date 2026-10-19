@@ -11,11 +11,11 @@ const EVENT = "dainik-pulse-theme-change";
 
 function getSnapshot(): Theme {
   const attr = document.documentElement.getAttribute("data-theme");
-  return attr === "light" || attr === "dark" ? attr : "system";
+  return attr === "dark" ? "dark" : "light";
 }
 
 function getServerSnapshot(): Theme {
-  return "system";
+  return "light";
 }
 
 /**
@@ -42,7 +42,7 @@ export function ThemeToggle() {
     window.dispatchEvent(new Event(EVENT));
   };
 
-  const label = theme === "dark" ? "उजळ रंग" : "गडद रंग";
+  const label = theme === "dark" ? "लाइट मोड" : "डार्क मोड";
 
   return (
     <button

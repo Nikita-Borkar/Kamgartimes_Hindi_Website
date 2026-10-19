@@ -85,7 +85,7 @@ function OverflowPanel({
                 type="button"
                 className={styles.panelCaret}
                 aria-expanded={openGroup === item.label}
-                aria-label={`${item.label} उपविभाग`}
+                aria-label={`${item.label} उप-श्रेणी`}
                 onClick={() =>
                   setOpenGroup((group) =>
                     group === item.label ? null : item.label,
@@ -208,7 +208,7 @@ export function MainNav() {
     <nav
       className={styles.nav}
       data-overflow={overflow ? "true" : "false"}
-      aria-label="मुख्य नेव्हिगेशन"
+      aria-label="मुख्य नेविगेशन"
       ref={navRef}
     >
       <div className={styles.navContainer} ref={containerRef}>
@@ -219,7 +219,7 @@ export function MainNav() {
         </div>
 
         <div className={styles.navRightActions} ref={actionsRef}>
-          <Link className={styles.searchBtn} href="/search" aria-label="शोधा">
+          <Link className={styles.searchBtn} href="/search" aria-label="खोजें">
             <Search size={17} strokeWidth={2.2} aria-hidden="true" />
           </Link>
 
@@ -227,7 +227,7 @@ export function MainNav() {
             type="button"
             className={styles.navBurger}
             aria-expanded={panelOpen}
-            aria-label={panelOpen ? "मेनू बंद करा" : "अधिक दुवे उघडा"}
+            aria-label={panelOpen ? "मेनू बंद करें" : "अन्य विकल्प खोलें"}
             onClick={() => setPanelOpen((v) => !v)}
           >
             {panelOpen ? (

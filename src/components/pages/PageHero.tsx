@@ -19,9 +19,9 @@ export function PageHero({
 }) {
   return (
     <>
-      <nav className={styles.crumbs} aria-label="पानांचा मार्ग">
+      <nav className={styles.crumbs} aria-label="पेज पथ">
         <Link className={styles.crumbLink} href="/">
-          मुख्यपृष्ठ
+          मुख्य पृष्ठ
         </Link>
         <span className={styles.crumbSep} aria-hidden="true">
           /

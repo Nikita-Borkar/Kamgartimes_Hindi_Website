@@ -26,19 +26,19 @@ export function AuthForm({ mode }: { mode: Mode }) {
       {sent ? (
         <p className={styles.formSuccess} role="status">
           {isLogin
-            ? "नमुना लॉग इन यशस्वी. बॅकएंड जोडल्यानंतर खाते तपासले जाईल."
-            : "नमुना नोंदणी पूर्ण. बॅकएंड जोडल्यानंतर खाते तयार होईल."}
+            ? "लॉग इन सफल रहा।"
+            : "पंजीकरण सफल रहा।"}
         </p>
       ) : (
         <>
           {!isLogin && (
             <label className={styles.formField}>
-              <span className={styles.formLabel}>पूर्ण नाव</span>
+              <span className={styles.formLabel}>पूरा नाम</span>
               <input
                 className={styles.formInput}
                 type="text"
                 name="name"
-                placeholder="पूर्ण नाव"
+                placeholder="पूरा नाम"
                 required
                 autoComplete="name"
               />
@@ -72,12 +72,12 @@ export function AuthForm({ mode }: { mode: Mode }) {
 
           {!isLogin && (
             <label className={styles.formField}>
-              <span className={styles.formLabel}>पासवर्डची खात्री करा</span>
+              <span className={styles.formLabel}>पासवर्ड की पुष्टि करें</span>
               <input
                 className={styles.formInput}
                 type="password"
                 name="confirm"
-                placeholder="पासवर्डची खात्री करा"
+                placeholder="पासवर्ड की पुष्टि करें"
                 required
                 minLength={6}
                 autoComplete="new-password"
@@ -86,16 +86,16 @@ export function AuthForm({ mode }: { mode: Mode }) {
           )}
 
           <button className={styles.formSubmit} type="submit">
-            {isLogin ? "लॉग इन" : "नोंदणी करा"}
+            {isLogin ? "लॉग इन करें" : "पंजीकरण करें"}
           </button>
 
           <p className={styles.formSwitch}>
-            {isLogin ? "खाते नाही? " : "आधीच खाते आहे? "}
+            {isLogin ? "खाता नहीं है? " : "पहले से खाता है? "}
             <Link
               className={styles.formSwitchLink}
               href={isLogin ? "/register" : "/login"}
             >
-              {isLogin ? "नोंदणी करा" : "लॉग इन"}
+              {isLogin ? "पंजीकरण करें" : "लॉग इन करें"}
             </Link>
           </p>
         </>

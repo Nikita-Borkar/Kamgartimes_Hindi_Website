@@ -158,6 +158,20 @@
   flex-direction: column;
 }
 
+.archiveLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(280px, 340px);
+  gap: var(--space-8);
+  align-items: start;
+  margin-top: var(--space-6);
+}
+
+@media (max-width: 900px) {
+  .archiveLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
 .archiveRow {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -306,3 +320,8 @@
     min-height: 360px;
   }
 }
+
+.adSection {
+  margin: var(--space-10) 0;
+  width: 100%;
+}

@@ -87,7 +87,7 @@ export function NewsShareBar({
     e.stopPropagation();
 
     if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      alert("तुमच्या ब्राऊझरमध्ये ऑडिओ प्लेबॅक सपोर्ट उपलब्ध नाही.");
+      alert("आपके ब्राउज़र में ऑडियो प्लेबैक सपोर्ट उपलब्ध नहीं है।");
       return;
     }
 
@@ -100,7 +100,7 @@ export function NewsShareBar({
     window.speechSynthesis.cancel();
     const textToRead = `${title}. ${excerpt || ""}`;
     const utterance = new SpeechSynthesisUtterance(textToRead);
-    utterance.lang = "mr-IN";
+    utterance.lang = "hi-IN";
     utterance.rate = 0.9;
 
     utterance.onend = () => setIsPlaying(false);
@@ -116,7 +116,7 @@ export function NewsShareBar({
     {
       id: "share",
       component: () => <Share2 size={iconSize} strokeWidth={2.2} />,
-      label: "शेअर करा",
+      label: "शेयर करें",
       color: "#64748b",
       bg: "#f1f5f9",
       onClick: handleShare,
@@ -124,7 +124,7 @@ export function NewsShareBar({
     {
       id: "whatsapp",
       component: () => <MessageCircle size={iconSize} strokeWidth={2.2} />,
-      label: "व्हॉट्सॲप",
+      label: "व्हाट्सएप",
       color: "#25D366",
       bg: "#e7fce9",
       href: `https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}`,
@@ -148,7 +148,7 @@ export function NewsShareBar({
     {
       id: "telegram",
       component: () => <Send size={iconSize} strokeWidth={2.2} />,
-      label: "टेलिग्राम",
+      label: "टेलीग्राम",
       color: "#229ED9",
       bg: "#e4f5fc",
       href: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
@@ -199,8 +199,8 @@ export function NewsShareBar({
           <button
             type="button"
             className={styles.shareBtn}
-            title="अधिक पर्याय (लिंक कॉपी करा)"
-            aria-label="अधिक पर्याय"
+            title="अधिक विकल्प (लिंक कॉपी करें)"
+            aria-label="अधिक विकल्प"
             style={{ color: "#475569", backgroundColor: "#f1f5f9" }}
             onClick={(e) => {
               e.preventDefault();
@@ -219,7 +219,7 @@ export function NewsShareBar({
                 onClick={handleCopyLink}
               >
                 {copied ? <Check size={14} /> : <Copy size={14} />}
-                <span>{copied ? "कॉपी झाले!" : "लिंक कॉपी करा"}</span>
+                <span>{copied ? "कॉपी हो गया!" : "लिंक कॉपी करें"}</span>
               </button>
             </div>
           )}
@@ -228,8 +228,8 @@ export function NewsShareBar({
         <button
           type="button"
           className={styles.shareBtn}
-          title={isPlaying ? "ऑडिओ थांबवा" : "बातमी ऐका"}
-          aria-label={isPlaying ? "ऑडिओ थांबवा" : "बातमी ऐका"}
+          title={isPlaying ? "ऑडियो रोकें" : "समाचार सुनें"}
+          aria-label={isPlaying ? "ऑडियो रोकें" : "समाचार सुनें"}
           style={{
             color: isPlaying ? "#ffffff" : "#d32f2f",
             backgroundColor: isPlaying ? "#d32f2f" : "#fef2f2",

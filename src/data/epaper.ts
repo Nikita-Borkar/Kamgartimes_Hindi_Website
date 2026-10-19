@@ -12,17 +12,17 @@ export type EpaperEdition = {
 };
 
 /* ---------------------------------------------------------------------------
-   आवृत्त्या — one row per published PDF. The newest sits on top and is the
-   "आजची आवृत्ती" on /e-paper. Adding an issue is one PDF drop + one row here.
+   संस्करण सूची — one row per published PDF. The newest sits on top and is the
+   "आज का संस्करण" on /e-paper. Adding an issue is one PDF drop + one row here.
    ------------------------------------------------------------------------- */
 export const epaperEditions: EpaperEdition[] = [
   {
     id: "7",
-    label: "रविवार, ४ ऑक्टोबर २०२६",
-    date: "रविवार · ४ ऑक्टोबर २०२६",
+    label: "रविवार, ४ अक्टूबर २०२६",
+    date: "रविवार · ४ अक्टूबर २०२६",
     file: "/pdf/7.pdf",
     size: "४.० MB",
-    blurb: "आजची संपूर्ण आवृत्ती एकाच PDF मध्ये.",
+    blurb: "आज का संपूर्ण संस्करण एक ही डिजिटल PDF में उपलब्ध.",
   },
 ];
 

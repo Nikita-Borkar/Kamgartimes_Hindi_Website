@@ -4,7 +4,7 @@ import { VideoLibrary } from "@/components/pages/MediaLibraryPage";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
-  title: `व्हिडिओ – ${site.name}`,
+  title: `वीडियो – ${site.name}`,
 };
 
 export default function VideosPage() {

@@ -18,7 +18,7 @@ export function BrandLogo({ light = false }: BrandLogoProps) {
       <div className={styles.exactTextColumn}>
         <div className={styles.exactHeaderTopRow}>
           <span className={`${styles.exactTagline} ${light ? styles.exactTaglineLight : ""}`}>
-            जनसामान्यांचा बुलंद आवाज...
+            जनसामान्य की बुलंद आवाज़...
           </span>
         </div>
         <div className={`${styles.exactRedLine} ${light ? styles.exactRedLineLight : ""}`} />

@@ -4,26 +4,26 @@ import styles from "./sections.module.css";
 const updates = [
   {
     time: "१०:४२",
-    text: "मेट्रोच्या नव्या मार्गासाठी प्रवासी संघटनांची सूचना",
+    text: "मेट्रो के नए रूट विस्तार हेतु यात्री संगठनों ने सौंपे महत्वपूर्ण सुझाव",
   },
-  { time: "१०:१५", text: "ठाणे स्थानकाजवळील प्रस्तावित जोडमार्गावर चर्चा" },
-  { time: "०९:५२", text: "महापालिकेने सुधारित आराखडा सादर केला" },
-  { time: "०९:३०", text: "पर्यावरण अहवालावरील बैठक आज दुपारी" },
+  { time: "१०:१५", text: "ठाणे और मुंबई उपनगरों के बीच कनेक्टिविटी सुधार पर उच्चस्तरीय बैठक" },
+  { time: "०९:५२", text: "नगर निगम ने पेश किया पुनर्विकास और जल निकासी का संशोधित मास्टर प्लान" },
+  { time: "०९:३०", text: "पर्यावरण मंजूरी और औद्योगिक नीति पर कैबिनेट उपसमिति की बैठक आज दोपहर" },
 ];
 
 export function LiveUpdates() {
   return (
-    <aside className={styles.liveUpdates} aria-label="लाईव्ह अपडेट्स">
+    <aside className={styles.liveUpdates} aria-label="लाइव अपडेट्स">
       <div className={styles.liveHeading}>
         <h2>
           <span className={styles.liveDot} aria-hidden="true" />
-          लाईव्ह अपडेट्स
+          लाइव अपडेट्स
         </h2>
-        <span className={styles.liveBadge}>नमुना</span>
+        <span className={styles.liveBadge}>लाइव</span>
       </div>
 
       <h3 className={styles.liveEventTitle}>
-        मुंबई मेट्रो विस्ताराच्या नव्या आराखड्यावर बैठक
+        मुंबई मेट्रो विस्तार और औद्योगिक गलियारे की प्रगति पर विशेष बैठक
       </h3>
       <div className={styles.liveEventMeta}>
         <Clock3 size={14} aria-hidden="true" />
@@ -39,7 +39,7 @@ export function LiveUpdates() {
         ))}
       </ol>
       <div className={styles.liveFoot}>
-        नमुना अपडेट्स. प्रत्यक्ष फीड जोडल्यावर येथे ताज्या घडामोडी दिसतील.
+        ताज़ा लाइव अपडेट्स। समाचार अपडेट होते ही आपको तुरंत नवीनतम जानकारी मिलेगी।
       </div>
     </aside>
   );

@@ -3,23 +3,24 @@ import { categories, footer, site } from "@/data/site";
 import { FacebookIcon, YoutubeIcon, InstagramIcon, TwitterXIcon, WhatsappIcon, TelegramIcon } from "@/components/ui/SocialIcons";
 import styles from "./layout.module.css";
 
-/** Resolves a section label to its /category/[slug] route, or the video desk. */
+/** Resolves a section label to its /category/[slug] route, or the video/media desks. */
 function sectionHref(label: string) {
+  if (label === "होम") return "/";
+  if (label === "वीडियो") return "/videos";
+  if (label === "शॉर्ट्स") return "/shorts";
+  if (label === "फोटो" || label === "गैलरी" || label === "फोटो गैलरी") return "/gallery";
+  if (label === "ई-पेपर") return "/e-paper";
   const match = categories.find((category) => category.label === label);
   if (match) return `/category/${match.slug}`;
-  if (label === "व्हिडिओ") return "/videos";
-  if (label === "शॉर्ट्स") return "/shorts";
-  if (label === "फोटो") return "/gallery";
-  if (label === "ई-पेपर") return "/e-paper";
   return "#";
 }
 
 const colorfulSocials = [
-  { id: "whatsapp", label: "व्हॉट्सॲप", icon: WhatsappIcon, href: "https://whatsapp.com" },
+  { id: "whatsapp", label: "व्हाट्सएप", icon: WhatsappIcon, href: "https://whatsapp.com" },
   { id: "facebook", label: "फेसबुक", icon: FacebookIcon, href: "https://facebook.com" },
   { id: "youtube", label: "यूट्यूब", icon: YoutubeIcon, href: "https://youtube.com" },
-  { id: "instagram", label: "इन्स्टाग्राम", icon: InstagramIcon, href: "https://instagram.com" },
-  { id: "telegram", label: "टेलिग्राम", icon: TelegramIcon, href: "https://t.me" },
+  { id: "instagram", label: "इंस्टाग्राम", icon: InstagramIcon, href: "https://instagram.com" },
+  { id: "telegram", label: "टेलीग्राम", icon: TelegramIcon, href: "https://t.me" },
 ];
 
 export function SiteFooter() {
@@ -30,7 +31,7 @@ export function SiteFooter() {
           <Link href="/" className={styles.footerLogoLink}>
             <img
               src="/img/logo_withtext.jpeg"
-              alt="कामगार टाइम्स - जनसामान्यांचा बुलंद आवाज..."
+              alt="कामगार टाइम्स - जनसामान्य की बुलंद आवाज़..."
               className={styles.footerLogoImg}
             />
           </Link>
@@ -56,7 +57,7 @@ export function SiteFooter() {
         </div>
 
         <div>
-          <nav className={styles.footerLinks} aria-label="फुटर">
+          <nav className={styles.footerLinks} aria-label="फ़ूटर नेविगेशन">
             {footer.sectionLinks.map((label) => (
               <Link
                 key={label}

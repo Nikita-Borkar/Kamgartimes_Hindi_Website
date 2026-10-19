@@ -7,7 +7,9 @@ import { AdSlot } from "@/components/ui/AdSlot";
 import { Media } from "@/components/ui/Media";
 import { StoryCard } from "@/components/ui/StoryCard";
 import { NewsShareBar } from "@/components/ui/NewsShareBar";
-import { railAd } from "@/data/ads";
+import { VerticalAd } from "@/components/ui/VerticalAd";
+import { InArticleBoxAd } from "@/components/ui/InArticleBoxAd";
+import { leaderboardAds, verticalTowerAds, articleBoxAds } from "@/data/ads";
 
 import ui from "@/components/ui/ui.module.css";
 import { ArticleActions } from "./ArticleActions";
@@ -33,7 +35,7 @@ export function ArticlePage({
   const body = buildArticleBody(article);
 
   const tocItems: TocItem[] = [
-    { id: "key-points", label: "मुख्य मुद्दे" },
+    { id: "key-points", label: "मुख्य बिंदु" },
     ...body.sections.map((section) => ({
       id: section.id,
       label: section.heading,
@@ -44,9 +46,9 @@ export function ArticlePage({
     <main id="main" className={styles.main}>
       <div className={styles.layout}>
         <article className={styles.read}>
-          <nav className={styles.breadcrumb} aria-label="पानांचा मार्ग">
+          <nav className={styles.breadcrumb} aria-label="पेज पथ">
             <Link className={styles.breadcrumbLink} href="/">
-              मुख्यपृष्ठ
+              मुख्य पृष्ठ
             </Link>
             <span className={styles.breadcrumbSep} aria-hidden="true">
               /
@@ -120,7 +122,7 @@ export function ArticlePage({
               className={styles.heroMedia}
             />
             <figcaption className={styles.caption}>
-              प्रातिनिधिक चित्र · {article.headline}
+              सांकेतिक चित्र · {article.headline}
             </figcaption>
           </figure>
 
@@ -139,7 +141,7 @@ export function ArticlePage({
           <aside className={styles.keyPoints} id="key-points">
             <h2 className={styles.keyPointsTitle}>
               <ListChecks size={20} strokeWidth={2} aria-hidden="true" />
-              मुख्य मुद्दे
+              मुख्य बिंदु
             </h2>
             <ul className={styles.pointList}>
               {body.keyPoints.map((point) => (
@@ -150,29 +152,35 @@ export function ArticlePage({
             </ul>
           </aside>
 
-          {body.sections.map((section) => (
-            <section key={section.id} className={styles.section} id={section.id}>
-              <h2 className={styles.sectionHead}>
-                <span className={styles.sectionBar} aria-hidden="true" />
-                {section.heading}
-              </h2>
-              <div className={styles.sectionBody}>
-                {section.paragraphs.map((para) => (
-                  <p key={para} className={styles.para}>
-                    {para}
-                  </p>
-                ))}
-                {section.points ? (
-                  <ul className={styles.pointList}>
-                    {section.points.map((point) => (
-                      <li key={point} className={styles.point}>
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </div>
-            </section>
+          {body.sections.map((section, idx) => (
+            <div key={section.id}>
+              <section className={styles.section} id={section.id}>
+                <h2 className={styles.sectionHead}>
+                  <span className={styles.sectionBar} aria-hidden="true" />
+                  {section.heading}
+                </h2>
+                <div className={styles.sectionBody}>
+                  {section.paragraphs.map((para) => (
+                    <p key={para} className={styles.para}>
+                      {para}
+                    </p>
+                  ))}
+                  {section.points ? (
+                    <ul className={styles.pointList}>
+                      {section.points.map((point) => (
+                        <li key={point} className={styles.point}>
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              </section>
+
+              {idx === 1 && (
+                <InArticleBoxAd ad={articleBoxAds[0]} />
+              )}
+            </div>
           ))}
 
           <div className={styles.tags}>
@@ -204,21 +212,25 @@ export function ArticlePage({
           <Comments initial={body.comments} />
         </article>
 
-        <aside className={styles.rail} aria-label="बातमीतील विभाग आणि जाहिरात">
+        <aside className={styles.rail} aria-label="समाचार अनुभाग और विज्ञापन">
           <div className={styles.railSticky}>
             <ArticleToc items={tocItems} />
             <div className={styles.railAd}>
-              <AdSlot ad={railAd} />
+              <VerticalAd ad={verticalTowerAds[1]} />
             </div>
           </div>
         </aside>
       </div>
 
+      <div className={styles.articleBottomAd}>
+        <AdSlot ad={leaderboardAds[2]} />
+      </div>
+
       {related.length > 0 ? (
-        <section className={styles.related} aria-label="संबंधित बातम्या">
+        <section className={styles.related} aria-label="संबंधित समाचार">
           <h2 className={styles.relatedTitle}>
             <span className={styles.relatedBar} aria-hidden="true" />
-            संबंधित बातम्या
+            संबंधित समाचार
           </h2>
           <div className={styles.relatedGrid}>
             {related.map((item) => (

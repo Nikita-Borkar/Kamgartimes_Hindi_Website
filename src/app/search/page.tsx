@@ -4,8 +4,8 @@ import { SearchPage } from "@/components/pages/SearchPage";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
-  title: `शोध – ${site.name}`,
-  description: "कामगार टाइम्सवरील बातम्या, विभाग आणि विषय शोधा.",
+  title: `खोज – ${site.name}`,
+  description: "कामगार टाइम्स पर समाचार, श्रेणी और विषय खोजें।",
 };
 
 export default function SearchRoute() {

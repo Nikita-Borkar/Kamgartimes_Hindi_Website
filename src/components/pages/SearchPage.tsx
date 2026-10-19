@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { allArticles } from "@/data/news";
 import { RowArticle } from "@/components/ui/RowArticle";
+import { AdSlot } from "@/components/ui/AdSlot";
+import { leaderboardAds } from "@/data/ads";
 import { PageHero } from "./PageHero";
 import styles from "./pages.module.css";
 
@@ -28,7 +30,7 @@ export function SearchPage() {
 
   return (
     <main id="main" className={styles.main}>
-      <PageHero eyebrow="शोध" title="शोध घ्या" />
+      <PageHero eyebrow="खोज" title="समाचार खोजें" />
 
       <form
         className={styles.searchForm}
@@ -42,24 +44,24 @@ export function SearchPage() {
           name="q"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="बातम्या, विषय किंवा शब्द शोधा…"
-          aria-label="शोध"
+          placeholder="समाचार, विषय या शब्द खोजें…"
+          aria-label="खोज"
           autoFocus
         />
       </form>
 
       {!term ? (
         <p className={styles.searchHint}>
-          शोधण्यासाठी वर शब्द लिहा — उदा. निवडणूक, क्रिकेट, अर्थ.
+          खोजने के लिए ऊपर शब्द लिखें — जैसे चुनाव, क्रिकेट, व्यापार।
         </p>
       ) : results.length === 0 ? (
         <p className={styles.searchHint}>
-          “{query.trim()}” साठी कोणताही निकाल सापडला नाही.
+          “{query.trim()}” के लिए कोई परिणाम नहीं मिला।
         </p>
       ) : (
         <>
           <p className={styles.searchCount}>
-            {results.length} निकाल सापडले
+            {results.length} परिणाम मिले
           </p>
           <div className={`${styles.searchResults} reveal`}>
             {results.map((article) => (
@@ -72,6 +74,9 @@ export function SearchPage() {
                 sizes="(max-width: 900px) 220px, 220px"
               />
             ))}
+          </div>
+          <div className={styles.categoryAdBottom}>
+            <AdSlot ad={leaderboardAds[2]} />
           </div>
         </>
       )}

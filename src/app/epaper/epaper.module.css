@@ -188,3 +188,9 @@
   color: #ffffff;
   border-color: #d32f2f;
 }
+
+.adSection {
+  margin: var(--space-10) 0;
+  width: 100%;
+}
+

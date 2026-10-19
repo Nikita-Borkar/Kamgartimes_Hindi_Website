@@ -19,51 +19,51 @@ export const kamgarYoutubeVideos: YouTubeVideoItem[] = [
   {
     id: "yt-1",
     youtubeId: "dQw4w9WgXcQ",
-    category: "गुन्हेवार्ता",
-    headline: "तडीपारांवर पोलिसांचा वॉच; १७ जणांवर हद्दपारीची कारवाई",
+    category: "अपराध",
+    headline: "तड़ीपारों पर पुलिस की कड़ी नज़र; 17 अपराधियों पर जिलाबदर की कार्रवाई",
     duration: "०५:४५",
     views: "३५K",
-    timeAgo: "२ तासांपूर्वी",
+    timeAgo: "२ घंटे पहले",
     thumbnail: "/img/img05.jpg",
   },
   {
     id: "yt-2",
     youtubeId: "LXb3EKWsInQ",
-    category: "राजकारण",
-    headline: "निवडणूक सुधारणा समितीवर सत्ताधारी व विरोधकांचे दुर्मिळ एकमत | विशेष रिपोर्ट",
+    category: "राजनीति",
+    headline: "चुनाव सुधार समिति पर सत्तापक्ष और विपक्ष के बीच बनी सहमति | विशेष रिपोर्ट",
     duration: "०४:२५",
     views: "१५K",
-    timeAgo: "४ तासांपूर्वी",
+    timeAgo: "४ घंटे पहले",
     thumbnail: "/img/img01.png",
   },
   {
     id: "yt-3",
     youtubeId: "5qap5aO4i9A",
-    category: "अर्थ",
-    headline: "सेन्सेक्सचा विक्रमी उच्चांक; बँकिंग व आयटी क्षेत्राची आघाडी",
+    category: "व्यापार",
+    headline: "सेंसेक्स का नया सर्वकालिक रिकॉर्ड; बैंकिंग व आईटी सेक्टर में जबर्दस्त तेजी",
     duration: "०३:१०",
     views: "२२K",
-    timeAgo: "५ तासांपूर्वी",
+    timeAgo: "५ घंटे पहले",
     thumbnail: "/img/img02.png",
   },
   {
     id: "yt-4",
     youtubeId: "dQw4w9WgXcQ",
-    category: "क्रीडा",
-    headline: "आपलं सिम दुसऱ्याला दिल्यास ₹५० लाखांचा दंड! दूरसंचार विभागाचा नवा इशारा",
+    category: "तकनीक",
+    headline: "अपना सिम कार्ड किसी और को दिया तो 50 लाख तक का जुर्माना! दूरसंचार विभाग की चेतावनी",
     duration: "०२:५०",
     views: "४८K",
-    timeAgo: "६ तासांपूर्वी",
+    timeAgo: "६ घंटे पहले",
     thumbnail: "/img/img03.jpg",
   },
   {
     id: "yt-5",
     youtubeId: "LXb3EKWsInQ",
-    category: "कामगार विशेष",
-    headline: "कामगार वेतनात भरीव वाढ; राज्य शासनाचा मोठा ऐतिहासिक निर्णय",
+    category: "कामगार टाइम्स",
+    headline: "श्रमिकों के न्यूनतम वेतन में भारी बढ़ोतरी; सरकार का बड़ा ऐतिहासिक निर्णय",
     duration: "०६:१५",
     views: "५०K",
-    timeAgo: "१ दिवसापूर्वी",
+    timeAgo: "१ दिन पहले",
     thumbnail: "/img/img04.jpg",
   },
 ];
@@ -108,7 +108,7 @@ export function LeadVideoSlider() {
         <div className={styles.videoHeaderLeft}>
           <span className={styles.liveYoutubeBadge}>
             <Video size={17} color="#ff0000" />
-            <span>कामगार टाइम्स यूट्यूब व्हिडिओ</span>
+            <span>कामगार टाइम्स यूट्यूब वीडियो</span>
           </span>
           <span className={styles.videoCountBadge}>
             {activeIndex + 1} / {kamgarYoutubeVideos.length}
@@ -123,7 +123,7 @@ export function LeadVideoSlider() {
                 type="button"
                 className={`${styles.sliderDot} ${i === activeIndex ? styles.sliderDotActive : ""}`}
                 onClick={() => handleSelectVideo(i)}
-                aria-label={`व्हिडिओ ${i + 1}`}
+                aria-label={`वीडियो ${i + 1}`}
               />
             ))}
           </div>
@@ -132,7 +132,7 @@ export function LeadVideoSlider() {
             type="button"
             className={styles.sliderControlBtn}
             onClick={handlePrev}
-            aria-label="मागील व्हिडिओ"
+            aria-label="पिछला वीडियो"
           >
             <ChevronLeft size={16} />
           </button>
@@ -140,7 +140,7 @@ export function LeadVideoSlider() {
             type="button"
             className={styles.sliderControlBtn}
             onClick={handleNext}
-            aria-label="पुढील व्हिडिओ"
+            aria-label="अगला वीडियो"
           >
             <ChevronRight size={16} />
           </button>
@@ -174,7 +174,7 @@ export function LeadVideoSlider() {
               <button
                 type="button"
                 className={styles.videoPlayBtn}
-                aria-label="व्हिडिओ पाहा"
+                aria-label="वीडियो देखें"
                 onClick={() => setIsPlaying(true)}
               >
                 <Play size={26} fill="#ffffff" color="#ffffff" />
@@ -184,7 +184,7 @@ export function LeadVideoSlider() {
                 <h2 className={styles.videoStageTitle}>{activeVideo.headline}</h2>
                 <div className={styles.videoSubMetaRow}>
                   <span className={styles.videoTimeMeta}>
-                    <Eye size={13} /> {activeVideo.views} व्ह्यूज • {activeVideo.timeAgo}
+                    <Eye size={13} /> {activeVideo.views} व्यूज • {activeVideo.timeAgo}
                   </span>
                   <div className={styles.videoActionsGroup}>
                     <span className={styles.videoDurationPill}>

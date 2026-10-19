@@ -69,7 +69,7 @@ export function ArticleToc({ items }: { items: TocItem[] }) {
     <nav
       className={styles.toc}
       data-open={open}
-      aria-label="बातमीतील विभाग"
+      aria-label="समाचार के अनुभाग"
     >
       <button
         type="button"
@@ -78,9 +78,9 @@ export function ArticleToc({ items }: { items: TocItem[] }) {
         onClick={() => setOpen((value) => !value)}
       >
         <span className={styles.tocToggleLabel}>
-          <span className={styles.tocToggleEyebrow}>या बातमीत</span>
+          <span className={styles.tocToggleEyebrow}>इस समाचार में</span>
           <span className={styles.tocToggleCurrent}>
-            {activeItem?.label ?? "विभाग"}
+            {activeItem?.label ?? "अनुभाग"}
           </span>
         </span>
         <ChevronDown size={18} strokeWidth={2} aria-hidden="true" />
@@ -88,7 +88,7 @@ export function ArticleToc({ items }: { items: TocItem[] }) {
 
       <p className={styles.tocHead}>
         <List size={18} strokeWidth={2} aria-hidden="true" />
-        या बातमीत
+        इस समाचार में
       </p>
 
       <ol className={styles.tocList}>

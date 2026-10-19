@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Pause, Play, Flame } from "lucide-react";
+import { Pause, Play, Flame } from "lucide-react";
 import { breakingNews } from "@/data/site";
 import styles from "./layout.module.css";
 
@@ -14,7 +14,7 @@ export function BreakingTicker() {
       <div className={`${styles.shell} ${styles.tickerInner}`}>
         <div className={styles.tickerBadge}>
           <Flame size={16} className={styles.flameIcon} />
-          <span>ब्रेकिंग न्यूज</span>
+          <span>ब्रेकिंग न्यूज़</span>
         </div>
 
         <div
@@ -48,8 +48,8 @@ export function BreakingTicker() {
             type="button"
             className={styles.tickerCtrlBtn}
             onClick={() => setIsPaused(!isPaused)}
-            title={isPaused ? "प्ले करा" : "थांबवा"}
-            aria-label="Pause or Play Ticker"
+            title={isPaused ? "चलाएं" : "रोकें"}
+            aria-label={isPaused ? "टिकर चलाएं" : "टिकर रोकें"}
           >
             {isPaused ? <Play size={14} /> : <Pause size={14} />}
           </button>

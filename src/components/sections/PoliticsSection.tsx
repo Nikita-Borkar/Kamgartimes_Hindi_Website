@@ -6,12 +6,12 @@ import { stagger } from "@/components/motion/stagger";
 import { categoryHref } from "@/lib/links";
 import styles from "./sections.module.css";
 
-/** राजकारण: two image features, then a compact brief list. */
+/** राजनीति: two image features, then a compact brief list. */
 export function PoliticsSection() {
   return (
-    <section className={styles.section} aria-label="राजकारण">
+    <section className={styles.section} aria-label="राजनीति">
       <div className="reveal">
-        <SectionHeader title="राजकारण" href={categoryHref("राजकारण")} />
+        <SectionHeader title="राजनीति" href={categoryHref("राजनीति")} />
       </div>
       <div className={`${styles.politics} reveal`}>
         {politics.features.map((article, i) => (

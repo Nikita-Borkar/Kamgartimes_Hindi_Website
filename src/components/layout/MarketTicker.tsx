@@ -11,12 +11,12 @@ export function MarketTicker() {
   return (
     <section
       className={styles.marketTicker}
-      aria-label="बाजार निर्देशांक, नमुना आकडे"
+      aria-label="बाज़ार सूचकांक"
     >
       <div className={`${styles.shell} ${styles.marketInner}`}>
         <h2 className={styles.marketHeading}>
-          बाजार निर्देशांक
-          <span className={styles.marketNote}>नमुना आकडे</span>
+          बाज़ार सूचकांक
+          <span className={styles.marketNote}>लाइव संकेत</span>
         </h2>
         <ul className={styles.marketQuotes}>
           {quotes.map((quote) => (

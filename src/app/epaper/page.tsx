@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { PageShell } from "@/components/layout/PageShell";
+import { AdSlot } from "@/components/ui/AdSlot";
+import { leaderboardAds } from "@/data/ads";
 import { Download, Calendar, Maximize2, ChevronLeft, ChevronRight, FileText, Share2 } from "lucide-react";
 import styles from "./epaper.module.css";
 
@@ -29,18 +31,18 @@ export default function EPaperPage() {
             <div>
               <span className={styles.badge}>दैनिक ई-पेपर (E-Paper)</span>
               <h1 className={styles.title}>कामगार टाइम्स डिजिटल ई-पेपर</h1>
-              <p className={styles.dateStr}>रविवार, ४ ऑक्टोबर २०२६ · मुख्य नागपूर आवृत्ती</p>
+              <p className={styles.dateStr}>रविवार, ४ अक्टूबर २०२६ · मुख्य नागपुर संस्करण</p>
             </div>
 
             <div className={styles.headerActions}>
               <div className={styles.selectGroup}>
-                <label htmlFor="edition-select">आवृत्ती (Edition):</label>
+                <label htmlFor="edition-select">संस्करण (Edition):</label>
                 <select
                   id="edition-select"
                   value={edition}
                   onChange={(e) => setEdition(e.target.value)}
                 >
-                  <option value="nagpur">नागपूर मुख्य आवृत्ती</option>
+                  <option value="nagpur">नागपुर मुख्य संस्करण</option>
                   <option value="vidarbha">विदर्भ प्रादेशिक</option>
                   <option value="mumbai">मुंबई विशेष</option>
                 </select>
@@ -50,10 +52,10 @@ export default function EPaperPage() {
                 href="/pdf/kamgartimes-epaper.pdf"
                 download="KamgarTimes-EPaper-4Oct2026.pdf"
                 className={styles.downloadPdfBtn}
-                title="संपूर्ण PDF डाऊनलोड करा"
+                title="संपूर्ण PDF डाउनलोड करें"
               >
                 <Download size={16} />
-                <span>PDF डाऊनलोड करा</span>
+                <span>PDF डाउनलोड करें</span>
               </a>
             </div>
           </header>
@@ -71,19 +73,19 @@ export default function EPaperPage() {
                   type="button"
                   className={styles.toolBtn}
                   onClick={handlePrev}
-                  title="मागील पान"
+                  title="पिछला पृष्ठ"
                 >
                   <ChevronLeft size={18} />
-                  <span>मागील</span>
+                  <span>पिछला</span>
                 </button>
 
                 <button
                   type="button"
                   className={styles.toolBtn}
                   onClick={handleNext}
-                  title="पुढील पान"
+                  title="अगला पृष्ठ"
                 >
-                  <span>पुढील</span>
+                  <span>अगला</span>
                   <ChevronRight size={18} />
                 </button>
 
@@ -91,7 +93,7 @@ export default function EPaperPage() {
                   type="button"
                   className={styles.toolBtn}
                   onClick={() => setFullScreen(!fullScreen)}
-                  title="फुलस्क्रीन पाहणी"
+                  title="फुलस्क्रीन देखें"
                 >
                   <Maximize2 size={16} />
                 </button>
@@ -118,11 +120,15 @@ export default function EPaperPage() {
                     className={`${styles.pageThumbBtn} ${pageNum === activePage ? styles.activeThumb : ""}`}
                     onClick={() => setActivePage(pageNum)}
                   >
-                    <span>पान {pageNum}</span>
+                    <span>पृष्ठ {pageNum}</span>
                   </button>
                 );
               })}
             </div>
+          </div>
+
+          <div className={styles.adSection}>
+            <AdSlot ad={leaderboardAds[3]} />
           </div>
         </div>
       </main>

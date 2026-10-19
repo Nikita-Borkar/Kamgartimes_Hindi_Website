@@ -20,61 +20,60 @@ export function AdvertiseForm() {
     >
       {sent ? (
         <p className={styles.formSuccess} role="status">
-          धन्यवाद! आपला अर्ज नोंदवला गेला. बॅकएंड जोडल्यानंतर हा फॉर्म जाहिरात
-          विभागाला थेट संदेश पाठवेल.
+          धन्यवाद! आपका आवेदन दर्ज कर लिया गया है। विज्ञापन विभाग जल्द ही आपसे संपर्क करेगा।
         </p>
       ) : (
         <>
           <label className={styles.formField}>
-            <span className={styles.formLabel}>Name</span>
+            <span className={styles.formLabel}>नाम</span>
             <input
               className={styles.formInput}
               type="text"
               name="name"
-              placeholder="Name"
+              placeholder="अपना पूरा नाम दर्ज करें"
               required
               autoComplete="name"
             />
           </label>
 
           <label className={styles.formField}>
-            <span className={styles.formLabel}>Email</span>
+            <span className={styles.formLabel}>ईमेल</span>
             <input
               className={styles.formInput}
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder="अपना ईमेल पता दर्ज करें"
               required
               autoComplete="email"
             />
           </label>
 
           <label className={styles.formField}>
-            <span className={styles.formLabel}>Phone Number</span>
+            <span className={styles.formLabel}>फ़ोन नंबर</span>
             <input
               className={styles.formInput}
               type="tel"
               name="phone"
-              placeholder="Phone Number"
+              placeholder="अपना मोबाइल नंबर दर्ज करें"
               required
               autoComplete="tel"
             />
           </label>
 
           <label className={styles.formField}>
-            <span className={styles.formLabel}>Address</span>
+            <span className={styles.formLabel}>पता</span>
             <input
               className={styles.formInput}
               type="text"
               name="address"
-              placeholder="Enter Your Address"
+              placeholder="अपना पूरा पता दर्ज करें"
               autoComplete="street-address"
             />
           </label>
 
           <label className={styles.formField}>
             <span className={styles.formLabel}>
-              Submit Your Advertisement (Images, Video)
+              अपना विज्ञापन अपलोड करें (तस्वीर, वीडियो)
             </span>
             <input
               className={styles.formFile}
@@ -85,17 +84,17 @@ export function AdvertiseForm() {
           </label>
 
           <label className={styles.formField}>
-            <span className={styles.formLabel}>About Your Advertisement</span>
+            <span className={styles.formLabel}>विज्ञापन का विवरण</span>
             <textarea
               className={styles.formTextarea}
               name="about"
               rows={4}
-              placeholder="About Your Advertisement"
+              placeholder="अपने विज्ञापन के बारे में जानकारी लिखें..."
             />
           </label>
 
           <button className={styles.formSubmit} type="submit">
-            Send Now
+            आवेदन भेजें
           </button>
         </>
       )}

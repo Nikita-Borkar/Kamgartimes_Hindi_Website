@@ -114,29 +114,7 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* ---- Palette: dark (ink) -------------------------------------------------
-   Applies when the OS asks for dark, unless the reader pinned light via
-   data-theme="light" on <html>.                                             */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #121212;
-    --surface: #1c1c1c;
-    --image: #2c2b28;
-    --ink: #000000;
-    /* Lifted for dark. The light brand only reaches 3.2:1 on --bg, which
-       fails AA for the hover headlines and nav links that use it. */
-    --brand: #e63b4e;
-    --market-up: #58c98a;
-    --border: #2e2d2a;
-    --text: #f2f0eb;
-    --muted: #a09d96;
-    --on-ink: #ffffff;
-
-    --scrim: rgba(0, 0, 0, 0.82);
-  }
-}
-
-/* Explicit reader choice, both directions. */
+/* Explicit reader choice for dark mode. Default is always light (white theme). */
 :root[data-theme="dark"] {
   --bg: #121212;
   --surface: #1c1c1c;

@@ -8,16 +8,16 @@ export function VideoDiscovery() {
   return (
     <section
       className={styles.videoDiscovery}
-      aria-label="तुमच्यासाठी आणि ट्रेंडिंग व्हिडिओ"
+      aria-label="आपके लिए और ट्रेंडिंग वीडियो"
     >
       <header className={styles.videoDiscoveryHead}>
-        <h2>तुमच्यासाठी व्हिडिओ</h2>
-        <p>संपादकीय निवड, सर्व वाचकांसाठी</p>
+        <h2>आपके लिए वीडियो</h2>
+        <p>संपादकीय पसंद, सभी पाठकों के लिए</p>
       </header>
 
       <div className={styles.videoDiscoveryGrid}>
         <div className={styles.recommendedVideos}>
-          <h3 className={styles.videoSubhead}>निवडक व्हिडिओ</h3>
+          <h3 className={styles.videoSubhead}>चुनिंदा वीडियो</h3>
           <div className={styles.recommendedGrid}>
             {videoDiscovery.recommended.map((video) => (
               <a className={styles.discoveryCard} href={videoHref(video.id)} key={video.id}>
@@ -43,7 +43,7 @@ export function VideoDiscovery() {
         </div>
 
         <aside className={styles.trendingVideos}>
-          <h3 className={styles.videoSubhead}>आत्ता ट्रेंडिंग</h3>
+          <h3 className={styles.videoSubhead}>अभी ट्रेंडिंग</h3>
           <ol className={styles.trendingVideoList}>
             {videoDiscovery.trending.map((video, index) => (
               <li key={video.id}>

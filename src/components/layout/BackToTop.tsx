@@ -22,7 +22,7 @@ export function BackToTop() {
       data-visible={visible}
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
-      aria-label="वर जा"
+      aria-label="ऊपर जाएं"
     >
       ↑
     </a>
