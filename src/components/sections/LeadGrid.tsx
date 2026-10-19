@@ -9,7 +9,7 @@ import styles from "./sections.module.css";
 /** Below the hero: ad rail and Kamgar Times YouTube video slider stage */
 export function LeadGrid() {
   return (
-    <section className={styles.section} aria-label="कामगार टाइम्स व्हिडिओ आणि मुख्य बातम्या">
+    <section className={styles.section} aria-label="कामगार टाइम्स वीडियो और मुख्य समाचार">
       <div className={`${styles.leadGrid} reveal`}>
         <AdSlot ad={leadRailAd} />
         <LeadVideoSlider />

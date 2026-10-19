@@ -1,62 +1,127 @@
 "use client";
 
-import { BellRing } from "lucide-react";
 import { useEffect, useState } from "react";
-import styles from "./layout.module.css";
+import styles from "./notification.module.css";
 
 const DISMISS_KEY = "kamgar-notification-prompt-dismissed";
+const SUBSCRIBED_KEY = "kamgar-notification-subscribed";
 
 export function NotificationPrompt() {
   const [visible, setVisible] = useState(false);
+  const [subscribed, setSubscribed] = useState(false);
 
   useEffect(() => {
+    // Check if already subscribed
+    try {
+      if (localStorage.getItem(SUBSCRIBED_KEY) === "true") {
+        setSubscribed(true);
+      }
+    } catch {
+      // storage unavailable
+    }
+
+    // Check if dismissed in this session
     let dismissed = false;
     try {
-      dismissed = Boolean(window.sessionStorage.getItem(DISMISS_KEY));
+      dismissed = Boolean(sessionStorage.getItem(DISMISS_KEY));
     } catch {
       dismissed = false;
     }
-    if (dismissed) return;
 
-    const timer = window.setTimeout(() => setVisible(true), 900);
-    return () => window.clearTimeout(timer);
+    if (!dismissed) {
+      const timer = window.setTimeout(() => setVisible(true), 1200);
+      return () => window.clearTimeout(timer);
+    }
   }, []);
 
-  const dismiss = () => {
+  useEffect(() => {
+    const handleOpen = () => setVisible(true);
+    window.addEventListener("open-notification-prompt", handleOpen);
+    return () => window.removeEventListener("open-notification-prompt", handleOpen);
+  }, []);
+
+  const handleLater = () => {
     try {
-      window.sessionStorage.setItem(DISMISS_KEY, "true");
+      sessionStorage.setItem(DISMISS_KEY, "true");
     } catch {
-      // Dismiss the prompt for this render even when storage is unavailable.
+      // ignore
     }
     setVisible(false);
   };
 
+  const handleSubscribe = async () => {
+    try {
+      if (typeof window !== "undefined" && "Notification" in window) {
+        const permission = await Notification.requestPermission();
+        if (permission === "granted") {
+          localStorage.setItem(SUBSCRIBED_KEY, "true");
+          setSubscribed(true);
+        }
+      } else {
+        localStorage.setItem(SUBSCRIBED_KEY, "true");
+        setSubscribed(true);
+      }
+    } catch {
+      localStorage.setItem(SUBSCRIBED_KEY, "true");
+      setSubscribed(true);
+    }
+
+    setSubscribed(true);
+    window.setTimeout(() => {
+      setVisible(false);
+    }, 1200);
+  };
+
   return (
-    <aside
-      className={styles.notificationPrompt}
-      data-visible={visible}
-      aria-hidden={!visible}
-      aria-label="बातम्यांच्या सूचना"
-    >
-      <BellRing
-        size={22}
-        className={styles.notificationIcon}
+    <>
+      <div
+        className={styles.promptOverlay}
+        data-visible={visible}
+        onClick={handleLater}
         aria-hidden="true"
       />
-      <div className={styles.notificationCopy}>
-        <strong>ब्रेकिंग न्यूज सूचना हव्यात?</strong>
-        <p>
-          सूचना सुविधा लवकरच उपलब्ध होईल. सध्या कोणतीही सूचना सुरू होणार नाही.
-        </p>
-      </div>
-      <button
-        type="button"
-        className={styles.notificationDismiss}
-        tabIndex={visible ? 0 : -1}
-        onClick={dismiss}
+
+      <aside
+        className={styles.promptCard}
+        data-visible={visible}
+        aria-hidden={!visible}
+        aria-label="सूचना सदस्यता (Notification Subscription)"
       >
-        समजलं
-      </button>
-    </aside>
+        <div className={styles.promptContent}>
+          <div className={styles.promptLogoWrap}>
+            <img
+              src="/img/logo.png"
+              alt="कामगार टाइम्स"
+              className={styles.promptLogo}
+              width={64}
+              height={64}
+            />
+          </div>
+
+          <div className={styles.promptBody}>
+            <p className={styles.promptMessage}>
+              Subscribe to our notifications for the latest news and updates. You can disable anytime.
+            </p>
+
+            <div className={styles.promptActions}>
+              <button
+                type="button"
+                className={styles.laterBtn}
+                onClick={handleLater}
+              >
+                Later
+              </button>
+              <button
+                type="button"
+                className={`${styles.subscribeBtn} ${subscribed ? styles.subscribedState : ""}`}
+                onClick={handleSubscribe}
+              >
+                {subscribed ? "Subscribed ✓" : "Subscribe"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </>
   );
 }

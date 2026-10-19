@@ -2,33 +2,36 @@ import Link from "next/link";
 import { User } from "lucide-react";
 import { site } from "@/data/site";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageTranslator } from "./LanguageTranslator";
 import { FacebookIcon, YoutubeIcon, InstagramIcon, TwitterXIcon, WhatsappIcon } from "@/components/ui/SocialIcons";
 import styles from "./layout.module.css";
 
 const colorfulSocials = [
-  { id: "whatsapp", label: "व्हॉट्सॲप", icon: WhatsappIcon, href: "https://whatsapp.com" },
+  { id: "whatsapp", label: "व्हाट्सएप", icon: WhatsappIcon, href: "https://whatsapp.com" },
   { id: "facebook", label: "फेसबुक", icon: FacebookIcon, href: "https://facebook.com" },
   { id: "youtube", label: "यूट्यूब", icon: YoutubeIcon, href: "https://youtube.com" },
-  { id: "instagram", label: "इन्स्टाग्राम", icon: InstagramIcon, href: "https://instagram.com" },
+  { id: "instagram", label: "इंस्टाग्राम", icon: InstagramIcon, href: "https://instagram.com" },
   { id: "x", label: "एक्स", icon: TwitterXIcon, href: "https://x.com" },
 ];
 
 export function TopBar() {
   return (
     <div className={`${styles.shell} ${styles.topBar}`}>
-      <p className={styles.edition}>
-        {site.edition} · {site.editionTime}
-        <span className={styles.lang}>{site.language}</span>
-      </p>
+      <div className={styles.editionArea}>
+        <p className={styles.edition}>
+          {site.edition} · {site.editionTime}
+        </p>
+        <LanguageTranslator />
+      </div>
 
       <Link
         className={styles.headerLogoLink}
         href="/"
-        aria-label={`${site.name} - जनसामान्यांचा बुलंद आवाज...`}
+        aria-label={`${site.name} - जनसामान्य की बुलंद आवाज़...`}
       >
         <img
           src="/img/logo_withtext.jpeg"
-          alt="कामगार टाइम्स - जनसामान्यांचा बुलंद आवाज..."
+          alt="कामगार टाइम्स - जनसामान्य की बुलंद आवाज़..."
           className={styles.headerLogoImg}
         />
       </Link>
@@ -57,7 +60,7 @@ export function TopBar() {
           className={styles.loginDotHeader}
           href="/login"
           aria-label="लॉग इन"
-          title="लॉग इन करा"
+          title="लॉग इन करें"
         >
           <User size={18} strokeWidth={2} aria-hidden="true" />
         </Link>

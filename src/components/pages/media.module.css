@@ -600,3 +600,9 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+.adSection {
+  margin: var(--space-10) 0;
+  width: 100%;
+}
+

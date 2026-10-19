@@ -48,23 +48,23 @@ function VideoCard({
 }
 
 /**
- * व्हिडिओ. The only band on the page that inverts to --surface, so it reads
+ * वीडियो. The only band on the page that inverts to --surface, so it reads
  * as a distinct desk without needing a border or a shadow.
  */
 export function VideoSection() {
   const { feature, longVideos, shorts } = videos;
 
   return (
-    <section className={styles.videoPanel} aria-label="व्हिडिओ">
+    <section className={styles.videoPanel} aria-label="वीडियो">
       <div className="reveal">
-        <SectionHeader title="व्हिडिओ" action="अधिक पहा" href="/videos" />
+        <SectionHeader title="वीडियो" action="और देखें" href="/videos" />
       </div>
 
       <div className={`${styles.videoGroups} reveal`}>
-        <section className={styles.videoGroup} aria-label="दीर्घ व्हिडिओ">
+        <section className={styles.videoGroup} aria-label="विस्तृत वीडियो">
           <div className={styles.videoGroupHead}>
-            <h3>दीर्घ व्हिडिओ</h3>
-            <span>संपूर्ण वार्तांकन आणि विश्लेषण</span>
+            <h3>विस्तृत वीडियो</h3>
+            <span>संपूर्ण रिपोर्ट और विश्लेषण</span>
           </div>
           <div className={styles.videoLongGrid}>
             <a className={styles.videoMain} href={videoHref(feature.id)} aria-label={feature.title}>
@@ -92,10 +92,10 @@ export function VideoSection() {
           </div>
         </section>
 
-        <section className={styles.videoGroup} aria-label="शॉर्ट व्हिडिओ">
+        <section className={styles.videoGroup} aria-label="शॉर्ट वीडियो">
           <div className={styles.videoGroupHead}>
             <h3>शॉर्ट्स</h3>
-            <span>एका मिनिटात महत्त्वाच्या घडामोडी</span>
+            <span>एक मिनट में प्रमुख घटनाक्रम</span>
           </div>
           <div className={styles.videoShortGrid}>
             {shorts.map((item, i) => (

@@ -72,14 +72,14 @@
   height: 260px;
 }
 
-/* ---------- ताज्या बातम्या | ट्रेंडिंग ------------------------------------- */
+/* ---------- ताज़ा ख़बरें | ट्रेंडिंग ------------------------------------- */
 .latestTrending {
   display: grid;
   grid-template-columns: 1fr 340px;
   gap: var(--space-10);
 }
 
-/* ---------- हवामान आणि आजचा प्रश्न -------------------------------------- */
+/* ---------- मौसम और आज का प्रश्न -------------------------------------- */
 .weatherPoll {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -658,7 +658,7 @@
   gap: var(--space-6);
 }
 
-/* ---------- राजकारण: two features + brief list ---------------------------- */
+/* ---------- राजनीति: two features + brief list ---------------------------- */
 .politics {
   display: grid;
   grid-template-columns: 1fr 1fr 400px;
@@ -672,14 +672,14 @@
   gap: var(--space-6);
 }
 
-/* ---------- विशेष लेख व मते: three features + tall ad -------------------- */
+/* ---------- विशेष लेख और विचार: three features + tall ad -------------------- */
 .features {
   display: grid;
   grid-template-columns: repeat(3, 1fr) 260px;
   gap: var(--space-6);
 }
 
-/* ---------- संपादकांची निवड ---------------------------------------------- */
+/* ---------- संपादक की पसंद ---------------------------------------------- */
 .picks {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -734,7 +734,7 @@
   color: var(--brand);
 }
 
-/* ---------- व्हिडिओ: the one inverted-surface panel on the page ----------- */
+/* ---------- वीडियो: the one inverted-surface panel on the page ----------- */
 .videoPanel {
   background: var(--surface);
   border-radius: var(--r-md);
@@ -908,7 +908,7 @@
   color: var(--brand);
 }
 
-/* ---------- फोटो गॅलरी -------------------------------------------------- */
+/* ---------- फोटो गैलरी -------------------------------------------------- */
 .gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

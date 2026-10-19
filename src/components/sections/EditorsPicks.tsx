@@ -8,14 +8,14 @@ import ui from "@/components/ui/ui.module.css";
 import styles from "./sections.module.css";
 
 /**
- * संपादकांची निवड: one hero overlay, two stacked overlays, then a
+ * संपादक की पसंद: one hero overlay, two stacked overlays, then a
  * hairline-separated read list with no thumbnails.
  */
 export function EditorsPicks() {
   return (
-    <section className={styles.section} aria-label="संपादकांची निवड">
+    <section className={styles.section} aria-label="संपादक की पसंद">
       <div className="reveal">
-        <SectionHeader title="संपादकांची निवड" />
+        <SectionHeader title="संपादक की पसंद" />
       </div>
       <div className={`${styles.picks} reveal`}>
         <div className={styles.picksHero}>

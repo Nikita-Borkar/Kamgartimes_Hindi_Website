@@ -4,7 +4,7 @@ import { GalleryLibrary } from "@/components/pages/MediaLibraryPage";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
-  title: `फोटो गॅलरी – ${site.name}`,
+  title: `फोटो गैलरी – ${site.name}`,
 };
 
 export default function GalleryPage() {

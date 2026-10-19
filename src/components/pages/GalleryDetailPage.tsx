@@ -4,6 +4,8 @@ import type { GalleryItem } from "@/data/types";
 import { buildGalleryPhotos } from "@/data/articleContent";
 import { galleryHref } from "@/lib/links";
 import { Media } from "@/components/ui/Media";
+import { AdSlot } from "@/components/ui/AdSlot";
+import { leaderboardAds } from "@/data/ads";
 import { ArticleActions } from "./ArticleActions";
 import styles from "./media.module.css";
 
@@ -19,16 +21,16 @@ export function GalleryDetailPage({
 
   return (
     <main id="main" className={styles.main}>
-      <nav className={styles.watchMeta} aria-label="पानांचा मार्ग">
+      <nav className={styles.watchMeta} aria-label="पेज पथ">
         <Link href="/" style={{ color: "var(--muted)", textDecoration: "none" }}>
-          मुख्यपृष्ठ
+          मुख्य पृष्ठ
         </Link>
         <span aria-hidden="true">/</span>
         <Link
           href="/gallery"
           style={{ color: "var(--muted)", textDecoration: "none" }}
         >
-          फोटो गॅलरी
+          फोटो गैलरी
         </Link>
         <span aria-hidden="true">/</span>
         <span style={{ color: "var(--brand)" }}>{item.headline}</span>
@@ -72,22 +74,26 @@ export function GalleryDetailPage({
       <div className={styles.tags}>
         <span className={styles.cardMeta} style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
           <Images size={14} strokeWidth={2} aria-hidden="true" />
-          {photos.length} छायाचित्रे
+          {photos.length} तस्वीरें
         </span>
       </div>
 
+      <div className={styles.adSection}>
+        <AdSlot ad={leaderboardAds[1]} />
+      </div>
+
       {related.length > 0 ? (
-        <section className={styles.related} aria-label="आणखी गॅलरी">
+        <section className={styles.related} aria-label="अन्य गैलरी">
           <h2 className={styles.relatedTitle}>
             <span className={styles.relatedBar} aria-hidden="true" />
-            आणखी गॅलरी
+            अन्य गैलरी
           </h2>
           <div className={styles.relatedGrid}>
             {related.map((item) => (
               <Link key={item.id} className={styles.galleryCard} href={galleryHref(item.id)}>
                 <span className={styles.galleryMedia}>
                   <Media src={item.image} alt="" sizes="(max-width: 560px) 100vw, 25vw" />
-                  <span className={styles.galleryCount}>६ छायाचित्रे</span>
+                  <span className={styles.galleryCount}>६ तस्वीरें</span>
                 </span>
                 <span className={styles.cardMeta}>{item.category}</span>
                 <span className={styles.galleryCardTitle}>{item.headline}</span>

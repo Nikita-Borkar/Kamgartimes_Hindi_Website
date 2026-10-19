@@ -245,3 +245,9 @@
     font-size: 28px;
   }
 }
+
+.adSection {
+  margin: var(--space-10) 0;
+  width: 100%;
+}
+

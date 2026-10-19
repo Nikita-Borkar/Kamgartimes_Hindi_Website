@@ -6,12 +6,12 @@ import { galleryHref } from "@/lib/links";
 import ui from "@/components/ui/ui.module.css";
 import styles from "./sections.module.css";
 
-/** फोटो गॅलरी: three tall overlays, no wire time. */
+/** फोटो गैलरी: three tall overlays, no wire time. */
 export function GallerySection() {
   return (
-    <section className={styles.section} aria-label="फोटो गॅलरी">
+    <section className={styles.section} aria-label="फोटो गैलरी">
       <div className="reveal">
-        <SectionHeader title="फोटो गॅलरी" href="/gallery" />
+        <SectionHeader title="फोटो गैलरी" href="/gallery" />
       </div>
       <div className={`${styles.gallery} reveal`}>
         {gallery.map((item, i) => (

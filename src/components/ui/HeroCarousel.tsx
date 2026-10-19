@@ -74,12 +74,12 @@ export function HeroCarousel() {
         <AdSlot ad={heroAds[index]} priority />
       </div>
 
-      <div className={styles.dots} role="group" aria-label="जाहिरातीचे स्लाइडर">
+      <div className={styles.dots} role="group" aria-label="विज्ञापन स्लाइडर">
         {heroAds.map((ad, i) => (
           <button
             key={ad.id}
             type="button"
-            aria-label={`जाहिरात ${i + 1}`}
+            aria-label={`विज्ञापन ${i + 1}`}
             aria-current={i === index}
             className={styles.dot}
             data-active={i === index}
@@ -90,7 +90,7 @@ export function HeroCarousel() {
         <button
           type="button"
           className={styles.pause}
-          aria-label={paused ? "स्लाइडर सुरू करा" : "स्लाइडर थांबवा"}
+          aria-label={paused ? "स्लाइडर शुरू करें" : "स्लाइडर रोकें"}
           onClick={() => {
             takenOver.current = !takenOver.current;
             setPaused(!paused);

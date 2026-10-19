@@ -5,6 +5,9 @@ import { PageShell } from "@/components/layout/PageShell";
 import { citiesData } from "@/data/cities";
 import { allArticles } from "@/data/news";
 import { StoryCard } from "@/components/ui/StoryCard";
+import { AdCard } from "@/components/ui/AdCard";
+import { AdSlot } from "@/components/ui/AdSlot";
+import { cardAds, leaderboardAds } from "@/data/ads";
 import { MapPin, Sun, Wind, ShieldCheck, CheckCircle2, ChevronRight } from "lucide-react";
 import styles from "./city.module.css";
 
@@ -20,8 +23,8 @@ export async function generateMetadata({
   const { slug } = await params;
   const city = citiesData.find((c) => c.slug === slug);
   return {
-    title: city ? `${city.name} स्थानिक बातम्या – कामगार टाइम्स` : "शहर बातम्या – कामगार टाइम्स",
-    description: city?.description || "विदर्भ आणि महाराष्ट्रातील प्रमुख शहरांच्या ताज्या बातम्या.",
+    title: city ? `${city.name} स्थानीय समाचार – कामगार टाइम्स` : "शहर समाचार – कामगार टाइम्स",
+    description: city?.description || "विदर्भ और देश के प्रमुख शहरों के ताज़ा समाचार।",
   };
 }
 
@@ -42,7 +45,7 @@ export default async function CityPage({
     (a) =>
       a.headline.includes(city.name) ||
       a.excerpt?.includes(city.name) ||
-      a.category === "महाराष्ट्र" ||
+      a.category === "राज्य" ||
       a.category === "लोकल न्यूज़",
   );
 
@@ -53,8 +56,8 @@ export default async function CityPage({
       <main id="main" className={styles.main}>
         <div className={styles.shell}>
           {/* Breadcrumb */}
-          <nav className={styles.breadcrumb} aria-label="Breadcrumb">
-            <Link href="/" className={styles.breadLink}>मुख्यपृष्ठ</Link>
+          <nav className={styles.breadcrumb} aria-label="पेज पथ">
+            <Link href="/" className={styles.breadLink}>मुख्य पृष्ठ</Link>
             <span>/</span>
             <Link href="/city" className={styles.breadLink}>शहर</Link>
             <span>/</span>
@@ -66,7 +69,7 @@ export default async function CityPage({
             <div className={styles.cityHeroContent}>
               <div className={styles.cityBadge}>
                 <MapPin size={16} />
-                <span>स्थानिक बुलेटिन</span>
+                <span>स्थानीय बुलेटिन</span>
               </div>
               <h1 className={styles.cityName}>{city.name}</h1>
               <p className={styles.cityTagline}>{city.tagline}</p>
@@ -88,7 +91,7 @@ export default async function CityPage({
                 </div>
                 <div className={styles.metaRow}>
                   <ShieldCheck size={15} />
-                  <span>कामगार कल्याण हेल्पलाईन: 1800-22-1234</span>
+                  <span>श्रमिक कल्याण हेल्पलाइन: 1800-22-1234</span>
                 </div>
               </div>
             </div>
@@ -97,7 +100,7 @@ export default async function CityPage({
           {/* City Highlights */}
           <section className={styles.highlightsSection}>
             <h2 className={styles.sectionTitle}>
-              <span>{city.name} महत्त्वाचे अपडेट्स</span>
+              <span>{city.name} महत्वपूर्ण अपडेट्स</span>
             </h2>
             <div className={styles.highlightsGrid}>
               {city.highlights.map((item, idx) => (
@@ -109,22 +112,33 @@ export default async function CityPage({
             </div>
           </section>
 
-          {/* City News Articles Grid */}
+          {/* City News Articles Grid with integrated blog-sized sponsored card */}
           <section className={styles.newsSection}>
             <h2 className={styles.sectionTitle}>
-              <span>{city.name} ताज्या घडामोडी व बातम्या</span>
+              <span>{city.name} ताज़ा हलचल व समाचार</span>
             </h2>
 
             <div className={styles.newsGrid}>
-              {displayArticles.map((article) => (
+              {displayArticles.slice(0, 2).map((article) => (
+                <StoryCard key={article.id} article={article} />
+              ))}
+
+              {/* In-grid blog/card-sized sponsored ad */}
+              <AdCard ad={cardAds[3]} />
+
+              {displayArticles.slice(2).map((article) => (
                 <StoryCard key={article.id} article={article} />
               ))}
             </div>
           </section>
 
+          <div className={styles.adSection}>
+            <AdSlot ad={leaderboardAds[3]} />
+          </div>
+
           {/* Other Cities Links */}
           <section className={styles.otherCitiesSection}>
-            <h3 className={styles.otherTitle}>इतर शहरांच्या बातम्या पहा</h3>
+            <h3 className={styles.otherTitle}>अन्य शहरों के समाचार देखें</h3>
             <div className={styles.citiesPills}>
               {citiesData.map((c) => (
                 <Link

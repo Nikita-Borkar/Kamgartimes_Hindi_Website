@@ -17,7 +17,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const category = categories.find((entry) => entry.slug === slug);
   return {
-    title: `${category?.label ?? "विभाग"} – ${site.name}`,
+    title: `${category?.label ?? "श्रेणी"} – ${site.name}`,
   };
 }
 

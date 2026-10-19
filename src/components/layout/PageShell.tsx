@@ -1,7 +1,5 @@
-import { BackToTop } from "@/components/layout/BackToTop";
-import { MainNav } from "@/components/layout/MainNav";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { TopBar } from "@/components/layout/TopBar";
 
 /**
  * Chrome for every page that is not the homepage. Reuses the masthead, the
@@ -12,13 +10,9 @@ import { TopBar } from "@/components/layout/TopBar";
 export function PageShell({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <header id="top">
-        <TopBar />
-        <MainNav />
-      </header>
+      <SiteHeader />
       {children}
       <SiteFooter />
-      <BackToTop />
     </>
   );
 }

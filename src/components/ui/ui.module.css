@@ -339,8 +339,37 @@
 
 /* 120px leaderboard between sections. */
 .adLeaderboard {
-  min-height: 120px;
+  min-height: 110px;
   border-radius: var(--r-sm);
+  padding: var(--space-4) 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.adLeaderboard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.adLeaderboard .adHeadline {
+  font-family: var(--font-serif);
+  font-size: clamp(16px, 2.2vw, 22px);
+  font-weight: 700;
+  line-height: 1.35;
+  padding: 0 var(--space-6);
+  max-width: 880px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.2px;
+}
+
+@media (max-width: 600px) {
+  .adLeaderboard {
+    min-height: 90px;
+  }
+  .adLeaderboard .adHeadline {
+    font-size: 13.5px;
+    padding: 0 var(--space-3);
+  }
 }
 
 .adContent {
@@ -561,3 +590,346 @@
     opacity: 1;
   }
 }
+
+/* ---------- In-grid Story Card Sized Ad (Blog-sized Sponsored Card) ------ */
+.sponsoredCardWrapper {
+  background: var(--surface);
+  border: 1px solid rgba(211, 47, 47, 0.16);
+  border-radius: var(--r-md);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
+}
+
+.sponsoredCardWrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(211, 47, 47, 0.08);
+  border-color: rgba(211, 47, 47, 0.35);
+}
+
+.sponsoredCard {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  height: 100%;
+}
+
+.sponsoredThumbWrap {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-sm);
+  aspect-ratio: 16 / 10;
+  max-height: 200px;
+}
+
+.sponsoredThumbWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.sponsoredCardWrapper:hover .sponsoredThumbWrap img {
+  transform: scale(1.04);
+}
+
+.sponsoredBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  background: #d32f2f;
+  color: #ffffff;
+  font: var(--fw-bold) 11px / 1 var(--font-sans);
+  padding: 4px 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.3px;
+}
+
+.sponsoredCatRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sponsoredDisclaimer {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.06);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.sponsoredTitle {
+  color: var(--text);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.4;
+  margin: 0;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.sponsoredCardWrapper:hover .sponsoredTitle {
+  color: #d32f2f;
+}
+
+.sponsoredFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px dashed var(--border);
+  padding-top: var(--space-3);
+  margin-top: auto;
+  gap: var(--space-2);
+}
+
+.sponsoredCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #d32f2f;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ---------- Vertical Skyscraper / Tower Ad ------------------------------- */
+.verticalTowerAd {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid rgba(211, 47, 47, 0.2);
+  border-top: 4px solid #d32f2f;
+  border-radius: var(--r-md);
+  padding: var(--space-5);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+  width: 100%;
+}
+
+.verticalTowerAd:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(211, 47, 47, 0.1);
+}
+
+.verticalAdBadgeRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+.verticalAdBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #d32f2f;
+  font: var(--fw-bold) 12px / 1 var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.verticalAdMark {
+  font-size: 11px;
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.05);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.verticalAdMediaWrap {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  margin-bottom: var(--space-3);
+}
+
+.verticalAdMediaWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.verticalAdBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.verticalAdTagline {
+  font-size: 12px;
+  font-weight: 600;
+  color: #d32f2f;
+  margin: 0;
+}
+
+.verticalAdHeadline {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text);
+  margin: 0 0 var(--space-2);
+}
+
+.verticalAdList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.verticalAdList li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.verticalAdList li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #d32f2f;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.verticalAdAction {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: 1px dashed var(--border);
+}
+
+.verticalAdBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #d32f2f;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  font-weight: 700;
+  transition: background 0.2s ease;
+}
+
+.verticalTowerAd:hover .verticalAdBtn {
+  background: #b71c1c;
+}
+
+.verticalAdPhone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ---------- In-Article Native Box Ad ------------------------------------- */
+.inArticleBox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid #d32f2f;
+  border-radius: var(--r-md);
+  padding: var(--space-4) var(--space-5);
+  margin: var(--space-8) 0;
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+
+.inArticleBox:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.inArticleBoxThumb {
+  width: 140px;
+  height: 95px;
+  flex: none;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  position: relative;
+}
+
+.inArticleBoxThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.inArticleBoxContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.inArticleBoxBadge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #d32f2f;
+  text-transform: uppercase;
+}
+
+.inArticleBoxTitle {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text);
+  margin: 0;
+}
+
+.inArticleBoxText {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.inArticleBoxCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #d32f2f;
+  font-size: 12.5px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+@media (max-width: 680px) {
+  .inArticleBox {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .inArticleBoxThumb {
+    width: 100%;
+    height: 140px;
+  }
+}

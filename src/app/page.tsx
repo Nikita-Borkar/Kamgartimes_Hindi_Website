@@ -1,8 +1,6 @@
-import { BackToTop } from "@/components/layout/BackToTop";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 import { BreakingTicker } from "@/components/layout/BreakingTicker";
-import { MainNav } from "@/components/layout/MainNav";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { TopBar } from "@/components/layout/TopBar";
 import { EditorsPicks } from "@/components/sections/EditorsPicks";
 import { FeaturesSection } from "@/components/sections/FeaturesSection";
 import { GallerySection } from "@/components/sections/GallerySection";
@@ -18,7 +16,6 @@ import { AdSlot } from "@/components/ui/AdSlot";
 import { HeroCarousel } from "@/components/ui/HeroCarousel";
 import { MarketTicker } from "@/components/layout/MarketTicker";
 import { NoticeTicker } from "@/components/layout/NoticeTicker";
-import { NotificationPrompt } from "@/components/layout/NotificationPrompt";
 import { leaderboardAds } from "@/data/ads";
 import styles from "./globals.module.css";
 
@@ -34,14 +31,9 @@ import styles from "./globals.module.css";
 export default function Home() {
   return (
     <>
-      <header id="top">
-        <TopBar />
-        <MainNav />
-        <BreakingTicker />
-        <MarketTicker />
-      </header>
-
-      <NotificationPrompt />
+      <SiteHeader />
+      <BreakingTicker />
+      <MarketTicker />
 
       <main id="main" className={styles.main}>
         <div className={styles.heroLive}>
@@ -79,7 +71,6 @@ export default function Home() {
       </main>
 
       <SiteFooter />
-      <BackToTop />
       <NoticeTicker />
     </>
   );

@@ -35,20 +35,20 @@ export function PlayerShell({
 
       {started ? (
         <div className={styles.playerNote} role="status">
-          <span>हा नमुना प्लेअर आहे. व्हिडिओ फाइल जोडल्यावर येथे प्ले होईल.</span>
+          <span>यह डेमो प्लेयर है। वीडियो लोड होने पर यहाँ प्ले होगा।</span>
           <button
             type="button"
             className={styles.playerNoteClose}
             onClick={() => setStarted(false)}
           >
-            बंद करा
+            बंद करें
           </button>
         </div>
       ) : (
         <button
           type="button"
           className={styles.playerPlay}
-          aria-label={`${title} प्ले करा`}
+          aria-label={`${title} प्ले करें`}
           onClick={() => setStarted(true)}
         >
           <Play size={30} fill="currentColor" strokeWidth={1.5} aria-hidden="true" />

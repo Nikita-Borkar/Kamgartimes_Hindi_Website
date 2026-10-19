@@ -14,29 +14,29 @@ import styles from "./sections.module.css";
 const forecast = [
   { day: "आज", Icon: CloudSun, high: "31°", low: "25°", rain: "40%" },
   { day: "सोम", Icon: CloudRain, high: "29°", low: "24°", rain: "70%" },
-  { day: "मंगळ", Icon: CloudRain, high: "28°", low: "24°", rain: "85%" },
+  { day: "मंगल", Icon: CloudRain, high: "28°", low: "24°", rain: "85%" },
   { day: "बुध", Icon: Cloud, high: "30°", low: "24°", rain: "25%" },
   { day: "गुरु", Icon: CloudSun, high: "32°", low: "25°", rain: "10%" },
 ];
 
 const pollOptions = [
-  { label: "कांजूरमार्ग ते विमानतळ", percent: 45 },
-  { label: "मुंबई ते नवी मुंबई", percent: 34 },
-  { label: "दहिसर ते ठाणे", percent: 21 },
+  { label: "कांजुरमार्ग से हवाईअड्डा रूट", percent: 45 },
+  { label: "मुंबई से नवी मुंबई लिंक", percent: 34 },
+  { label: "दहिसर से ठाणे कॉरिडोर", percent: 21 },
 ];
 
 export function WeatherPoll() {
   return (
-    <section className={styles.weatherPoll} aria-label="हवामान आणि आजचा प्रश्न">
+    <section className={styles.weatherPoll} aria-label="मौसम और आज का सवाल">
       <div className={styles.weatherColumn}>
-        <SectionHeader title="हवामान" action="पुढील अंदाज →" />
+        <SectionHeader title="मौसम" action="विस्तृत पूर्वानुमान →" />
         <div className={styles.weatherBody}>
           <article className={styles.weatherCurrent}>
             <div className={styles.weatherLocation}>
               <h3>
                 <MapPin size={17} aria-hidden="true" /> मुंबई
               </h3>
-              <span className={styles.weatherUpdated}>आज सकाळी ८:००</span>
+              <span className={styles.weatherUpdated}>आज सुबह ८:००</span>
             </div>
 
             <div className={styles.weatherNow}>
@@ -48,36 +48,36 @@ export function WeatherPoll() {
               />
               <strong className={styles.weatherTemperature}>29°</strong>
               <div className={styles.weatherCondition}>
-                <strong>भाग बदललेले</strong>
+                <strong>आंशिक बादल</strong>
                 <span>
                   <b className={styles.forecastHigh}>↑ 31°</b> ·{" "}
                   <b className={styles.forecastLow}>↓ 25°</b>
                 </span>
-                <span>जाणवणारे 33°</span>
+                <span>महसूस 33°</span>
               </div>
             </div>
 
             <div className={styles.weatherStats}>
               <div className={styles.weatherStat}>
                 <Droplets size={16} aria-hidden="true" />
-                <span>आर्द्रता</span>
+                <span>नमी</span>
                 <strong>78%</strong>
               </div>
               <div className={styles.weatherStat}>
                 <Wind size={16} aria-hidden="true" />
-                <span>वारा</span>
-                <strong>१४ किमी/तास · पश्चिम</strong>
+                <span>हवा</span>
+                <strong>१४ किमी/घंटा · पश्चिम</strong>
               </div>
               <div className={styles.weatherStat}>
                 <Droplets size={16} aria-hidden="true" />
-                <span>पावसाची शक्यता</span>
+                <span>बारिश की संभावना</span>
                 <strong>40%</strong>
               </div>
             </div>
 
             <div
               className={styles.forecast}
-              aria-label="पाच दिवसांचा हवामान अंदाज"
+              aria-label="पांच दिनों का मौसम पूर्वानुमान"
             >
               {forecast.map(({ day, Icon, high, low, rain }) => (
                 <div className={styles.forecastRow} key={day}>
@@ -93,16 +93,16 @@ export function WeatherPoll() {
 
           <aside className={styles.weatherAside}>
             <article className={styles.weatherPeek}>
-              <h3>तुमचे हवामान</h3>
+              <h3>आपका स्थानीय मौसम</h3>
               <div className={styles.weatherPeekLocation}>
                 <MapPin size={16} aria-hidden="true" />
-                <span>नागपूर</span>
+                <span>नागपुर</span>
               </div>
-              <span className={styles.weatherUpdated}>तुमच्या स्थानावरून</span>
+              <span className={styles.weatherUpdated}>आपके स्थान से</span>
               <div className={styles.weatherPeekCondition}>
                 <strong className={styles.weatherPeekTemperature}>33°</strong>
                 <div className={styles.weatherCondition}>
-                  <strong>स्वच्छ</strong>
+                  <strong>साफ़ मौसम</strong>
                   <span>↑35° · ↓26°</span>
                 </div>
               </div>
@@ -115,18 +115,18 @@ export function WeatherPoll() {
       </div>
 
       <div className={styles.pollColumn}>
-        <SectionHeader title="आजचा प्रश्न" action="मागील सर्वेक्षण" />
+        <SectionHeader title="आज का सवाल" action="पुराने सर्वेक्षण" />
         <div className={styles.pollContent}>
           <div className={styles.pollQuestion}>
             <h3>
-              मुंबई मेट्रोच्या विस्तारामुळे कोणत्या भागाला सर्वाधिक फायदा होईल?
+              मेट्रो और नए बुनियादी ढांचे के विस्तार से किस क्षेत्र को सबसे ज्यादा लाभ होगा?
             </h3>
-            <p>पुढील टप्प्यातील निविदांनुसार.</p>
-            <div className={styles.pollMeta}>एकच पर्याय निवडा</div>
+            <p>नवीनतम जनमत सर्वेक्षण के अनुसार।</p>
+            <div className={styles.pollMeta}>केवल एक विकल्प चुनें</div>
           </div>
 
           <div>
-            <ol className={styles.pollResults} aria-label="सर्वेक्षणाचे निकाल">
+            <ol className={styles.pollResults} aria-label="सर्वेक्षण के परिणाम">
               {pollOptions.map((option, index) => (
                 <li className={styles.pollOption} key={option.label}>
                   <div className={styles.pollOptionLabel}>
@@ -141,13 +141,13 @@ export function WeatherPoll() {
                       style={{ width: `${option.percent}%` }}
                     />
                   </div>
-                  {index === 0 ?
-                    <span className="srOnly">सर्वाधिक मते</span>
-                  : null}
+                  {index === 0 ? (
+                    <span className="srOnly">सर्वाधिक वोट</span>
+                  ) : null}
                 </li>
               ))}
             </ol>
-            <p className={styles.pollVotes}>एकूण १२,४५० मते</p>
+            <p className={styles.pollVotes}>कुल १२,४५० वोट दर्ज</p>
           </div>
         </div>
         <div className={styles.pollAd}>

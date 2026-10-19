@@ -34,7 +34,7 @@ export function EpaperReader({ edition }: { edition: EpaperEdition }) {
       <div ref={wrapRef}>
         <div className={`${styles.toolbar} reveal`}>
           <span className={styles.brandMark} aria-hidden="true">
-            प
+            ई
           </span>
           <div className={styles.toolbarMeta}>
             <span className={styles.toolbarEyebrow}>ई-पेपर</span>
@@ -53,13 +53,13 @@ export function EpaperReader({ edition }: { edition: EpaperEdition }) {
               rel="noreferrer"
             >
               <ExternalLink size={16} aria-hidden="true" />
-              नवीन टॅब
+              नया टैब
             </a>
             <button
               className={styles.toolBtn}
               type="button"
               onClick={toggleFullscreen}
-              aria-label={expanded ? "पूर्ण स्क्रीनमधून बाहेर पडा" : "पूर्ण स्क्रीन"}
+              aria-label={expanded ? "फुलस्क्रीन से बाहर निकलें" : "फुलस्क्रीन"}
               aria-pressed={expanded}
             >
               {expanded ? (
@@ -67,7 +67,7 @@ export function EpaperReader({ edition }: { edition: EpaperEdition }) {
               ) : (
                 <Maximize size={16} aria-hidden="true" />
               )}
-              पूर्ण स्क्रीन
+              फुलस्क्रीन
             </button>
           </div>
         </div>
@@ -83,13 +83,13 @@ export function EpaperReader({ edition }: { edition: EpaperEdition }) {
       </div>
 
       <p className={styles.frameNote}>
-        पाने उलटण्यासाठी दिशासूचक बाण वापरा. संगणकावर Ctrl+F ने शब्द शोधा;
-        भिंगाच्या मदतीने मजकूर मोठा करा.
+        पृष्ठ पलटने के लिए तीर कुंजियों का उपयोग करें। कंप्यूटर पर Ctrl+F से शब्द खोजें;
+        ज़ूम से टेक्स्ट बड़ा करें।
       </p>
 
       <Link className={styles.plainLink} href="/e-paper">
         <ArrowLeft size={16} aria-hidden="true" />
-        सर्व आवृत्त्या
+        सभी संस्करण
       </Link>
     </main>
   );

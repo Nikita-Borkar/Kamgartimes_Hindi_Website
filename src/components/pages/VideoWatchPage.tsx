@@ -4,6 +4,9 @@ import type { VideoItem } from "@/data/types";
 import { buildVideoBody } from "@/data/articleContent";
 import { categoryHref, videoHref } from "@/lib/links";
 import { Media } from "@/components/ui/Media";
+import { VerticalAd } from "@/components/ui/VerticalAd";
+import { AdSlot } from "@/components/ui/AdSlot";
+import { verticalTowerAds, leaderboardAds } from "@/data/ads";
 import { ArticleActions } from "./ArticleActions";
 import { PlayerShell } from "./PlayerShell";
 import styles from "./media.module.css";
@@ -40,16 +43,16 @@ export function VideoWatchPage({
 
   return (
     <main id="main" className={styles.main}>
-      <nav className={styles.watchMeta} aria-label="पानांचा मार्ग">
+      <nav className={styles.watchMeta} aria-label="पेज पथ">
         <Link href="/" style={{ color: "var(--muted)", textDecoration: "none" }}>
-          मुख्यपृष्ठ
+          मुख्य पृष्ठ
         </Link>
         <span aria-hidden="true">/</span>
         <Link
           href="/videos"
           style={{ color: "var(--muted)", textDecoration: "none" }}
         >
-          व्हिडिओ
+          वीडियो
         </Link>
         <span aria-hidden="true">/</span>
         <span style={{ color: "var(--brand)" }}>{video.title}</span>
@@ -97,7 +100,7 @@ export function VideoWatchPage({
             ))}
           </div>
 
-          <div className={styles.chapters} aria-label="व्हिडिओ अध्याय">
+          <div className={styles.chapters} aria-label="वीडियो अध्याय">
             {body.chapters.map((chapter) => (
               <a key={chapter.time} className={styles.chapter} href="#comments">
                 <span className={styles.chapterTime}>{chapter.time}</span>
@@ -115,19 +118,26 @@ export function VideoWatchPage({
           </div>
         </div>
 
-        <aside className={styles.watchSide} aria-label="आणखी व्हिडिओ">
+        <aside className={styles.watchSide} aria-label="अन्य वीडियो">
           <div className={styles.sideSticky}>
             <h2 className={styles.sideTitle}>
               <span className={styles.sideBar} aria-hidden="true" />
-              आणखी व्हिडिओ
+              अन्य वीडियो
             </h2>
             <div className={styles.sideList}>
               {related.map((item) => (
                 <RelatedVideo key={item.id} item={item} />
               ))}
             </div>
+            <div style={{ marginTop: "var(--space-6)" }}>
+              <VerticalAd ad={verticalTowerAds[0]} />
+            </div>
           </div>
         </aside>
+      </div>
+
+      <div className={styles.adSection}>
+        <AdSlot ad={leaderboardAds[1]} />
       </div>
     </main>
   );

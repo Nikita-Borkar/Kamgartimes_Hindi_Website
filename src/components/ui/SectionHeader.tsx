@@ -7,7 +7,7 @@ import styles from "./ui.module.css";
  */
 export function SectionHeader({
   title,
-  action = "सर्व पहा",
+  action = "सभी देखें",
   href = "#",
 }: {
   title: string;

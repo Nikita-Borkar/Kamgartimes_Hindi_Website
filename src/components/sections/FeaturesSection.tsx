@@ -7,12 +7,12 @@ import { stagger } from "@/components/motion/stagger";
 import { categoryHref } from "@/lib/links";
 import styles from "./sections.module.css";
 
-/** विशेष लेख व मते: three features, then a tall ad column. */
+/** विशेष लेख और विचार: three features, then a tall ad column. */
 export function FeaturesSection() {
   return (
-    <section className={styles.section} aria-label="विशेष लेख व मते">
+    <section className={styles.section} aria-label="विशेष लेख और विचार">
       <div className="reveal">
-        <SectionHeader title="विशेष लेख व मते" href={categoryHref("विचार")} />
+        <SectionHeader title="विशेष लेख और विचार" href={categoryHref("विचार")} />
       </div>
       <div className={`${styles.features} reveal`}>
         {features.map((article, i) => (

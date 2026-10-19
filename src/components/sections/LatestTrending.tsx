@@ -6,12 +6,12 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { stagger } from "@/components/motion/stagger";
 import styles from "./sections.module.css";
 
-/** ताज्या बातम्या on the wide side, ट्रेंडिंग in a 340px rail. */
+/** ताज़ा ख़बरें on the wide side, ट्रेंडिंग in a 340px rail. */
 export function LatestTrending() {
   return (
-    <section className={styles.latestTrending} aria-label="ताज्या बातम्या">
+    <section className={styles.latestTrending} aria-label="ताज़ा ख़बरें">
       <div className={`${styles.stack} reveal`}>
-        <SectionHeader title="ताज्या बातम्या" />
+        <SectionHeader title="ताज़ा ख़बरें" />
         {latestNews.map((article, i) => (
           <div key={article.id} style={stagger(i)}>
             <RowArticle
@@ -26,7 +26,7 @@ export function LatestTrending() {
       </div>
 
       <div className={`${styles.stack} reveal`} style={stagger(1)}>
-        <SectionHeader title="ट्रेंडिंग" action="अधिक →" />
+        <SectionHeader title="ट्रेंडिंग" action="और पढ़ें →" />
         <AdSlot ad={railAd} />
         {trending.map((article, i) => (
           <div key={article.id} style={stagger(i)}>

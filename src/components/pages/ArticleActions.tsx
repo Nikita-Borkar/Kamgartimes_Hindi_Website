@@ -83,7 +83,7 @@ export function ArticleActions({
   }
 
   return (
-    <div className={styles.actions} role="group" aria-label="बातमीवरील प्रतिक्रिया">
+    <div className={styles.actions} role="group" aria-label="समाचार पर प्रतिक्रिया">
       <button
         type="button"
         className={`${styles.action}${reaction === "like" ? ` ${styles.actionOn}` : ""}`}
@@ -91,7 +91,7 @@ export function ArticleActions({
         onClick={() => toggle("like")}
       >
         <ThumbsUp size={18} strokeWidth={2} aria-hidden="true" />
-        आवडले
+        पसंद
         <span className={styles.actionCount}>{likeCount}</span>
       </button>
 
@@ -102,7 +102,7 @@ export function ArticleActions({
         onClick={() => toggle("dislike")}
       >
         <ThumbsDown size={18} strokeWidth={2} aria-hidden="true" />
-        आवडले नाही
+        नापसंद
         <span className={styles.actionCount}>{dislikeCount}</span>
       </button>
 
@@ -121,7 +121,7 @@ export function ArticleActions({
           onClick={onShare}
         >
           <Share2 size={18} strokeWidth={2} aria-hidden="true" />
-          शेअर
+          शेयर
           <span className={styles.actionCount}>{shares}</span>
         </button>
 
@@ -135,7 +135,7 @@ export function ArticleActions({
               rel="noopener noreferrer"
             >
               <Send size={16} strokeWidth={2} aria-hidden="true" />
-              व्हॉट्सॲप
+              व्हाट्सएप
             </a>
             <a
               className={styles.shareItem}
@@ -164,7 +164,7 @@ export function ArticleActions({
               onClick={copyLink}
             >
               <Link2 size={16} strokeWidth={2} aria-hidden="true" />
-              लिंक कॉपी करा
+              लिंक कॉपी करें
             </button>
           </div>
         ) : null}
@@ -172,7 +172,7 @@ export function ArticleActions({
 
       {copied ? (
         <span className={`${styles.actionCount} ${styles.shareNote}`}>
-          <Check size={14} strokeWidth={2} aria-hidden="true" /> लिंक कॉपी झाली
+          <Check size={14} strokeWidth={2} aria-hidden="true" /> लिंक कॉपी हो गई
         </span>
       ) : null}
     </div>
