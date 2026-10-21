@@ -108,6 +108,57 @@
   transform: scale(1.02);
 }
 
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.joinUsBtnHeader {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.35);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.joinUsBtnHeader:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(211, 47, 47, 0.5);
+  background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+}
+
+.loginDotHeader {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--surface, #ffffff);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text, #0f172a);
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.loginDotHeader:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  color: #d32f2f;
+}
+
 .loginBtnHeader {
   display: inline-flex;
   align-items: center;
@@ -1283,11 +1334,25 @@
   border-radius: var(--r-sm);
   text-decoration: none;
   white-space: nowrap;
-  transition: opacity var(--dur-fast) var(--ease-out);
+  transition: all var(--dur-fast) var(--ease-out);
 }
 
 .footerBtn:hover {
   opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.footerBtnPrimary {
+  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%) !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.4);
+}
+
+.footerBtnPrimary:hover {
+  background: linear-gradient(135deg, #e53935 0%, #c62828 100%) !important;
+  box-shadow: 0 4px 14px rgba(211, 47, 47, 0.6);
+  opacity: 1 !important;
 }
 
 .footerCol {

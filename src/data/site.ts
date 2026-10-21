@@ -44,6 +44,7 @@ export const navItems: NavItem[] = [
       { label: "यूनियन न्यूज़", href: "/category/labor-union" },
       { label: "वेतन व भत्ते", href: "/category/wages" },
       { label: "श्रम कानून व नियम", href: "/category/labor-laws" },
+      { label: "पत्रकार / प्रतिनिधी नियुक्ती", href: "/join-us" },
     ],
   },
   {
@@ -238,13 +239,14 @@ export const breakingNews = [
 /* Rolling notice shown in the bar pinned to the bottom of the homepage. */
 export const notice = {
   label: "सूचना",
-  text: "विज्ञापन देने के लिए हमसे contact@kamgartimes.com पर संपर्क करें या 8055502228 पर कॉल करें।",
+  text: "कामगार टाइम्स महाराष्ट्र राज्य पत्रकार / प्रतिनिधी नियुक्ती अर्ज 2026-2027 सुरू (ऑनलाइन अर्ज भरें) • विज्ञापन देने के लिए संपर्क करें: 8055502228",
 } as const;
 
 /* The four internal utility pages. Single source for the footer "कंपनी"
    column and the cross-links shown at the base of each utility page. */
 export const companyLinks = [
   { label: "हमारे बारे में", href: "/about" },
+  { label: "पत्रकार भर्ती 2026-27", href: "/join-us" },
   { label: "संपर्क करें", href: "/contact" },
   { label: "अस्वीकरण", href: "/disclaimer" },
   { label: "गोपनीयता नीति", href: "/privacy" },
@@ -271,6 +273,7 @@ export const footer = {
     "ई-पेपर",
   ],
   actions: [
+    { label: "पत्रकार बनें (Join as Reporter)", href: "/join-us" },
     { label: "सहयोग करें (Donate Us)", href: "/donate" },
     { label: "विज्ञापन दें (Advertise)", href: "/advertise" },
   ],

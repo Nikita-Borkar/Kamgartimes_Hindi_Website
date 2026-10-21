@@ -72,7 +72,9 @@ export function SiteFooter() {
             {footer.actions.map((action) => (
               <Link
                 key={action.href}
-                className={styles.footerBtn}
+                className={`${styles.footerBtn}${
+                  action.href === "/join-us" ? ` ${styles.footerBtnPrimary}` : ""
+                }`}
                 href={action.href}
               >
                 {action.label}

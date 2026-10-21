@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { User } from "lucide-react";
+import { User, Mic } from "lucide-react";
 import { site } from "@/data/site";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageTranslator } from "./LanguageTranslator";
@@ -37,6 +37,16 @@ export function TopBar() {
       </Link>
 
       <div className={styles.actions}>
+        <Link
+          className={styles.joinUsBtnHeader}
+          href="/join-us"
+          aria-label="कामगार टाइम्स पत्रकार / प्रतिनिधी नियुक्ती अर्ज २०२६-२०२७"
+          title="पत्रकार / प्रतिनिधी नियुक्ती अर्ज २०२६-२०२७"
+        >
+          <Mic size={14} strokeWidth={2.4} aria-hidden="true" />
+          <span>पत्रकार बनें</span>
+        </Link>
+
         <div className={styles.topSocials}>
           {colorfulSocials.map((s) => {
             const Icon = s.icon;
