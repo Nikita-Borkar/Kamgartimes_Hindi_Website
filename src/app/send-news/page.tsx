@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { PageShell } from "@/components/layout/PageShell";
 import { Send, Upload, MapPin, Phone, User, CheckCircle2, AlertCircle } from "lucide-react";
 import styles from "./sendNews.module.css";
@@ -103,6 +104,19 @@ export default function SendNewsPage() {
             </form>
 
             <div className={styles.sidebar}>
+              {/* Recruitment Promo Card */}
+              <div className={styles.recruitmentCard}>
+                <div className={styles.recruitBadge}>भरती २०२६-२७</div>
+                <h3>कामगार टाइम्सचे अधिकृत वार्ताहर व्हा! 🎙️</h3>
+                <p>
+                  आपल्या परिसरातील प्रश्न, जनआंदोलने व स्थानिक बातम्यांना राज्यव्यापी मंच द्या.
+                  महाराष्ट्र राज्य पत्रकार व तालुका/जिल्हा प्रतिनिधी पदांसाठी अर्ज सुरू आहेत.
+                </p>
+                <Link href="/join-us" className={styles.recruitBtn}>
+                  नियुक्ती अर्ज भरा (Apply Online) ➔
+                </Link>
+              </div>
+
               <div className={styles.guideCard}>
                 <h3>
                   <CheckCircle2 size={18} color="#22c55e" />
