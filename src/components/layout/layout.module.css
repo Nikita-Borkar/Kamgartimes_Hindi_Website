@@ -749,7 +749,7 @@
   display: flex;
 }
 
-/* ---------- Nav: overflow panel ------------------------------------------ */
+/* ---------- Nav: overflow panel / mobile drawer --------------------------- */
 .navPanel {
   display: none;
   flex-basis: 100%;
@@ -760,20 +760,121 @@
   transition: max-height var(--dur-base) var(--ease-out);
 }
 
+[data-theme="dark"] .navPanel {
+  background: #0f172a;
+}
+
 .nav[data-overflow="true"] .navPanel {
   display: block;
 }
 
 .navPanel[data-open="true"] {
-  max-height: 70vh;
+  max-height: 82vh;
   overflow-y: auto;
   overscroll-behavior: contain;
-  border-top: 1px solid #e2e8f0;
+  border-top: 2px solid #b70000;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.22);
+}
+
+.panelInnerWrapper {
+  padding: 12px 14px 20px;
+}
+
+/* Mobile Drawer Top Header: Red Reporter button + User Login & Search */
+.drawerTopCard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+[data-theme="dark"] .drawerTopCard {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.drawerJoinBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+  color: #ffffff !important;
+  padding: 11px 16px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 14px;
+  text-decoration: none;
+  box-shadow: 0 3px 12px rgba(211, 47, 47, 0.35);
+  letter-spacing: 0.2px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.drawerJoinBtn:active {
+  transform: scale(0.98);
+}
+
+.drawerToolsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.drawerToolBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+[data-theme="dark"] .drawerToolBtn {
+  background: #0f172a;
+  color: #f1f5f9;
+  border-color: #475569;
+}
+
+.drawerToolBtn:hover {
+  background: #f1f5f9;
+  color: #b70000;
+  border-color: #b70000;
+}
+
+[data-theme="dark"] .drawerToolBtn:hover {
+  background: #1e293b;
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.drawerMenuHeading {
+  font-size: 11.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #64748b;
+  margin-bottom: 6px;
+  padding-left: 4px;
+}
+
+[data-theme="dark"] .drawerMenuHeading {
+  color: #94a3b8;
 }
 
 .panelList {
   margin: 0;
-  padding: var(--space-2) 0;
+  padding: 0;
   list-style: none;
 }
 
@@ -781,72 +882,253 @@
   border-bottom: 1px solid #f1f5f9;
 }
 
+[data-theme="dark"] .panelItem {
+  border-bottom-color: #1e293b;
+}
+
 .panelRow {
   display: flex;
   align-items: center;
+  width: 100%;
+}
+
+/* Accordion button for categories that HAVE sub-options */
+.panelAccordionBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
   justify-content: space-between;
+  padding: 12px 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: #0f172a;
+  transition: color 0.18s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* The bar (and so this panel) is a fixed light surface in every theme, so the
-   panel uses the same fixed ink as the strip links instead of theme tokens. */
-.panelLink {
-  flex: 1;
-  padding: var(--space-3) 0;
-  color: #1e293b;
-  font: var(--fw-semi) var(--fs-body) / var(--lh-body) var(--font-sans);
-  text-decoration: none;
+[data-theme="dark"] .panelAccordionBtn {
+  color: #f1f5f9;
 }
 
-.panelLink:hover {
+.panelAccordionBtn:hover,
+.panelAccordionBtn[aria-expanded="true"] {
   color: #b70000;
 }
 
-.panelCaret {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: 0;
-  padding: var(--space-2);
-  color: #64748b;
-  cursor: pointer;
-  transition: transform var(--dur-fast) var(--ease-out);
+[data-theme="dark"] .panelAccordionBtn:hover,
+[data-theme="dark"] .panelAccordionBtn[aria-expanded="true"] {
+  color: #ef4444;
 }
 
-.panelCaret[aria-expanded="true"] {
+.panelLabelText {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.panelCaretIcon {
+  color: #64748b;
+  flex-shrink: 0;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.18s ease;
+}
+
+.caretRotated {
   transform: rotate(180deg);
   color: #b70000;
 }
 
-/* Sub-lists: two columns, six rows, then scroll — a section with many
-   children stays on screen. */
+[data-theme="dark"] .caretRotated {
+  color: #ef4444;
+}
+
+/* Direct link for items WITHOUT subcategories (e.g. ई-पेपर) */
+.panelDirectLink {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px 6px;
+  color: #0f172a;
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+[data-theme="dark"] .panelDirectLink {
+  color: #f1f5f9;
+}
+
+.panelDirectLink:hover {
+  color: #b70000;
+}
+
+[data-theme="dark"] .panelDirectLink:hover {
+  color: #ef4444;
+}
+
+/* Sub-list accordion container: clean, modern 1-column list */
 .panelSub {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   max-height: 0;
   margin: 0;
   padding: 0;
   list-style: none;
   overflow: hidden;
-  transition: max-height var(--dur-fast) var(--ease-out);
+  transition: max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+[data-theme="dark"] .panelSub {
+  background: #1e293b;
 }
 
 .panelSub[data-open="true"] {
-  max-height: 240px;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  padding-bottom: var(--space-3);
+  max-height: 480px;
+  padding: 8px 10px 10px 12px;
+  margin-bottom: 8px;
+}
+
+.panelSubItem {
+  width: 100%;
 }
 
 .panelSubLink {
   display: block;
-  padding: var(--space-2) 0 var(--space-2) var(--space-4);
+  padding: 8px 10px;
   color: #334155;
-  font: var(--fw-medium) var(--fs-body) / var(--lh-body) var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
   text-decoration: none;
-  border-left: 2px solid #e2e8f0;
+  border-left: 2.5px solid transparent;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+[data-theme="dark"] .panelSubLink {
+  color: #cbd5e1;
+}
+
+.panelSubLink:hover {
+  color: #b70000;
+  background: #ffffff;
+  border-left-color: #b70000;
+  padding-left: 14px;
+}
+
+[data-theme="dark"] .panelSubLink:hover {
+  color: #ef4444;
+  background: #0f172a;
+  border-left-color: #ef4444;
+}
+
+.panelSubLinkAll {
+  font-weight: 700;
+  color: #b70000;
+  border-bottom: 1px dashed #e2e8f0;
+  margin-bottom: 4px;
+  padding-bottom: 8px;
+}
+
+[data-theme="dark"] .panelSubLinkAll {
+  color: #ef4444;
+  border-bottom-color: #334155;
+}
+
+.subNavLinkAll {
+  font-weight: 700;
+  color: #b70000;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+.navThemeToggle {
+  display: flex;
+  align-items: center;
+}
+
+.drawerQuickLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 0 10px;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 8px;
+}
+
+.drawerQuickBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%);
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13.5px;
+  text-decoration: none;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3);
+}
+
+.drawerQuickBtnSecondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface, #f8fafc);
+  color: var(--text, #1e293b);
+  border: 1px solid var(--border, #e2e8f0);
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  text-decoration: none;
+  text-align: center;
+}
+
+.drawerSocialsSection {
+  padding: 12px 0 16px;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 6px;
+}
+
+.drawerSocialsTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted, #64748b);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.drawerSocialIcons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.drawerSocialDot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface, #f1f5f9);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.drawerSocialDot:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
 .panelSubLink:hover {
@@ -1342,18 +1624,7 @@
   transform: translateY(-1px);
 }
 
-.footerBtnPrimary {
-  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%) !important;
-  color: #ffffff !important;
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(211, 47, 47, 0.4);
-}
 
-.footerBtnPrimary:hover {
-  background: linear-gradient(135deg, #e53935 0%, #c62828 100%) !important;
-  box-shadow: 0 4px 14px rgba(211, 47, 47, 0.6);
-  opacity: 1 !important;
-}
 
 .footerCol {
   display: flex;
@@ -1492,10 +1763,12 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    gap: var(--space-3);
+    gap: 10px;
+    padding-top: 8px;
+    padding-bottom: 8px;
   }
 
-  .stickyHeaderGroup[data-scrolled="true"] .edition {
+  .stickyHeaderGroup[data-scrolled="true"] .editionArea {
     display: none;
   }
 
@@ -1508,31 +1781,67 @@
     justify-content: space-between;
     align-items: center;
     padding: 6px var(--shell-pad-compact);
+    gap: 8px;
   }
 
   .stickyHeaderGroup[data-scrolled="true"] .headerLogoImg {
-    height: 38px;
-    max-height: 42px;
+    height: 36px;
+    max-height: 40px;
   }
 
   .headerLogoImg {
-    height: 52px;
-    max-height: 58px;
+    height: 48px;
+    max-height: 54px;
   }
 
   .editionArea {
-    justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
     gap: 8px;
   }
 
   .edition {
-    justify-content: center;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .actions {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 12px;
+    display: none !important;
+  }
+
+  .marketInner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .marketQuotes {
+    width: 100%;
+    flex: none;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 16px;
+    padding-bottom: 2px;
+  }
+
+  .marketQuotes::-webkit-scrollbar {
+    display: none;
+  }
+
+  .marketQuote {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .marketQuote:first-child {
+    border-inline-start: 0;
+    padding-left: 0;
   }
 
   .navInner {
@@ -1562,18 +1871,125 @@
   }
 }
 
-@media (max-width: 560px) {
-  .headerLogoImg {
-    height: 44px;
-    max-height: 50px;
+/* ---------- Mobile Tablets and Phones: 768px and under ---------- */
+@media (max-width: 768px) {
+  /* On mobile phones, hide the red button and action icons from under the logo!
+     The red 'पत्रकार बनें' button and user profile are prominently placed at the top of the mobile drawer!
+     ThemeToggle is located in the sticky navigation bar next to search and hamburger! */
+  .topBar .actions {
+    display: none !important;
   }
 
-  .topSocials {
+  .topBar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  .editionArea {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+    padding-bottom: 3px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  [data-theme="dark"] .editionArea {
+    border-bottom-color: #1e293b;
+  }
+
+  .edition {
+    font-size: 11.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .headerLogoImg {
+    height: 40px;
+    max-height: 44px;
+    margin: 0 auto;
+  }
+
+  /* Smooth horizontal category swiping on mobile */
+  .navList {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+    padding-right: 6px;
+  }
+
+  .navList::-webkit-scrollbar {
+    display: none;
+  }
+
+  .navLink {
+    padding: 6px 8px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .navRightActions {
     gap: 6px;
   }
 
-  .topSocialDot {
-    width: 30px;
-    height: 30px;
+  .searchBtn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .tickerInner {
+    gap: 8px;
+  }
+
+  .tickerBadge {
+    padding: 4px 10px;
+    font-size: 11.5px;
+  }
+
+  .tickerTrack {
+    gap: 14px;
+  }
+
+  .tickerItem {
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .tickerControls {
+    padding-left: 4px;
+  }
+
+  .tickerCtrlBtn {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* ---------- Very Small Screens (400px and under) ---------- */
+@media (max-width: 400px) {
+  .shell {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .edition {
+    font-size: 10.5px;
+  }
+
+  .headerLogoImg {
+    height: 38px;
+    max-height: 42px;
+  }
+
+  .navLink {
+    padding: 5px 7px;
+    font-size: 12.5px;
   }
 }

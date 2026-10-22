@@ -296,3 +296,30 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 600px) {
+  .hero {
+    margin-bottom: var(--space-4);
+  }
+
+  .title {
+    font-size: clamp(22px, 5.5vw, 26px);
+  }
+
+  .subtitle {
+    font-size: 13.5px;
+  }
+
+  .form {
+    padding: 18px 14px;
+    border-radius: 14px;
+  }
+
+  .fieldRow {
+    gap: 12px;
+  }
+
+  .submitBtn {
+    width: 100%;
+  }
+}

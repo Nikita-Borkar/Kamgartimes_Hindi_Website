@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import styles from "./notification.module.css";
 
 const DISMISS_KEY = "kamgar-notification-prompt-dismissed";
@@ -11,14 +12,16 @@ export function NotificationPrompt() {
   const [subscribed, setSubscribed] = useState(false);
 
   useEffect(() => {
-    // Check if already subscribed
-    try {
-      if (localStorage.getItem(SUBSCRIBED_KEY) === "true") {
-        setSubscribed(true);
+    // Check if already subscribed asynchronously to avoid cascading renders
+    const subTimer = window.setTimeout(() => {
+      try {
+        if (localStorage.getItem(SUBSCRIBED_KEY) === "true") {
+          setSubscribed(true);
+        }
+      } catch {
+        // storage unavailable
       }
-    } catch {
-      // storage unavailable
-    }
+    }, 0);
 
     // Check if dismissed in this session
     let dismissed = false;
@@ -28,10 +31,15 @@ export function NotificationPrompt() {
       dismissed = false;
     }
 
+    let showTimer: number | undefined;
     if (!dismissed) {
-      const timer = window.setTimeout(() => setVisible(true), 1200);
-      return () => window.clearTimeout(timer);
+      showTimer = window.setTimeout(() => setVisible(true), 1200);
     }
+
+    return () => {
+      window.clearTimeout(subTimer);
+      if (showTimer) window.clearTimeout(showTimer);
+    };
   }, []);
 
   useEffect(() => {
@@ -89,7 +97,7 @@ export function NotificationPrompt() {
       >
         <div className={styles.promptContent}>
           <div className={styles.promptLogoWrap}>
-            <img
+            <Image
               src="/img/logo.png"
               alt="कामगार टाइम्स"
               className={styles.promptLogo}

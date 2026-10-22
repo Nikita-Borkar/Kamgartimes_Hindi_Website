@@ -129,3 +129,32 @@
 
   --scrim: rgba(0, 0, 0, 0.82);
 }
+
+/* Responsive shell padding overrides for tablet and mobile devices */
+@media (max-width: 1024px) {
+  :root {
+    --shell-pad: 32px;
+    --shell-pad-md: 24px;
+    --shell-pad-compact: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --shell-pad: 14px;
+    --shell-pad-md: 14px;
+    --shell-pad-compact: 12px;
+    --space-6: 18px;
+    --space-8: 22px;
+    --space-10: 26px;
+    --space-12: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --shell-pad: 12px;
+    --shell-pad-md: 12px;
+    --shell-pad-compact: 10px;
+  }
+}

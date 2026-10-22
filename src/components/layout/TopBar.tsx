@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { User, Mic } from "lucide-react";
 import { site } from "@/data/site";
 import { ThemeToggle } from "./ThemeToggle";
@@ -29,10 +30,13 @@ export function TopBar() {
         href="/"
         aria-label={`${site.name} - जनसामान्य की बुलंद आवाज़...`}
       >
-        <img
+        <Image
           src="/img/logo_withtext.jpeg"
           alt="कामगार टाइम्स - जनसामान्य की बुलंद आवाज़..."
           className={styles.headerLogoImg}
+          width={240}
+          height={60}
+          priority
         />
       </Link>
 

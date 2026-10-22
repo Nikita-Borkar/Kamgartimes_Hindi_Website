@@ -26,7 +26,7 @@ export function FloatingWidgets() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowTop(window.scrollY > 420);
+      setShowTop(window.scrollY > 750);
     };
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });

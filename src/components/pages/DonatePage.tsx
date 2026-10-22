@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Check, Copy, ShieldCheck, QrCode } from "lucide-react";
 import type { DonatePageData } from "@/data/types";
 import { BankDetails } from "./BankDetails";
@@ -107,7 +108,7 @@ export function DonatePage({ page }: { page: DonatePageData }) {
           </p>
 
           <figure className={styles.qrImgWrap}>
-            <img
+            <Image
               className={styles.qrImgLarge}
               src={page.qr.src}
               alt={page.qr.alt}

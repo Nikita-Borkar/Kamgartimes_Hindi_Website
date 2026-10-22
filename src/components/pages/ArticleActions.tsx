@@ -5,11 +5,15 @@ import {
   Check,
   Link2,
   MessageCircle,
-  Send,
   Share2,
   ThumbsDown,
   ThumbsUp,
 } from "lucide-react";
+import {
+  FacebookIcon,
+  TwitterXIcon,
+  WhatsappIcon,
+} from "@/components/ui/SocialIcons";
 import styles from "./article.module.css";
 
 type Reaction = "like" | "dislike" | null;
@@ -134,7 +138,7 @@ export function ArticleActions({
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Send size={16} strokeWidth={2} aria-hidden="true" />
+              <WhatsappIcon size={16} />
               व्हाट्सएप
             </a>
             <a
@@ -144,7 +148,7 @@ export function ArticleActions({
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Send size={16} strokeWidth={2} aria-hidden="true" />
+              <TwitterXIcon size={14} />
               एक्स (ट्विटर)
             </a>
             <a
@@ -154,7 +158,7 @@ export function ArticleActions({
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Send size={16} strokeWidth={2} aria-hidden="true" />
+              <FacebookIcon size={16} />
               फेसबुक
             </a>
             <button

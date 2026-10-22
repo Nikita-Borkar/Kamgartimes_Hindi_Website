@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { categories, footer, site } from "@/data/site";
 import { FacebookIcon, YoutubeIcon, InstagramIcon, TwitterXIcon, WhatsappIcon, TelegramIcon } from "@/components/ui/SocialIcons";
 import styles from "./layout.module.css";
@@ -20,6 +21,7 @@ const colorfulSocials = [
   { id: "facebook", label: "फेसबुक", icon: FacebookIcon, href: "https://facebook.com" },
   { id: "youtube", label: "यूट्यूब", icon: YoutubeIcon, href: "https://youtube.com" },
   { id: "instagram", label: "इंस्टाग्राम", icon: InstagramIcon, href: "https://instagram.com" },
+  { id: "x", label: "एक्स (ट्विटर)", icon: TwitterXIcon, href: "https://x.com" },
   { id: "telegram", label: "टेलीग्राम", icon: TelegramIcon, href: "https://t.me" },
 ];
 
@@ -29,10 +31,12 @@ export function SiteFooter() {
       <div className={`${styles.shell} ${styles.footerInner}`}>
         <div>
           <Link href="/" className={styles.footerLogoLink}>
-            <img
+            <Image
               src="/img/logo_withtext.jpeg"
               alt="कामगार टाइम्स - जनसामान्य की बुलंद आवाज़..."
               className={styles.footerLogoImg}
+              width={220}
+              height={55}
             />
           </Link>
           <p className={styles.footerBlurb}>{site.tagline}</p>
@@ -72,9 +76,7 @@ export function SiteFooter() {
             {footer.actions.map((action) => (
               <Link
                 key={action.href}
-                className={`${styles.footerBtn}${
-                  action.href === "/join-us" ? ` ${styles.footerBtnPrimary}` : ""
-                }`}
+                className={styles.footerBtn}
                 href={action.href}
               >
                 {action.label}
