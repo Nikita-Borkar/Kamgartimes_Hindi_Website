@@ -1,3 +1,4 @@
+import Image from "next/image";
 import styles from "./layout.module.css";
 
 interface BrandLogoProps {
@@ -8,10 +9,12 @@ export function BrandLogo({ light = false }: BrandLogoProps) {
   return (
     <div className={styles.exactBrandLogo}>
       {/* Logo emblem image only */}
-      <img
+      <Image
         src="/img/real_logo.png"
         alt="कामगार टाइम्स"
         className={styles.exactLogoBadge}
+        width={48}
+        height={48}
       />
 
       {/* Code-rendered typography matching 2nd reference image */}

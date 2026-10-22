@@ -1,7 +1,7 @@
 "use client";
 
 import { PageShell } from "@/components/layout/PageShell";
-import { Megaphone, CheckCircle2, Phone, Mail, FileText, Send, Building } from "lucide-react";
+import { Megaphone, CheckCircle2, Phone, Mail, Send, Building } from "lucide-react";
 import styles from "./advertise.module.css";
 
 export default function PayForAdvertisementPage() {

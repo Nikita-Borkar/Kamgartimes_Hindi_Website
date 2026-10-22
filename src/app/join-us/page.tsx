@@ -17,8 +17,6 @@ import {
 } from "lucide-react";
 import styles from "./joinUs.module.css";
 
-const GOOGLE_FORM_VIEW_URL =
-  "https://docs.google.com/forms/d/e/1FAIpQLSe3YcUYioaYiblTyEV_hSoTFq6y-mAIEUKY4RiOZ7HqWKiqbg/viewform";
 const GOOGLE_FORM_EMBED_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLSe3YcUYioaYiblTyEV_hSoTFq6y-mAIEUKY4RiOZ7HqWKiqbg/viewform?embedded=true";
 const GOOGLE_FORM_SHORT_URL = "https://forms.gle/NVazQBd6pmtQ8JBMA";

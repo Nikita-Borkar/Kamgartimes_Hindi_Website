@@ -257,3 +257,32 @@
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 600px) {
+  .hero {
+    padding: 24px 16px;
+    border-radius: 16px;
+  }
+
+  .title {
+    font-size: clamp(22px, 5.5vw, 26px);
+  }
+
+  .subtitle {
+    font-size: 13.5px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .packageCard {
+    padding: 18px 14px;
+    border-radius: 14px;
+  }
+
+  .inquiryCard {
+    padding: 18px 14px;
+    border-radius: 14px;
+  }
+}

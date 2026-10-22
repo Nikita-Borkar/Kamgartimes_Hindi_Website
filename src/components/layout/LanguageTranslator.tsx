@@ -6,7 +6,18 @@ import styles from "./translator.module.css";
 
 declare global {
   interface Window {
-    google?: any;
+    google?: {
+      translate?: {
+        TranslateElement?: new (
+          options: {
+            pageLanguage: string;
+            includedLanguages: string;
+            autoDisplay: boolean;
+          },
+          elementId: string
+        ) => void;
+      };
+    };
     googleTranslateElementInit?: () => void;
   }
 }
@@ -25,15 +36,17 @@ export function LanguageTranslator() {
   const [currentLang, setCurrentLang] = useState("hi");
 
   useEffect(() => {
-    // Read current language from googtrans cookie if set
-    try {
-      const match = document.cookie.match(/googtrans=\/[^/]+\/([^;]+)/);
-      if (match && match[1]) {
-        setCurrentLang(match[1]);
+    // Read current language from googtrans cookie asynchronously if set
+    const timer = window.setTimeout(() => {
+      try {
+        const match = document.cookie.match(/googtrans=\/[^/]+\/([^;]+)/);
+        if (match && match[1]) {
+          setCurrentLang(match[1]);
+        }
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
-    }
+    }, 0);
 
     // Define Google Translate initialization function
     window.googleTranslateElementInit = () => {
@@ -62,6 +75,10 @@ export function LanguageTranslator() {
       script.async = true;
       document.body.appendChild(script);
     }
+
+    return () => {
+      window.clearTimeout(timer);
+    };
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

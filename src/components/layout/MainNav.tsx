@@ -2,8 +2,17 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, Menu, Search, X } from "lucide-react";
+import { ChevronDown, Menu, Search, X, User, Mic } from "lucide-react";
 import { navItems, type NavItem } from "@/data/site";
+import { ThemeToggle } from "./ThemeToggle";
+import {
+  FacebookIcon,
+  YoutubeIcon,
+  InstagramIcon,
+  TwitterXIcon,
+  WhatsappIcon,
+  TelegramIcon,
+} from "@/components/ui/SocialIcons";
 import styles from "./layout.module.css";
 
 function Caret({ open }: { open?: boolean }) {
@@ -36,16 +45,26 @@ function NavEntry({ item }: { item: NavItem }) {
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
-      <Link
+      <button
+        type="button"
         className={`${styles.navLink} ${styles.navLinkWithSub}`}
-        href={item.href}
         onClick={() => setOpen((prev) => !prev)}
         onFocus={() => setOpen(true)}
+        aria-expanded={open}
       >
         <span>{item.label}</span>
         <Caret open={open} />
-      </Link>
+      </button>
       <ul className={styles.subNav} data-open={open}>
+        <li className={styles.subNavItem}>
+          <Link
+            className={`${styles.subNavLink} ${styles.subNavLinkAll}`}
+            href={item.href}
+            onClick={() => setOpen(false)}
+          >
+            <span>सभी {item.label} →</span>
+          </Link>
+        </li>
         {item.children.map((child) => (
           <li key={child.href} className={styles.subNavItem}>
             <Link
@@ -62,7 +81,7 @@ function NavEntry({ item }: { item: NavItem }) {
   );
 }
 
-/** The links that did not fit the bar, stacked as an accordion. */
+/** The links that did not fit the bar, stacked as an accordion, with mobile quick links & socials. */
 function OverflowPanel({
   items,
   onNavigate,
@@ -72,48 +91,150 @@ function OverflowPanel({
 }) {
   const [openGroup, setOpenGroup] = useState<string | null>(null);
 
+  const toggleGroup = (label: string) => {
+    setOpenGroup((prev) => (prev === label ? null : label));
+  };
+
   return (
-    <ul className={styles.panelList}>
-      {items.map((item) => (
-        <li key={item.label} className={styles.panelItem}>
-          <div className={styles.panelRow}>
-            <Link className={styles.panelLink} href={item.href} onClick={onNavigate}>
-              {item.label}
-            </Link>
-            {item.children?.length ? (
-              <button
-                type="button"
-                className={styles.panelCaret}
-                aria-expanded={openGroup === item.label}
-                aria-label={`${item.label} उप-श्रेणी`}
-                onClick={() =>
-                  setOpenGroup((group) =>
-                    group === item.label ? null : item.label,
-                  )
-                }
-              >
-                <ChevronDown size={16} strokeWidth={2.2} aria-hidden="true" />
-              </button>
-            ) : null}
-          </div>
-          {item.children?.length ? (
-            <ul className={styles.panelSub} data-open={openGroup === item.label}>
-              {item.children.map((child) => (
-                <li key={child.href}>
+    <div className={styles.panelInnerWrapper}>
+      {/* Mobile Top Header: Dedicated Red Reporter button + User Login & Search */}
+      <div className={styles.drawerTopCard}>
+        <Link
+          href="/join-us"
+          className={styles.drawerJoinBtn}
+          onClick={onNavigate}
+          aria-label="कामगार टाइम्स पत्रकार / प्रतिनिधी नियुक्ती अर्ज २०२६-२०२७"
+        >
+          <Mic size={17} strokeWidth={2.4} aria-hidden="true" />
+          <span>पत्रकार बनें (Join as Reporter)</span>
+        </Link>
+
+        <div className={styles.drawerToolsRow}>
+          <Link
+            href="/login"
+            className={styles.drawerToolBtn}
+            onClick={onNavigate}
+            aria-label="लॉग इन करें"
+          >
+            <User size={16} strokeWidth={2.2} />
+            <span>लॉग इन / प्रोफ़ाइल</span>
+          </Link>
+          <Link
+            href="/search"
+            className={styles.drawerToolBtn}
+            onClick={onNavigate}
+            aria-label="खोजें"
+          >
+            <Search size={16} strokeWidth={2.2} />
+            <span>खोजें (Search)</span>
+          </Link>
+        </div>
+      </div>
+
+      <div className={styles.drawerMenuHeading}>सभी श्रेणियां (Categories)</div>
+
+      <ul className={styles.panelList}>
+        {items.map((item) => {
+          const hasDropdown = Boolean(item.children && item.children.length > 0);
+          const isOpen = openGroup === item.label;
+
+          return (
+            <li key={item.label} className={styles.panelItem}>
+              {hasDropdown ? (
+                <div className={styles.panelRow}>
+                  <button
+                    type="button"
+                    className={styles.panelAccordionBtn}
+                    aria-expanded={isOpen}
+                    aria-label={`${item.label} उप-श्रेणी ${isOpen ? "बंद करें" : "खोलें"}`}
+                    onClick={() => toggleGroup(item.label)}
+                  >
+                    <span className={styles.panelLabelText}>{item.label}</span>
+                    <ChevronDown
+                      size={18}
+                      strokeWidth={2.4}
+                      aria-hidden="true"
+                      className={`${styles.panelCaretIcon}${isOpen ? ` ${styles.caretRotated}` : ""}`}
+                    />
+                  </button>
+                </div>
+              ) : (
+                <div className={styles.panelRow}>
                   <Link
-                    className={styles.panelSubLink}
-                    href={child.href}
+                    className={styles.panelDirectLink}
+                    href={item.href}
                     onClick={onNavigate}
                   >
-                    {child.label}
+                    <span className={styles.panelLabelText}>{item.label}</span>
                   </Link>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </li>
-      ))}
-    </ul>
+                </div>
+              )}
+
+              {hasDropdown && item.children ? (
+                <ul className={styles.panelSub} data-open={isOpen}>
+                  <li key={`${item.label}-all`} className={styles.panelSubItem}>
+                    <Link
+                      className={`${styles.panelSubLink} ${styles.panelSubLinkAll}`}
+                      href={item.href}
+                      onClick={onNavigate}
+                    >
+                      <span>सभी {item.label} समाचार देखें →</span>
+                    </Link>
+                  </li>
+                  {item.children.map((child) => (
+                    <li key={child.href} className={styles.panelSubItem}>
+                      <Link
+                        className={styles.panelSubLink}
+                        href={child.href}
+                        onClick={onNavigate}
+                      >
+                        {child.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className={styles.drawerQuickLinks}>
+        <Link href="/advertise" className={styles.drawerQuickBtnSecondary} onClick={onNavigate}>
+          विज्ञापन दें (Advertise)
+        </Link>
+        <Link href="/donate" className={styles.drawerQuickBtnSecondary} onClick={onNavigate}>
+          सहयोग करें (Donate)
+        </Link>
+        <Link href="/send-news" className={styles.drawerQuickBtnSecondary} onClick={onNavigate}>
+          खबर भेजें (Send News)
+        </Link>
+      </div>
+
+      <div className={styles.drawerSocialsSection}>
+        <div className={styles.drawerSocialsTitle}>सोशल मीडिया पर फॉलो करें</div>
+        <div className={styles.drawerSocialIcons}>
+          <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" aria-label="व्हाट्सएप" className={styles.drawerSocialDot}>
+            <WhatsappIcon size={18} />
+          </a>
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="फेसबुक" className={styles.drawerSocialDot}>
+            <FacebookIcon size={18} />
+          </a>
+          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="यूट्यूब" className={styles.drawerSocialDot}>
+            <YoutubeIcon size={18} />
+          </a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="इंस्टाग्राम" className={styles.drawerSocialDot}>
+            <InstagramIcon size={18} />
+          </a>
+          <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="एक्स" className={styles.drawerSocialDot}>
+            <TwitterXIcon size={16} />
+          </a>
+          <a href="https://t.me" target="_blank" rel="noopener noreferrer" aria-label="टेलीग्राम" className={styles.drawerSocialDot}>
+            <TelegramIcon size={18} />
+          </a>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -190,9 +311,25 @@ export function MainNav() {
   }, [measure]);
 
   const overflow = visibleCount < navItems.length;
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    if (!overflow) setPanelOpen(false);
+    const handleCheck = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    const t = window.setTimeout(handleCheck, 0);
+    window.addEventListener("resize", handleCheck);
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("resize", handleCheck);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!overflow) {
+      const timer = window.setTimeout(() => setPanelOpen(false), 0);
+      return () => window.clearTimeout(timer);
+    }
   }, [overflow]);
 
   useEffect(() => {
@@ -219,9 +356,13 @@ export function MainNav() {
         </div>
 
         <div className={styles.navRightActions} ref={actionsRef}>
-          <Link className={styles.searchBtn} href="/search" aria-label="खोजें">
+          <Link className={styles.searchBtn} href="/search" aria-label="खोजें" title="खोजें">
             <Search size={17} strokeWidth={2.2} aria-hidden="true" />
           </Link>
+
+          <div className={styles.navThemeToggle}>
+            <ThemeToggle />
+          </div>
 
           <button
             type="button"
@@ -240,7 +381,7 @@ export function MainNav() {
 
         <div className={styles.navPanel} data-open={panelOpen}>
           <OverflowPanel
-            items={navItems.slice(visibleCount)}
+            items={isMobile ? navItems : navItems.slice(visibleCount)}
             onNavigate={() => setPanelOpen(false)}
           />
         </div>

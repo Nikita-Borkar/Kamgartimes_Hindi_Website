@@ -1,7 +1,7 @@
 "use client";
 
 import { Moon, Sun } from "lucide-react";
-import { useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import styles from "./layout.module.css";
 
 type Theme = "light" | "dark" | "system";
@@ -18,11 +18,6 @@ function getServerSnapshot(): Theme {
   return "light";
 }
 
-/**
- * Theme is external state: it lives on <html data-theme>, written by the
- * inline script in app/layout.tsx. Reading it through useSyncExternalStore
- * keeps the button in sync without a mount effect or a cascading render.
- */
 function subscribe(onChange: () => void) {
   window.addEventListener(EVENT, onChange);
   window.addEventListener("storage", onChange);
@@ -34,6 +29,14 @@ function subscribe(onChange: () => void) {
 
 export function ThemeToggle() {
   const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    const t = window.setTimeout(() => setMounted(true), 0);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  const activeTheme = mounted ? theme : "light";
 
   const toggle = () => {
     const next: Theme = getSnapshot() === "dark" ? "light" : "dark";
@@ -42,7 +45,7 @@ export function ThemeToggle() {
     window.dispatchEvent(new Event(EVENT));
   };
 
-  const label = theme === "dark" ? "लाइट मोड" : "डार्क मोड";
+  const label = activeTheme === "dark" ? "लाइट मोड" : "डार्क मोड";
 
   return (
     <button
@@ -51,9 +54,10 @@ export function ThemeToggle() {
       className={`${styles.dot} ${styles.toggle}`}
       aria-label={label}
       title={label}
+      suppressHydrationWarning
     >
       <span aria-hidden="true">
-        {theme === "dark" ? (
+        {activeTheme === "dark" ? (
           <Sun size={16} strokeWidth={2} />
         ) : (
           <Moon size={16} strokeWidth={2} />

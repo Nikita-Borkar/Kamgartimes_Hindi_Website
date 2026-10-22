@@ -16,14 +16,12 @@ const titleClass: Record<HeadlineSize, string> = {
 export function OverlayCard({
   article,
   headlineSize = "m",
-  showMeta = true,
   sizes,
   priority = false,
   showShareBar = true,
 }: {
   article: Article;
   headlineSize?: HeadlineSize;
-  showMeta?: boolean;
   sizes: string;
   priority?: boolean;
   showShareBar?: boolean;

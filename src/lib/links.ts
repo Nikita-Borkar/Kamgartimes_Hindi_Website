@@ -22,7 +22,7 @@ export const articleHref = (id: string) => {
 
 export const videoHref = (id: string) => `/video/${id}`;
 export const galleryHref = (id: string) => `/gallery/${id}`;
-export const epaperHref = (id: string) => `/e-paper`;
+export const epaperHref = (id?: string) => (id ? `/e-paper?edition=${id}` : "/e-paper");
 
 /** Resolves a section label (e.g. "क्रीडा") to its /category/[slug] route. */
 export function categoryHref(label: string): string {

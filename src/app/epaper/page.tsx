@@ -4,7 +4,8 @@ import { useState } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { leaderboardAds } from "@/data/ads";
-import { Download, Calendar, Maximize2, ChevronLeft, ChevronRight, FileText, Share2 } from "lucide-react";
+import Image from "next/image";
+import { Download, Maximize2, ChevronLeft, ChevronRight, FileText } from "lucide-react";
 import styles from "./epaper.module.css";
 
 export default function EPaperPage() {
@@ -102,10 +103,13 @@ export default function EPaperPage() {
 
             {/* Simulated High-Res E-Paper Page Image */}
             <div className={styles.paperStage}>
-              <img
+              <Image
                 src={`/img/img0${(activePage % 8) + 1}.png`}
                 alt={`कामगार टाइम्स ई-पेपर पृष्ठ ${activePage}`}
                 className={styles.paperImg}
+                width={800}
+                height={1100}
+                priority
               />
             </div>
 

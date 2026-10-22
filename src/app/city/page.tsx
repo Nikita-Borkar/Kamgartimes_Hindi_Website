@@ -4,7 +4,7 @@ import { PageShell } from "@/components/layout/PageShell";
 import { citiesData } from "@/data/cities";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { leaderboardAds } from "@/data/ads";
-import { MapPin, ChevronRight, Sun, Wind, Sparkles } from "lucide-react";
+import { MapPin, ChevronRight, Sparkles } from "lucide-react";
 import styles from "./[slug]/city.module.css";
 
 export const metadata: Metadata = {
@@ -20,11 +20,11 @@ export default function CityIndexPage() {
     <PageShell>
       <main id="main" className={styles.main}>
         <div className={styles.shell}>
-          <header style={{ marginBottom: "32px" }}>
-            <h1 style={{ fontSize: "32px", fontWeight: "800", marginBottom: "8px" }}>
+          <header className={styles.indexHeader}>
+            <h1 className={styles.indexTitle}>
               स्थानीय समाचार और शहर विशेष बुलेटिन
             </h1>
-            <p style={{ fontSize: "16px", color: "var(--muted)" }}>
+            <p className={styles.indexSubtitle}>
               अपने शहर का नाम चुनें और ताज़ा हलचल, मौसम, श्रमिक कल्याण योजनाएं व विशेष रिपोर्ट देखें।
             </p>
           </header>
