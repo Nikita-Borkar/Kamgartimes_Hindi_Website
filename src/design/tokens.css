@@ -116,18 +116,19 @@
 
 /* Explicit reader choice for dark mode. Default is always light (white theme). */
 :root[data-theme="dark"] {
-  --bg: #121212;
-  --surface: #1c1c1c;
-  --image: #2c2b28;
+  --bg: #0f1216;
+  --surface: #181d24;
+  --image: #262c36;
   --ink: #000000;
-  --brand: #e63b4e;
-  --market-up: #58c98a;
-  --border: #2e2d2a;
-  --text: #f2f0eb;
-  --muted: #a09d96;
+  --brand: #ff4757;
+  --market-up: #4ade80;
+  --border: #2e3846;
+  --text: #f8fafc;
+  --muted: #94a3b8;
   --on-ink: #ffffff;
+  --on-ink-muted: #cbd5e1;
 
-  --scrim: rgba(0, 0, 0, 0.82);
+  --scrim: rgba(0, 0, 0, 0.85);
 }
 
 /* Responsive shell padding overrides for tablet and mobile devices */

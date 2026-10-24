@@ -11,7 +11,7 @@ export function LatestTrending() {
   return (
     <section className={styles.latestTrending} aria-label="ताज़ा ख़बरें">
       <div className={`${styles.stack} reveal`}>
-        <SectionHeader title="ताज़ा ख़बरें" />
+        <SectionHeader title="ताज़ा ख़बरें" action="और पढ़ें" href="/category/latest" />
         {latestNews.map((article, i) => (
           <div key={article.id} style={stagger(i)}>
             <RowArticle
@@ -26,7 +26,7 @@ export function LatestTrending() {
       </div>
 
       <div className={`${styles.stack} reveal`} style={stagger(1)}>
-        <SectionHeader title="ट्रेंडिंग" action="और पढ़ें →" />
+        <SectionHeader title="ट्रेंडिंग" action="और पढ़ें" href="/category/trending" />
         <AdSlot ad={railAd} />
         {trending.map((article, i) => (
           <div key={article.id} style={stagger(i)}>

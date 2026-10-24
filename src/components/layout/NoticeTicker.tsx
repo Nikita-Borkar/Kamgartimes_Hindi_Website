@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { notice } from "@/data/site";
 import styles from "./layout.module.css";
 
@@ -32,7 +33,9 @@ export function NoticeTicker() {
         >
           {Array.from({ length: 10 }).map((_, index) => (
             <div key={index} className={styles.noticeItem}>
-              <span className={styles.noticeText}>{notice.text}</span>
+              <Link href="/join-us" className={styles.noticeLink}>
+                <span className={styles.noticeText}>{notice.text}</span>
+              </Link>
               <span className={styles.noticeDot}>•</span>
             </div>
           ))}

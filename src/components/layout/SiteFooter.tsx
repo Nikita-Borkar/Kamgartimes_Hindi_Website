@@ -4,6 +4,8 @@ import { categories, footer, site } from "@/data/site";
 import { FacebookIcon, YoutubeIcon, InstagramIcon, TwitterXIcon, WhatsappIcon, TelegramIcon } from "@/components/ui/SocialIcons";
 import styles from "./layout.module.css";
 
+import { categoryHref } from "@/lib/links";
+
 /** Resolves a section label to its /category/[slug] route, or the video/media desks. */
 function sectionHref(label: string) {
   if (label === "होम") return "/";
@@ -11,9 +13,7 @@ function sectionHref(label: string) {
   if (label === "शॉर्ट्स") return "/shorts";
   if (label === "फोटो" || label === "गैलरी" || label === "फोटो गैलरी") return "/gallery";
   if (label === "ई-पेपर") return "/e-paper";
-  const match = categories.find((category) => category.label === label);
-  if (match) return `/category/${match.slug}`;
-  return "#";
+  return categoryHref(label);
 }
 
 const colorfulSocials = [

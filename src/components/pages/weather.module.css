@@ -1,0 +1,526 @@
+.main {
+  max-width: var(--shell-max);
+  margin: 0 auto;
+  padding: var(--space-8) var(--shell-pad) var(--space-12);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font: var(--fw-medium) var(--fs-meta) / var(--lh-meta) var(--font-sans);
+  color: var(--muted);
+}
+
+.crumbLink {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.crumbLink:hover {
+  color: var(--brand);
+}
+
+.crumbSep {
+  color: var(--border);
+}
+
+.crumbCurrent {
+  color: var(--brand);
+  font-weight: var(--fw-semi);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-bottom: var(--space-6);
+  border-bottom: var(--rule);
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.titleBar {
+  width: 5px;
+  height: 38px;
+  background: var(--brand);
+  flex-shrink: 0;
+  border-radius: var(--r-pill);
+}
+
+.title {
+  margin: 0;
+  font: var(--fw-bold) clamp(24px, 3.5vw, 36px) / var(--lh-tight) var(--font-serif);
+  color: var(--text);
+}
+
+.lede {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  max-width: 800px;
+}
+
+/* City Selector Tabs */
+.cityTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.cityBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-body);
+  font-family: var(--font-serif);
+  font-weight: var(--fw-semi);
+  color: var(--text);
+  cursor: pointer;
+  transition: all var(--dur-fast);
+}
+
+.cityBtn:hover {
+  background: var(--bg);
+  border-color: var(--border);
+}
+
+.cityBtnActive {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+
+.cityBtnActive .cityBtnTemp {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.cityBtnTemp {
+  font-size: 13px;
+  font-family: var(--font-sans);
+  color: var(--muted);
+}
+
+/* Hero Live Weather Grid */
+.heroGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: stretch;
+}
+
+.currentCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-6);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.currentTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.cityNameArea h2 {
+  margin: 0;
+  font: var(--fw-bold) clamp(24px, 2.5vw, 32px) / var(--lh-tight) var(--font-serif);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cityNameArea p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: var(--fs-meta);
+}
+
+.aqiBadge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.aqiTag {
+  background: #f59e0b;
+  color: #fff;
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+}
+
+.tempRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.mainTemp {
+  font: var(--fw-bold) clamp(56px, 7vw, 76px) / 1 var(--font-serif);
+  color: var(--text);
+  letter-spacing: -2px;
+}
+
+.tempMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.conditionText {
+  font: var(--fw-bold) var(--fs-h-m) / var(--lh-snug) var(--font-serif);
+  color: var(--text);
+}
+
+.highLowText {
+  font-size: var(--fs-body);
+  color: var(--muted);
+}
+
+.highVal {
+  color: var(--market-up, #10b981);
+  font-weight: var(--fw-semi);
+}
+
+.lowVal {
+  color: var(--brand);
+  font-weight: var(--fw-semi);
+}
+
+.feelsText {
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+
+/* Metric Cards */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: var(--rule);
+}
+
+.metricItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--bg);
+  padding: var(--space-3);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+}
+
+.metricLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.metricVal {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body);
+  color: var(--text);
+}
+
+/* Hourly Timeline Aside */
+.hourlyCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.hourlyCard h3 {
+  margin: 0;
+  font: var(--fw-bold) var(--fs-h-s) / var(--lh-snug) var(--font-serif);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 2px solid var(--brand);
+  padding-bottom: var(--space-2);
+}
+
+.hourlyList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.hourlyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: var(--r-sm);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-size: var(--fs-meta);
+}
+
+.hourlyTime {
+  font-weight: var(--fw-semi);
+  min-width: 50px;
+}
+
+.hourlyTemp {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body);
+  color: var(--text);
+}
+
+/* =========================================================================
+   CORE REQUIREMENT SECTION: PAST TEMPERATURE RECORDS
+   "uske detail page mai purane sab temperature dikhne chiaye the"
+   ========================================================================= */
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sectionHead {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sectionTitle {
+  margin: 0;
+  font: var(--fw-bold) var(--fs-h-l) / var(--lh-tight) var(--font-serif);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.sectionSubtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--fs-body);
+}
+
+/* Past Temperature Cards & Table */
+.pastGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-4);
+}
+
+.pastDayCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transition: transform var(--dur-fast), border-color var(--dur-fast);
+}
+
+.pastDayCard:hover {
+  border-color: var(--brand);
+  transform: translateY(-2px);
+}
+
+.pastDayHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: var(--rule);
+  padding-bottom: var(--space-2);
+}
+
+.pastDayName {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body);
+  color: var(--text);
+}
+
+.pastDate {
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+
+.pastTempsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pastMax {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pastMax strong {
+  font-size: 24px;
+  font-weight: var(--fw-bold);
+  color: var(--market-up, #10b981);
+}
+
+.pastMin {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: right;
+}
+
+.pastMin strong {
+  font-size: 24px;
+  font-weight: var(--fw-bold);
+  color: var(--brand);
+}
+
+.pastDetailsList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: var(--fs-meta);
+  color: var(--muted);
+  background: var(--bg);
+  padding: var(--space-3);
+  border-radius: var(--r-sm);
+}
+
+.pastDetailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Past Table */
+.tableWrapper {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.historyTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: var(--fs-body);
+}
+
+.historyTable th {
+  background: var(--bg);
+  color: var(--text);
+  font-weight: var(--fw-bold);
+  font-family: var(--font-serif);
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+}
+
+.historyTable td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.historyTable tr:last-child td {
+  border-bottom: none;
+}
+
+.historyTable tr:hover {
+  background: var(--bg);
+}
+
+/* 7-Day Forecast Section */
+.forecastGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.forecastCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-3);
+}
+
+.forecastDay {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-body);
+  color: var(--text);
+}
+
+.forecastCondition {
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+
+.forecastTemps {
+  display: flex;
+  gap: var(--space-3);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-bold);
+}
+
+/* Maharashtra All Cities Table Overview */
+.stateOverviewCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+@media (max-width: 900px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+  }
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

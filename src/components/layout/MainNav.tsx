@@ -28,6 +28,67 @@ function Caret({ open }: { open?: boolean }) {
 
 function NavEntry({ item }: { item: NavItem }) {
   const [open, setOpen] = useState(false);
+  const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const menuRef = useRef<HTMLUListElement>(null);
+
+  const updatePosition = useCallback(() => {
+    if (!buttonRef.current) return;
+    const rect = buttonRef.current.getBoundingClientRect();
+    const menuWidth = 240;
+    const left = Math.max(8, Math.min(rect.left, window.innerWidth - menuWidth - 8));
+    setCoords({
+      top: rect.bottom + 4,
+      left,
+    });
+  }, []);
+
+  const handleToggle = () => {
+    if (!open) {
+      updatePosition();
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      const target = e.target as Node;
+      if (
+        buttonRef.current &&
+        !buttonRef.current.contains(target) &&
+        menuRef.current &&
+        !menuRef.current.contains(target)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    const handleReposition = () => {
+      updatePosition();
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    window.addEventListener("scroll", handleReposition, { passive: true });
+    window.addEventListener("resize", handleReposition);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+      window.removeEventListener("scroll", handleReposition);
+      window.removeEventListener("resize", handleReposition);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open, updatePosition]);
 
   if (!item.children?.length) {
     return (
@@ -42,41 +103,62 @@ function NavEntry({ item }: { item: NavItem }) {
   return (
     <div
       className={styles.navItem}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseEnter={() => {
+        if (typeof window !== "undefined" && window.innerWidth > 768) {
+          updatePosition();
+          setOpen(true);
+        }
+      }}
+      onMouseLeave={() => {
+        if (typeof window !== "undefined" && window.innerWidth > 768) {
+          setOpen(false);
+        }
+      }}
     >
       <button
+        ref={buttonRef}
         type="button"
-        className={`${styles.navLink} ${styles.navLinkWithSub}`}
-        onClick={() => setOpen((prev) => !prev)}
-        onFocus={() => setOpen(true)}
+        className={`${styles.navLink} ${styles.navLinkWithSub}${open ? ` ${styles.navLinkActive}` : ""}`}
+        onClick={handleToggle}
         aria-expanded={open}
+        suppressHydrationWarning
       >
         <span>{item.label}</span>
         <Caret open={open} />
       </button>
-      <ul className={styles.subNav} data-open={open}>
-        <li className={styles.subNavItem}>
-          <Link
-            className={`${styles.subNavLink} ${styles.subNavLinkAll}`}
-            href={item.href}
-            onClick={() => setOpen(false)}
-          >
-            <span>सभी {item.label} →</span>
-          </Link>
-        </li>
-        {item.children.map((child) => (
-          <li key={child.href} className={styles.subNavItem}>
+
+      {open && coords && (
+        <ul
+          ref={menuRef}
+          className={styles.subNav}
+          data-open={open}
+          style={{
+            top: `${coords.top}px`,
+            left: `${coords.left}px`,
+          }}
+        >
+          <li className={styles.subNavItem}>
             <Link
-              className={styles.subNavLink}
-              href={child.href}
+              className={`${styles.subNavLink} ${styles.subNavLinkAll}`}
+              href={item.href}
               onClick={() => setOpen(false)}
             >
-              <span>{child.label}</span>
+              <span>सभी {item.label} →</span>
             </Link>
           </li>
-        ))}
-      </ul>
+          {item.children.map((child) => (
+            <li key={child.href} className={styles.subNavItem}>
+              <Link
+                className={styles.subNavLink}
+                href={child.href}
+                onClick={() => setOpen(false)}
+              >
+                <span>{child.label}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
