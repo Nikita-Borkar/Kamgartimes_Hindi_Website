@@ -59,7 +59,7 @@ export const navItems: NavItem[] = [
     ],
   },
   {
-    label: "लेटेस्ट न्यूज़",
+    label: "ताज़ा ख़बरें",
     href: "/category/latest",
     children: [
       { label: "ताज़ा घटनाक्रम", href: "/category/breaking" },
@@ -174,7 +174,8 @@ export const categories: { slug: string; label: string }[] = [
   { slug: "labor-union", label: "यूनियन न्यूज़" },
   { slug: "wages", label: "वेतन व भत्ते" },
   { slug: "labor-laws", label: "श्रम कानून व नियम" },
-  { slug: "latest", label: "लेटेस्ट न्यूज़" },
+  { slug: "latest", label: "ताज़ा ख़बरें" },
+  { slug: "trending", label: "ट्रेंडिंग" },
   { slug: "breaking", label: "ताज़ा घटनाक्रम" },
   { slug: "national", label: "देश" },
   { slug: "crime", label: "अपराध" },
@@ -222,17 +223,17 @@ export const breakingNews = [
   {
     label: "ताज़ा ख़बर",
     text: "राज्य सरकार द्वारा नए मेट्रो कॉरिडोर की घोषणा; आगामी तिमाही में कार्य शुरू होगा",
-    href: "#",
+    href: "/category/latest",
   },
   {
     label: "ताज़ा ख़बर",
     text: "मुंबई और तटीय इलाकों में भारी बारिश का अलर्ट; प्रशासन पूरी तरह सतर्क",
-    href: "#",
+    href: "/category/maharashtra",
   },
   {
     label: "ताज़ा ख़बर",
     text: "राज्य में नई औद्योगिक व श्रमिक कल्याण नीति को कैबिनेट की हरी झंडी",
-    href: "#",
+    href: "/category/labor",
   },
 ] as const;
 

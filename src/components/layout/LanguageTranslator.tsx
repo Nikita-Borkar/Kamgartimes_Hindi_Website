@@ -33,9 +33,11 @@ const LANGUAGES = [
 ];
 
 export function LanguageTranslator() {
+  const [mounted, setMounted] = useState(false);
   const [currentLang, setCurrentLang] = useState("hi");
 
   useEffect(() => {
+    setMounted(true);
     // Read current language from googtrans cookie asynchronously if set
     const timer = window.setTimeout(() => {
       try {
@@ -113,12 +115,13 @@ export function LanguageTranslator() {
       {/* Hidden container for Google Translate Widget */}
       <div id="google_translate_element" className={styles.hiddenTranslate} />
 
-      <div className={styles.selectBox}>
+      <div className={styles.selectBox} suppressHydrationWarning>
         <select
           className={styles.select}
           value={currentLang}
           onChange={handleChange}
           aria-label="Select Language"
+          suppressHydrationWarning
         >
           <option value="" disabled>
             Select Language

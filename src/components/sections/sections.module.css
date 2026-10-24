@@ -32,16 +32,16 @@
 /* The fixed heights live on these wrappers, so the card anchor must fill them.
    Without this the overlay collapses to the height of its own text and the
    image stops matching the reference crop. */
-.leadHero > div,
-.leadStackItem > div,
-.tile > div,
-.picksHero > div,
-.picksStackItem > div,
-.leadHero > a,
-.leadStackItem > a,
-.tile > a,
-.picksHero > a,
-.picksStackItem > a {
+.leadHero>div,
+.leadStackItem>div,
+.tile>div,
+.picksHero>div,
+.picksStackItem>div,
+.leadHero>a,
+.leadStackItem>a,
+.tile>a,
+.picksHero>a,
+.picksStackItem>a {
   flex: 1;
   min-width: 0;
   height: 100%;
@@ -371,6 +371,46 @@
   margin: var(--space-5) 0 0;
   color: var(--muted);
   font-size: var(--fs-meta);
+}
+
+.pollVoteBtn {
+  margin-top: var(--space-4);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 18px;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-semi);
+  cursor: pointer;
+  transition: opacity var(--dur-fast);
+}
+
+.pollVoteBtn:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.pollVoteBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pollRadioLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  width: 100%;
+}
+
+.pollRadioInput {
+  accent-color: var(--brand);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
 }
 
 /* ---------- लाईव्ह अपडेट्स beside the hero ------------------------------- */
@@ -785,7 +825,7 @@
   gap: var(--space-5);
 }
 
-.videoShortGrid > * {
+.videoShortGrid>* {
   min-width: 0;
 }
 
@@ -949,6 +989,7 @@
    the narrower measure. Only the gallery and the video panel adjust.
    -------------------------------------------------------------------------- */
 @media (max-width: 900px) {
+
   .leadGrid,
   .tiles,
   .latestTrending,
@@ -964,11 +1005,11 @@
     grid-template-columns: 1fr;
   }
 
-  .leadGrid > :first-child {
+  .leadGrid> :first-child {
     order: 2;
   }
 
-  .leadGrid > :last-child {
+  .leadGrid> :last-child {
     order: 1;
   }
 
@@ -1414,13 +1455,16 @@
     grid-template-columns: 1fr;
     height: auto;
   }
+
   .primaryVideoCard {
     height: 360px;
   }
+
   .videoPlaylistStack {
     flex-direction: row;
     height: auto;
   }
+
   .playlistItemCard {
     flex: 1;
   }
@@ -1430,9 +1474,11 @@
   .videoPlaylistStack {
     flex-direction: column;
   }
+
   .primaryVideoCard {
     height: 260px;
   }
+
   .videoStageTitle {
     font-size: 17px;
   }

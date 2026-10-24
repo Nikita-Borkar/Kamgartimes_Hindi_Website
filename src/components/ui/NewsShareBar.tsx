@@ -102,20 +102,12 @@ export function NewsShareBar({
     window.speechSynthesis.speak(utterance);
   };
 
-  const iconSize = compact ? 13 : 16;
+  const iconSize = compact ? 12 : 16;
 
   const socialButtons = [
     {
-      id: "share",
-      component: () => <Share2 size={iconSize} strokeWidth={2.2} />,
-      label: "शेयर करें",
-      color: "#64748b",
-      bg: "#f1f5f9",
-      onClick: handleShare,
-    },
-    {
       id: "whatsapp",
-      component: () => <WhatsappIcon size={compact ? 13 : 16} />,
+      component: () => <WhatsappIcon size={compact ? 12 : 16} />,
       label: "व्हाट्सएप",
       color: "#25D366",
       bg: "#e7fce9",
@@ -123,7 +115,7 @@ export function NewsShareBar({
     },
     {
       id: "facebook",
-      component: () => <FacebookIcon size={compact ? 13 : 16} />,
+      component: () => <FacebookIcon size={compact ? 12 : 16} />,
       label: "फेसबुक",
       color: "#1877F2",
       bg: "#e7f0fd",
@@ -131,7 +123,7 @@ export function NewsShareBar({
     },
     {
       id: "twitter",
-      component: () => <TwitterXIcon size={compact ? 12 : 15} />,
+      component: () => <TwitterXIcon size={compact ? 11 : 15} />,
       label: "एक्स (ट्विटर)",
       color: "#0f1419",
       bg: "#f1f5f9",
@@ -139,11 +131,24 @@ export function NewsShareBar({
     },
     {
       id: "telegram",
-      component: () => <TelegramIcon size={compact ? 13 : 16} />,
+      component: () => <TelegramIcon size={compact ? 12 : 16} />,
       label: "टेलीग्राम",
       color: "#229ED9",
       bg: "#e4f5fc",
       href: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
+    },
+    {
+      id: "share",
+      component: () =>
+        copied ? (
+          <Check size={iconSize} strokeWidth={2.5} color="#16a34a" />
+        ) : (
+          <Share2 size={iconSize} strokeWidth={2.2} />
+        ),
+      label: copied ? "लिंक कॉपी हो गया!" : "शेयर करें / लिंक कॉपी",
+      color: copied ? "#16a34a" : "#64748b",
+      bg: copied ? "#dcfce7" : "#f1f5f9",
+      onClick: handleShare,
     },
   ];
 
@@ -187,35 +192,37 @@ export function NewsShareBar({
           );
         })}
 
-        <div className={styles.moreWrapper}>
-          <button
-            type="button"
-            className={styles.shareBtn}
-            title="अधिक विकल्प (लिंक कॉपी करें)"
-            aria-label="अधिक विकल्प"
-            style={{ color: "#475569", backgroundColor: "#f1f5f9" }}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setShowMore(!showMore);
-            }}
-          >
-            <MoreHorizontal size={iconSize} strokeWidth={2.2} />
-          </button>
+        {!compact && (
+          <div className={styles.moreWrapper}>
+            <button
+              type="button"
+              className={styles.shareBtn}
+              title="अधिक विकल्प (लिंक कॉपी करें)"
+              aria-label="अधिक विकल्प"
+              style={{ color: "#475569", backgroundColor: "#f1f5f9" }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setShowMore(!showMore);
+              }}
+            >
+              <MoreHorizontal size={iconSize} strokeWidth={2.2} />
+            </button>
 
-          {showMore && (
-            <div className={styles.moreMenu}>
-              <button
-                type="button"
-                className={styles.moreMenuItem}
-                onClick={handleCopyLink}
-              >
-                {copied ? <Check size={14} /> : <Copy size={14} />}
-                <span>{copied ? "कॉपी हो गया!" : "लिंक कॉपी करें"}</span>
-              </button>
-            </div>
-          )}
-        </div>
+            {showMore && (
+              <div className={styles.moreMenu}>
+                <button
+                  type="button"
+                  className={styles.moreMenuItem}
+                  onClick={handleCopyLink}
+                >
+                  {copied ? <Check size={14} /> : <Copy size={14} />}
+                  <span>{copied ? "कॉपी हो गया!" : "लिंक कॉपी करें"}</span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         <button
           type="button"

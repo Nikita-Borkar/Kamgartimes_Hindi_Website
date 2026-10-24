@@ -15,7 +15,7 @@ export function EditorsPicks() {
   return (
     <section className={styles.section} aria-label="संपादक की पसंद">
       <div className="reveal">
-        <SectionHeader title="संपादक की पसंद" />
+        <SectionHeader title="संपादक की पसंद" href="/category/editorial" />
       </div>
       <div className={`${styles.picks} reveal`}>
         <div className={styles.picksHero}>

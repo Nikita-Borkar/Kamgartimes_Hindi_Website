@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import {
   Cloud,
   CloudRain,
@@ -5,6 +8,7 @@ import {
   Droplets,
   MapPin,
   Wind,
+  CheckCircle,
 } from "lucide-react";
 import { weatherPollAds } from "@/data/ads";
 import { AdSlot } from "@/components/ui/AdSlot";
@@ -19,17 +23,40 @@ const forecast = [
   { day: "गुरु", Icon: CloudSun, high: "32°", low: "25°", rain: "10%" },
 ];
 
-const pollOptions = [
-  { label: "कांजुरमार्ग से हवाईअड्डा रूट", percent: 45 },
-  { label: "मुंबई से नवी मुंबई लिंक", percent: 34 },
-  { label: "दहिसर से ठाणे कॉरिडोर", percent: 21 },
+const initialPollOptions = [
+  { id: "opt-1", label: "कांजुरमार्ग से हवाईअड्डा रूट", votes: 5602, percent: 45 },
+  { id: "opt-2", label: "मुंबई से नवी मुंबई लिंक", votes: 4233, percent: 34 },
+  { id: "opt-3", label: "दहिसर से ठाणे कॉरिडोर", votes: 2615, percent: 21 },
 ];
 
 export function WeatherPoll() {
+  const [options, setOptions] = useState(initialPollOptions);
+  const [selectedOptId, setSelectedOptId] = useState<string>("");
+  const [hasVoted, setHasVoted] = useState<boolean>(false);
+  const [totalVotes, setTotalVotes] = useState<number>(12450);
+
+  const handleVote = () => {
+    if (!selectedOptId || hasVoted) return;
+
+    const newTotal = totalVotes + 1;
+    const updated = options.map((opt) => {
+      const v = opt.id === selectedOptId ? opt.votes + 1 : opt.votes;
+      return {
+        ...opt,
+        votes: v,
+        percent: Math.round((v / newTotal) * 100),
+      };
+    });
+
+    setOptions(updated);
+    setTotalVotes(newTotal);
+    setHasVoted(true);
+  };
+
   return (
     <section className={styles.weatherPoll} aria-label="मौसम और आज का सवाल">
       <div className={styles.weatherColumn}>
-        <SectionHeader title="मौसम" action="विस्तृत पूर्वानुमान →" />
+        <SectionHeader title="मौसम" action="विस्तृत पूर्वानुमान" href="/weather" />
         <div className={styles.weatherBody}>
           <article className={styles.weatherCurrent}>
             <div className={styles.weatherLocation}>
@@ -115,39 +142,86 @@ export function WeatherPoll() {
       </div>
 
       <div className={styles.pollColumn}>
-        <SectionHeader title="आज का सवाल" action="पुराने सर्वेक्षण" />
+        <SectionHeader title="आज का सवाल" action="पुराने सर्वेक्षण" href="/polls" />
         <div className={styles.pollContent}>
           <div className={styles.pollQuestion}>
             <h3>
               मेट्रो और नए बुनियादी ढांचे के विस्तार से किस क्षेत्र को सबसे ज्यादा लाभ होगा?
             </h3>
             <p>नवीनतम जनमत सर्वेक्षण के अनुसार।</p>
-            <div className={styles.pollMeta}>केवल एक विकल्प चुनें</div>
+            <div className={styles.pollMeta}>
+              {hasVoted ? "आपका मत दर्ज हो चुका है" : "अपना विकल्प चुनें और वोट दें"}
+            </div>
           </div>
 
           <div>
-            <ol className={styles.pollResults} aria-label="सर्वेक्षण के परिणाम">
-              {pollOptions.map((option, index) => (
-                <li className={styles.pollOption} key={option.label}>
-                  <div className={styles.pollOptionLabel}>
-                    <span>{option.label}</span>
-                    <span className={styles.pollPercent}>
-                      {option.percent}%
-                    </span>
-                  </div>
-                  <div className={styles.pollTrack} aria-hidden="true">
-                    <span
-                      className={styles.pollFill}
-                      style={{ width: `${option.percent}%` }}
-                    />
-                  </div>
-                  {index === 0 ? (
-                    <span className="srOnly">सर्वाधिक वोट</span>
-                  ) : null}
-                </li>
-              ))}
-            </ol>
-            <p className={styles.pollVotes}>कुल १२,४५० वोट दर्ज</p>
+            {!hasVoted ? (
+              <div>
+                <ol className={styles.pollResults} aria-label="सर्वेक्षण के विकल्प">
+                  {options.map((option) => (
+                    <li className={styles.pollOption} key={option.id}>
+                      <label className={styles.pollRadioLabel}>
+                        <input
+                          type="radio"
+                          name="homePollRadio"
+                          value={option.id}
+                          checked={selectedOptId === option.id}
+                          onChange={() => setSelectedOptId(option.id)}
+                          className={styles.pollRadioInput}
+                        />
+                        <span>{option.label}</span>
+                      </label>
+                    </li>
+                  ))}
+                </ol>
+                <button
+                  type="button"
+                  onClick={handleVote}
+                  disabled={!selectedOptId}
+                  className={styles.pollVoteBtn}
+                >
+                  वोट दें
+                </button>
+              </div>
+            ) : (
+              <ol className={styles.pollResults} aria-label="सर्वेक्षण के परिणाम">
+                {options.map((option, index) => (
+                  <li className={styles.pollOption} key={option.id}>
+                    <div className={styles.pollOptionLabel}>
+                      <span>
+                        {option.label}{" "}
+                        {selectedOptId === option.id && (
+                          <span style={{ color: "var(--brand)", fontSize: "12px", fontWeight: "bold" }}>
+                            (आपका वोट)
+                          </span>
+                        )}
+                      </span>
+                      <span className={styles.pollPercent}>
+                        {option.percent}%
+                      </span>
+                    </div>
+                    <div className={styles.pollTrack} aria-hidden="true">
+                      <span
+                        className={styles.pollFill}
+                        style={{ width: `${option.percent}%` }}
+                      />
+                    </div>
+                    {index === 0 ? (
+                      <span className="srOnly">सर्वाधिक वोट</span>
+                    ) : null}
+                  </li>
+                ))}
+              </ol>
+            )}
+
+            <p className={styles.pollVotes}>
+              कुल {totalVotes.toLocaleString("hi-IN")} वोट दर्ज
+              {hasVoted && (
+                <span style={{ color: "#10b981", marginLeft: "10px", fontWeight: "bold" }}>
+                  <CheckCircle size={14} style={{ display: "inline", verticalAlign: "middle" }} /> धन्यवाद!
+                </span>
+              )}
+            </p>
           </div>
         </div>
         <div className={styles.pollAd}>
