@@ -95,14 +95,15 @@ export interface AdSlot {
 }
 
 export interface PublicAd {
-  campaignId: string;
-  slotId: string;
+  adCampaignId: string;
+  adSlotId: string;
   title: string;
-  image: string;
+  imageUrl: string;
   imageAlt?: string;
   clickUrl: string;
   target?: '_blank' | '_self';
-  priority?: number;
+  width?: number;
+  height?: number;
 }
 
 export interface AdSlotResponse {

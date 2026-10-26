@@ -51,23 +51,23 @@ export default function Home() {
 
         <PoliticsSection />
 
-        <AdSlot ad={leaderboardAds[0]} />
+        <AdSlot ad={leaderboardAds[0]} slotKey="home_between_1" />
 
         <TopicColumns />
 
-        <AdSlot ad={leaderboardAds[1]} />
+        <AdSlot ad={leaderboardAds[1]} slotKey="home_between_2" />
 
         <FeaturesSection />
 
         <EditorsPicks />
 
-        <AdSlot ad={leaderboardAds[2]} />
+        <AdSlot ad={leaderboardAds[2]} slotKey="home_between_3" />
 
         <VideoSection />
 
         <GallerySection />
 
-        <AdSlot ad={leaderboardAds[3]} />
+        <AdSlot ad={leaderboardAds[3]} slotKey="home_between_4" />
       </main>
 
       <SiteFooter />
