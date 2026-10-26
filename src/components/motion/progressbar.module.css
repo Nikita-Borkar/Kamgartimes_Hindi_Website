@@ -1,0 +1,23 @@
+.progressContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 99999;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(90deg, #c4171d 0%, #e53935 70%, #ff5252 100%);
+  box-shadow: 0 0 10px rgba(196, 23, 29, 0.7), 0 0 4px rgba(229, 57, 53, 0.9);
+  transition: width 250ms cubic-bezier(0.1, 0.05, 0, 1);
+  will-change: width;
+}
+
+[data-theme="dark"] .progressBar {
+  background: linear-gradient(90deg, #e53935 0%, #ff5252 70%, #ff8a80 100%);
+  box-shadow: 0 0 12px rgba(255, 82, 82, 0.8), 0 0 5px rgba(255, 82, 82, 1);
+}

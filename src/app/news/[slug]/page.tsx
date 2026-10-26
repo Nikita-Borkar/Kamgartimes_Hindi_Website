@@ -7,7 +7,7 @@ import { kamgarApi } from "@/services/apiClient";
 import { adaptArticleDetail, adaptArticleListItem } from "@/lib/apiAdapters";
 import type { Article } from "@/data/types";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 export async function generateMetadata({
   params,
@@ -38,16 +38,19 @@ export default async function NewsSlugPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  let article: Article | undefined;
 
-  // 1. Fetch live article by slug/ID from backend API
-  try {
-    const apiDetail = await kamgarApi.getArticleBySlug(slug);
+  // 1. Parallel fetch: article detail + related articles at the exact same time
+  const [apiDetailRes, relatedRes] = await Promise.allSettled([
+    kamgarApi.getArticleBySlug(slug),
+    kamgarApi.getArticles({ limit: 5 }),
+  ]);
+
+  let article: Article | undefined;
+  if (apiDetailRes.status === "fulfilled" && apiDetailRes.value) {
+    const apiDetail = apiDetailRes.value;
     if (apiDetail && (apiDetail.title || apiDetail.slug)) {
       article = adaptArticleDetail(apiDetail);
     }
-  } catch {
-    // API not reachable or article not found in DB
   }
 
   // Pure dynamic: If article is not in database, show 404 (not found)
@@ -55,17 +58,14 @@ export default async function NewsSlugPage({
     notFound();
   }
 
-  // Fetch live related articles
+  // Related articles
   let related: Article[] = [];
-  try {
-    const res = await kamgarApi.getArticles({ limit: 5 });
-    if (res?.articles && res.articles.length > 0) {
-      related = res.articles
-        .filter((a) => (a.slug || a._id) !== article?.id)
-        .slice(0, 4)
-        .map(adaptArticleListItem);
-    }
-  } catch {}
+  if (relatedRes.status === "fulfilled" && relatedRes.value?.articles) {
+    related = relatedRes.value.articles
+      .filter((a) => (a.slug || a._id) !== article?.id)
+      .slice(0, 4)
+      .map(adaptArticleListItem);
+  }
 
   return (
     <PageShell>

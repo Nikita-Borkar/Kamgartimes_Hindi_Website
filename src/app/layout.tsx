@@ -6,6 +6,7 @@ import {
 } from "next/font/google";
 import { site } from "@/data/site";
 import { ScrollChrome } from "@/components/motion/ScrollChrome";
+import { NavigationProgressBar } from "@/components/motion/NavigationProgressBar";
 import { NotificationPrompt } from "@/components/layout/NotificationPrompt";
 import { FloatingWidgets } from "@/components/layout/FloatingWidgets";
 import { SiteSettingsProvider } from "@/context/SiteSettingsContext";
@@ -96,6 +97,7 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning>
         <SiteSettingsProvider>
+          <NavigationProgressBar />
           <a className="skipLink" href="#main">
             मुख्य सामग्री पर जाएं
           </a>
