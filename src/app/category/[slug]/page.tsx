@@ -6,7 +6,7 @@ import { kamgarApi } from "@/services/apiClient";
 import { adaptArticleListItem } from "@/lib/apiAdapters";
 import type { Article } from "@/data/types";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 export async function generateMetadata({
   params,
