@@ -1,15 +1,68 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { latestEdition, epaperEditions } from "@/data/epaper";
+import { latestEdition as defaultLatest, epaperEditions as defaultEditions } from "@/data/epaper";
 import { epaperHref } from "@/lib/links";
 import { VerticalAd } from "@/components/ui/VerticalAd";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { verticalTowerAds, leaderboardAds } from "@/data/ads";
+import { kamgarApi } from "@/services/apiClient";
+import type { EpaperEditionItem } from "@/types/api";
 import { PageHero } from "./PageHero";
 import styles from "./epaper.module.css";
 
+const formatHindiDate = (d: string | number | Date | undefined) => {
+  if (!d) return "";
+  try {
+    const dt = new Date(d);
+    return dt.toLocaleDateString("hi-IN", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  } catch {
+    return String(d);
+  }
+};
+
 /** /e-paper — today's edition with a "cover" card, then the archive rows with vertical sponsor ad. */
 export function EpaperListingPage() {
-  const current = latestEdition;
+  const [current, setCurrent] = useState<any>(defaultLatest);
+  const [editions, setEditions] = useState<any[]>(defaultEditions);
+
+  useEffect(() => {
+    kamgarApi
+      .getEpaperEditions({ limit: 20 })
+      .then((res) => {
+        if (res?.editions && res.editions.length > 0) {
+          const mapped = res.editions.map((ed) => ({
+            id: ed.slug || ed._id,
+            label: `${formatHindiDate(ed.editionDate)}${ed.city?.name ? ` (${ed.city.name})` : ""}`,
+            date: ed.editionDate,
+            size: ed.fileSize || "18 MB",
+            pages: ed.pageCount || 8,
+            blurb: ed.title || ed.blurb || "कामगार टाइम्स डिजिटल ई-पेपर",
+            file: ed.pdfUrl,
+          }));
+
+          setEditions(mapped);
+          const top = res.latest
+            ? {
+                id: res.latest.slug || res.latest._id,
+                label: `${formatHindiDate(res.latest.editionDate)}${res.latest.city?.name ? ` (${res.latest.city.name})` : ""}`,
+                date: res.latest.editionDate,
+                size: res.latest.fileSize || "18 MB",
+                pages: res.latest.pageCount || 8,
+                blurb: res.latest.title || res.latest.blurb || "कामगार टाइम्स डिजिटल ई-पेपर",
+                file: res.latest.pdfUrl,
+              }
+            : mapped[0];
+          setCurrent(top);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <main id="main" className={styles.main}>
@@ -66,13 +119,13 @@ export function EpaperListingPage() {
         <div className={`${styles.archiveHead} reveal`}>
           <h2 className={styles.archiveTitle}>संस्करण आर्काइव</h2>
           <span className={styles.archiveNote}>
-            {epaperEditions.length} संस्करण उपलब्ध
+            {editions.length} संस्करण उपलब्ध
           </span>
         </div>
 
         <div className={styles.archiveLayout}>
           <div className={styles.archive}>
-            {epaperEditions.map((edition, i) => (
+            {editions.map((edition, i) => (
               <div
                 key={edition.id}
                 className={`${styles.archiveRow} reveal`}

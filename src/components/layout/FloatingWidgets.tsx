@@ -54,6 +54,7 @@ export function FloatingWidgets() {
           tabIndex={showTop ? 0 : -1}
           aria-label="ऊपर जाएं"
           title="ऊपर जाएं"
+          suppressHydrationWarning
         >
           <ChevronUp size={22} strokeWidth={2.5} />
         </button>
@@ -83,6 +84,7 @@ export function FloatingWidgets() {
           className={styles.bellBtn}
           aria-label="ताज़ा समाचारों के नोटिफिकेशन प्राप्त करें"
           title="ताज़ा समाचारों के नोटिफिकेशन प्राप्त करें"
+          suppressHydrationWarning
         >
           <div className={styles.bellInnerRing}>
             <Bell size={19} strokeWidth={2.4} fill="#ffffff" className={styles.bellIcon} />

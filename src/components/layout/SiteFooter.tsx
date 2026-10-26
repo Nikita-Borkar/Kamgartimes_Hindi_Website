@@ -1,9 +1,19 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { categories, footer, site } from "@/data/site";
-import { FacebookIcon, YoutubeIcon, InstagramIcon, TwitterXIcon, WhatsappIcon, TelegramIcon } from "@/components/ui/SocialIcons";
+import {
+  FacebookIcon,
+  YoutubeIcon,
+  InstagramIcon,
+  TwitterXIcon,
+  WhatsappIcon,
+  TelegramIcon,
+} from "@/components/ui/SocialIcons";
+import { useSiteSettings } from "@/context/SiteSettingsContext";
 import styles from "./layout.module.css";
-
 import { categoryHref } from "@/lib/links";
 
 /** Resolves a section label to its /category/[slug] route, or the video/media desks. */
@@ -16,40 +26,55 @@ function sectionHref(label: string) {
   return categoryHref(label);
 }
 
-const colorfulSocials = [
-  { id: "whatsapp", label: "व्हाट्सएप", icon: WhatsappIcon, href: "https://whatsapp.com" },
-  { id: "facebook", label: "फेसबुक", icon: FacebookIcon, href: "https://facebook.com" },
-  { id: "youtube", label: "यूट्यूब", icon: YoutubeIcon, href: "https://youtube.com" },
-  { id: "instagram", label: "इंस्टाग्राम", icon: InstagramIcon, href: "https://instagram.com" },
-  { id: "x", label: "एक्स (ट्विटर)", icon: TwitterXIcon, href: "https://x.com" },
-  { id: "telegram", label: "टेलीग्राम", icon: TelegramIcon, href: "https://t.me" },
+const defaultSocials = [
+  { id: "whatsapp", label: "व्हाट्सएप", icon: WhatsappIcon, fallback: "https://chat.whatsapp.com/kamgartimes" },
+  { id: "facebook", label: "फेसबुक", icon: FacebookIcon, fallback: "https://facebook.com/kamgartimes" },
+  { id: "youtube", label: "यूट्यूब", icon: YoutubeIcon, fallback: "https://youtube.com/@kamgartimes" },
+  { id: "instagram", label: "इंस्टाग्राम", icon: InstagramIcon, fallback: "https://instagram.com/kamgartimes" },
+  { id: "x", label: "एक्स (ट्विटर)", icon: TwitterXIcon, fallback: "https://twitter.com/kamgartimes" },
+  { id: "telegram", label: "टेलीग्राम", icon: TelegramIcon, fallback: "https://t.me" },
 ];
 
 export function SiteFooter() {
+  const { siteName, tagline, logoUrl, getSocialUrl } = useSiteSettings();
+  const [logoSrc, setLogoSrc] = useState<string>("/img/logo_withtext.jpeg");
+
+  useEffect(() => {
+    if (logoUrl && logoUrl !== "/img/logo_withtext.jpeg") {
+      setLogoSrc(logoUrl);
+    } else {
+      setLogoSrc("/img/logo_withtext.jpeg");
+    }
+  }, [logoUrl]);
+
   return (
     <footer className={styles.footer}>
       <div className={`${styles.shell} ${styles.footerInner}`}>
         <div>
-          <Link href="/" className={styles.footerLogoLink}>
+          <Link href="/" className={styles.footerLogoLink} aria-label={`${siteName} - ${tagline}`}>
             <Image
-              src="/img/logo_withtext.jpeg"
-              alt="कामगार टाइम्स - जनसामान्य की बुलंद आवाज़..."
+              src={logoSrc}
+              alt={`${siteName} - ${tagline}`}
               className={styles.footerLogoImg}
               width={220}
               height={55}
+              unoptimized
+              onError={() => setLogoSrc("/img/logo_withtext.jpeg")}
             />
           </Link>
-          <p className={styles.footerBlurb}>{site.tagline}</p>
+          <p className={styles.footerBlurb}>{tagline}</p>
           <div className={styles.socialsGroup}>
-            {colorfulSocials.map((s) => {
+            {defaultSocials.map((s) => {
               const Icon = s.icon;
+              const href = getSocialUrl(s.id, s.fallback);
+
               return (
                 <a
                   key={s.id}
                   className={styles.socialBtn}
-                  href={s.href}
+                  href={href}
                   aria-label={s.label}
-                  title={s.label}
+                  title={`${siteName} on ${s.label}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

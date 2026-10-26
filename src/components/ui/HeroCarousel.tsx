@@ -84,6 +84,7 @@ export function HeroCarousel() {
             className={styles.dot}
             data-active={i === index}
             onClick={() => select(i)}
+            suppressHydrationWarning
           />
         ))}
 
@@ -95,6 +96,7 @@ export function HeroCarousel() {
             takenOver.current = !takenOver.current;
             setPaused(!paused);
           }}
+          suppressHydrationWarning
         >
           {paused ? (
             <Play size={12} strokeWidth={2} aria-hidden="true" />

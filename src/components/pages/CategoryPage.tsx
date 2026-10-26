@@ -3,6 +3,8 @@ import { StoryCard } from "@/components/ui/StoryCard";
 import { AdCard } from "@/components/ui/AdCard";
 import { VerticalAd } from "@/components/ui/VerticalAd";
 import { AdSlot } from "@/components/ui/AdSlot";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { NewsGridSkeleton } from "@/components/ui/NewsGridSkeleton";
 import { cardAds, verticalTowerAds, leaderboardAds } from "@/data/ads";
 import { PageHero } from "./PageHero";
 import styles from "./pages.module.css";
@@ -15,9 +17,11 @@ import styles from "./pages.module.css";
 export function CategoryPage({
   label,
   articles,
+  isLoading = false,
 }: {
   label: string;
   articles: Article[];
+  isLoading?: boolean;
 }) {
   const leadBatch = articles.slice(0, 5);
   const splitBatch = articles.slice(5, 9);
@@ -27,10 +31,17 @@ export function CategoryPage({
     <main id="main" className={styles.main}>
       <PageHero eyebrow="श्रेणी" title={label} />
 
-      {articles.length === 0 ? (
-        <p className={styles.emptyState}>
-          इस श्रेणी में अभी कोई समाचार उपलब्ध नहीं है।
-        </p>
+      {isLoading ? (
+        <NewsGridSkeleton count={6} />
+      ) : articles.length === 0 ? (
+        <EmptyState
+          title={`'${label}' श्रेणी में अभी कोई समाचार उपलब्ध नहीं है`}
+          description="एडमिन पैनल से इस श्रेणी में अभी तक कोई लेख प्रकाशित नहीं हुआ है। नए अपडेट और ताज़ा खबरों के लिए कृपया थोड़ी देर बाद देखें।"
+          actionLabel="मुख्य पृष्ठ पर जाएं"
+          actionHref="/"
+          secondaryLabel="ताज़ा खबरें देखें"
+          secondaryHref="/category/ताज़ा-खबरें"
+        />
       ) : (
         <>
           {/* Main news grid with integrated card-sized sponsored story */}

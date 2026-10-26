@@ -1,34 +1,86 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MessageCircle, ThumbsUp } from "lucide-react";
 import type { ArticleComment } from "@/data/types";
+import { kamgarApi, getAuthToken } from "@/services/apiClient";
 import styles from "./article.module.css";
 
-/**
- * Comments block. There is no backend yet, so a submitted comment is prepended
- * to the local list and the count updates with it; wire the submit handler to
- * the comments API when it exists. Likes are per-comment and optimistic.
- */
-export function Comments({ initial }: { initial: ArticleComment[] }) {
+export function Comments({
+  initial,
+  articleId,
+}: {
+  initial: ArticleComment[];
+  articleId?: string;
+}) {
   const [list, setList] = useState(initial);
   const [draft, setDraft] = useState("");
   const [liked, setLiked] = useState<Record<string, boolean>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function submit() {
+  useEffect(() => {
+    if (articleId) {
+      kamgarApi
+        .getArticleComments(articleId)
+        .then((res) => {
+          if (res?.comments && Array.isArray(res.comments)) {
+            const mapped: ArticleComment[] = res.comments.map((c) => ({
+              id: c._id,
+              name: c.author?.name || "पाठक",
+              time: new Date(c.createdAt).toLocaleDateString("hi-IN"),
+              text: c.body,
+              likes: 0,
+            }));
+            setList(mapped);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [articleId]);
+
+  async function submit() {
     const text = draft.trim();
-    if (!text) return;
-    setList((current) => [
-      {
-        id: `local-${Date.now()}`,
-        name: "पाठक",
-        time: "अभी",
-        text,
-        likes: 0,
-      },
-      ...current,
-    ]);
-    setDraft("");
+    if (!text || isSubmitting) return;
+
+    if (articleId) {
+      if (!getAuthToken()) {
+        alert("टिप्पणी करने के लिए कृपया लॉगिन करें। (Please login to post a comment)");
+        return;
+      }
+
+      setIsSubmitting(true);
+      try {
+        const created = await kamgarApi.postArticleComment(articleId, { body: text });
+        setList((current) => [
+          {
+            id: created._id,
+            name: created.author || "पाठक",
+            time: "अभी",
+            text: created.body,
+            likes: 0,
+          },
+          ...current,
+        ]);
+        setDraft("");
+      } catch (err: any) {
+        alert(err.message || "टिप्पणी सबमिट करने में विफल।");
+      } finally {
+        setIsSubmitting(false);
+      }
+    } else {
+      // Local optimistic submit
+      setList((current) => [
+        {
+          id: `local-${Date.now()}`,
+          name: "पाठक",
+          time: "अभी",
+          text,
+          likes: 0,
+        },
+        ...current,
+      ]);
+      setDraft("");
+    }
   }
 
   return (
@@ -63,9 +115,9 @@ export function Comments({ initial }: { initial: ArticleComment[] }) {
         <button
           type="submit"
           className={styles.commentSubmit}
-          disabled={!draft.trim()}
+          disabled={!draft.trim() || isSubmitting}
         >
-          टिप्पणी भेजें
+          {isSubmitting ? "भेजा जा रहा है..." : "टिप्पणी भेजें"}
         </button>
       </form>
 
@@ -102,13 +154,6 @@ export function Comments({ initial }: { initial: ArticleComment[] }) {
           );
         })}
       </ul>
-
-      {list.length === 0 ? (
-        <p className={styles.caption}>
-          <MessageCircle size={14} strokeWidth={2} aria-hidden="true" /> अभी
-          कोई टिप्पणी नहीं है। पहली टिप्पणी आप करें।
-        </p>
-      ) : null}
     </section>
   );
 }

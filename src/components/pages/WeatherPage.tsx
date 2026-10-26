@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Cloud,
@@ -19,6 +19,12 @@ import {
   Clock,
 } from "lucide-react";
 import { maharashtraWeatherData, CityWeatherData } from "@/data/weather";
+import {
+  fetchFullCityWeather,
+  fetchAllCitiesOverview,
+  CityOverviewData,
+  CITY_COORDINATES,
+} from "@/services/weatherService";
 import styles from "./weather.module.css";
 
 function WeatherIcon({
@@ -42,12 +48,55 @@ function WeatherIcon({
   }
 }
 
+const INITIAL_OVERVIEW: CityOverviewData[] = Object.entries(CITY_COORDINATES).map(
+  ([slug, conf]) => ({
+    slug,
+    name: conf.name,
+    state: conf.state,
+    currentTemp: maharashtraWeatherData[slug]?.currentTemp ?? 30,
+    condition: maharashtraWeatherData[slug]?.condition ?? "साफ़ मौसम",
+    iconType: maharashtraWeatherData[slug]?.iconType ?? "cloud-sun",
+    high: maharashtraWeatherData[slug]?.high ?? 32,
+    low: maharashtraWeatherData[slug]?.low ?? 24,
+    aqi: conf.aqiBase,
+    aqiStatus: "मध्यम",
+  })
+);
+
 export function WeatherPage() {
   const [selectedCityKey, setSelectedCityKey] = useState<string>("mumbai");
-  const cityData: CityWeatherData =
+  const defaultCityData: CityWeatherData =
     maharashtraWeatherData[selectedCityKey] || maharashtraWeatherData.mumbai;
+  const [cityData, setCityData] = useState<CityWeatherData>(defaultCityData);
+  const [overviewCities, setOverviewCities] =
+    useState<CityOverviewData[]>(INITIAL_OVERVIEW);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const cityList = Object.values(maharashtraWeatherData);
+  // 1. Fetch live overview and temperatures for all cities
+  useEffect(() => {
+    fetchAllCitiesOverview()
+      .then((cities) => {
+        if (cities && cities.length > 0) {
+          setOverviewCities(cities);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // 2. Fetch full detailed weather for selected city
+  useEffect(() => {
+    setLoading(true);
+    const fallback =
+      maharashtraWeatherData[selectedCityKey] || maharashtraWeatherData.mumbai;
+    fetchFullCityWeather(selectedCityKey, fallback)
+      .then((fullData) => {
+        setCityData(fullData);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  }, [selectedCityKey]);
 
   return (
     <main className={styles.main}>
@@ -79,22 +128,24 @@ export function WeatherPage() {
 
         {/* City Switcher Tabs */}
         <div className={styles.cityTabs} role="tablist" aria-label="शहर चुनें">
-          {cityList.map((c) => (
-            <button
-              key={c.slug}
-              role="tab"
-              aria-selected={selectedCityKey === c.slug}
-              type="button"
-              onClick={() => setSelectedCityKey(c.slug)}
-              className={`${styles.cityBtn} ${
-                selectedCityKey === c.slug ? styles.cityBtnActive : ""
-              }`}
-            >
-              <MapPin size={15} />
-              <span>{c.name}</span>
-              <span className={styles.cityBtnTemp}>{c.currentTemp}°C</span>
-            </button>
-          ))}
+          {overviewCities.map((c) => {
+            return (
+              <button
+                key={c.slug}
+                role="tab"
+                aria-selected={selectedCityKey === c.slug}
+                type="button"
+                onClick={() => setSelectedCityKey(c.slug)}
+                className={`${styles.cityBtn} ${
+                  selectedCityKey === c.slug ? styles.cityBtnActive : ""
+                }`}
+              >
+                <MapPin size={15} />
+                <span>{c.name}</span>
+                <span className={styles.cityBtnTemp}>{c.currentTemp}°C</span>
+              </button>
+            );
+          })}
         </div>
       </header>
 
@@ -371,7 +422,7 @@ export function WeatherPage() {
               </tr>
             </thead>
             <tbody>
-              {cityList.map((c) => (
+              {overviewCities.map((c) => (
                 <tr key={c.slug}>
                   <td>
                     <strong>{c.name}</strong>

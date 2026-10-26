@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
 import { Calendar, Clock, ListChecks, Tag, User } from "lucide-react";
 import type { Article } from "@/data/types";
@@ -10,6 +13,7 @@ import { NewsShareBar } from "@/components/ui/NewsShareBar";
 import { VerticalAd } from "@/components/ui/VerticalAd";
 import { InArticleBoxAd } from "@/components/ui/InArticleBoxAd";
 import { leaderboardAds, verticalTowerAds, articleBoxAds } from "@/data/ads";
+import { kamgarApi } from "@/services/apiClient";
 
 import ui from "@/components/ui/ui.module.css";
 import { ArticleActions } from "./ArticleActions";
@@ -18,12 +22,7 @@ import { Comments } from "./Comments";
 import styles from "./article.module.css";
 
 /**
- * The reading page. One renderer for every news article: it expands the wire
- * record through buildArticleBody and lays out the head, hero, key points, body
- * sections, engagement bar, tags, author line, comments and the related band.
- *
- * The section rail (ArticleToc) is the sticky table of contents; its active
- * entry follows the section the reader is currently in.
+ * The reading page. Integrated with public articles APIs (view, share, reactions, comments)
  */
 export function ArticlePage({
   article,
@@ -33,6 +32,12 @@ export function ArticlePage({
   related: Article[];
 }) {
   const body = buildArticleBody(article);
+
+  useEffect(() => {
+    if (article.id) {
+      kamgarApi.recordArticleView(article.id).catch(() => {});
+    }
+  }, [article.id]);
 
   const tocItems: TocItem[] = [
     { id: "key-points", label: "मुख्य बिंदु" },
@@ -104,11 +109,13 @@ export function ArticlePage({
               commentCount={body.stats.comments}
               shareCount={body.stats.shares}
               title={article.headline}
+              articleId={article.id}
             />
 
             <NewsShareBar
               title={article.headline}
               excerpt={body.intro[0]}
+              articleId={article.id}
             />
           </header>
 
@@ -126,62 +133,76 @@ export function ArticlePage({
             </figcaption>
           </figure>
 
-          <p className={styles.lede}>{body.intro[1] ?? body.intro[0]}</p>
-
-          {body.intro.length > 2 ? (
+          {article.content ? (
             <div className={styles.prose}>
-              {body.intro.slice(2).map((para) => (
-                <p key={para} className={styles.para}>
-                  {para}
-                </p>
-              ))}
+              <div
+                dangerouslySetInnerHTML={{ __html: article.content }}
+                style={{ fontSize: "1.125rem", lineHeight: 1.8 }}
+              />
+              <div style={{ margin: "24px 0" }}>
+                <InArticleBoxAd ad={articleBoxAds[0]} />
+              </div>
             </div>
-          ) : null}
+          ) : (
+            <>
+              <p className={styles.lede}>{body.intro[1] ?? body.intro[0]}</p>
 
-          <aside className={styles.keyPoints} id="key-points">
-            <h2 className={styles.keyPointsTitle}>
-              <ListChecks size={20} strokeWidth={2} aria-hidden="true" />
-              मुख्य बिंदु
-            </h2>
-            <ul className={styles.pointList}>
-              {body.keyPoints.map((point) => (
-                <li key={point} className={styles.point}>
-                  {point}
-                </li>
-              ))}
-            </ul>
-          </aside>
-
-          {body.sections.map((section, idx) => (
-            <div key={section.id}>
-              <section className={styles.section} id={section.id}>
-                <h2 className={styles.sectionHead}>
-                  <span className={styles.sectionBar} aria-hidden="true" />
-                  {section.heading}
-                </h2>
-                <div className={styles.sectionBody}>
-                  {section.paragraphs.map((para) => (
+              {body.intro.length > 2 ? (
+                <div className={styles.prose}>
+                  {body.intro.slice(2).map((para) => (
                     <p key={para} className={styles.para}>
                       {para}
                     </p>
                   ))}
-                  {section.points ? (
-                    <ul className={styles.pointList}>
-                      {section.points.map((point) => (
-                        <li key={point} className={styles.point}>
-                          {point}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
                 </div>
-              </section>
+              ) : null}
 
-              {idx === 1 && (
-                <InArticleBoxAd ad={articleBoxAds[0]} />
-              )}
-            </div>
-          ))}
+              <aside className={styles.keyPoints} id="key-points">
+                <h2 className={styles.keyPointsTitle}>
+                  <ListChecks size={20} strokeWidth={2} aria-hidden="true" />
+                  मुख्य बिंदु
+                </h2>
+                <ul className={styles.pointList}>
+                  {body.keyPoints.map((point) => (
+                    <li key={point} className={styles.point}>
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </aside>
+
+              {body.sections.map((section, idx) => (
+                <div key={section.id}>
+                  <section className={styles.section} id={section.id}>
+                    <h2 className={styles.sectionHead}>
+                      <span className={styles.sectionBar} aria-hidden="true" />
+                      {section.heading}
+                    </h2>
+                    <div className={styles.sectionBody}>
+                      {section.paragraphs.map((para) => (
+                        <p key={para} className={styles.para}>
+                          {para}
+                        </p>
+                      ))}
+                      {section.points ? (
+                        <ul className={styles.pointList}>
+                          {section.points.map((point) => (
+                            <li key={point} className={styles.point}>
+                              {point}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
+                    </div>
+                  </section>
+
+                  {idx === 1 && (
+                    <InArticleBoxAd ad={articleBoxAds[0]} />
+                  )}
+                </div>
+              ))}
+            </>
+          )}
 
           <div className={styles.tags}>
             <span className={styles.tagsLabel}>
@@ -209,7 +230,7 @@ export function ArticlePage({
             </div>
           </div>
 
-          <Comments initial={body.comments} />
+          <Comments initial={body.comments} articleId={article.id} />
         </article>
 
         <aside className={styles.rail} aria-label="समाचार अनुभाग और विज्ञापन">
@@ -247,13 +268,4 @@ export function ArticlePage({
   );
 }
 
-/** Convenience: the related band picks the same-section stories, minus self. */
-export function pickRelated(article: Article, pool: Article[], limit = 3) {
-  const sameSection = pool.filter(
-    (item) => item.id !== article.id && item.category === article.category,
-  );
-  const fallback = pool.filter(
-    (item) => item.id !== article.id && item.category !== article.category,
-  );
-  return [...sameSection, ...fallback].slice(0, limit);
-}
+export { pickRelated } from "@/lib/pickRelated";

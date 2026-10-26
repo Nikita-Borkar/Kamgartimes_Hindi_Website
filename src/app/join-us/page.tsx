@@ -15,6 +15,7 @@ import {
   Users,
   Send,
 } from "lucide-react";
+import { ReporterApplicationForm } from "@/components/forms/ReporterApplicationForm";
 import styles from "./joinUs.module.css";
 
 const GOOGLE_FORM_EMBED_URL =
@@ -170,16 +171,16 @@ export default function JoinUsPage() {
                 </div>
               </section>
 
-              {/* Embedded Google Form Section */}
+              {/* Online Reporter Application Section */}
               <section id="form-section" className={styles.formCard}>
                 <div className={styles.formCardHeader}>
                   <div>
                     <h2 className={styles.sectionHeading} style={{ margin: 0 }}>
                       <Send className={styles.sectionHeadingIcon} size={22} />
-                      <span>ऑनलाइन नियुक्ती अर्ज पत्र</span>
+                      <span>थेट पोर्टल नियुक्ती अर्ज पत्र</span>
                     </h2>
                     <p style={{ margin: "4px 0 0", fontSize: "14px", color: "var(--muted)" }}>
-                      खालील फॉर्ममध्ये आपली संपूर्ण माहिती काळजीपूर्वक भरा:
+                      आपली माहिती भरून थेट कामगार टाइम्स संपादकीय मंडळाकडे सादर करा:
                     </p>
                   </div>
 
@@ -190,20 +191,13 @@ export default function JoinUsPage() {
                     className={styles.externalLinkBtn}
                     title="Google Forms थेट लिंक उघडा"
                   >
-                    <span>नवीन विंडोमध्ये उघडा</span>
+                    <span>Google Forms वर उघडा</span>
                     <ExternalLink size={14} />
                   </a>
                 </div>
 
-                <div className={styles.iframeContainer}>
-                  <iframe
-                    src={GOOGLE_FORM_EMBED_URL}
-                    className={styles.googleFormIframe}
-                    title="कामगार टाइम्स पत्रकार नियुक्ती अर्ज २०२६-२०२७"
-                    loading="lazy"
-                  >
-                    लोड होत आहे...
-                  </iframe>
+                <div style={{ marginTop: "16px" }}>
+                  <ReporterApplicationForm />
                 </div>
               </section>
             </div>

@@ -1,10 +1,54 @@
 "use client";
 
+import { useState } from "react";
 import { PageShell } from "@/components/layout/PageShell";
-import { Megaphone, CheckCircle2, Phone, Mail, Send, Building } from "lucide-react";
+import { Megaphone, CheckCircle2, Phone, Mail, Send, Building, Loader2, AlertCircle } from "lucide-react";
+import { kamgarApi } from "@/services/apiClient";
 import styles from "./advertise.module.css";
 
 export default function PayForAdvertisementPage() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [packageType, setPackageType] = useState("हेडर बैनर विज्ञापन (₹5,000)");
+  const [message, setMessage] = useState("");
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMessage(null);
+    setSuccessMessage(null);
+
+    try {
+      await kamgarApi.submitAdInquiry({
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        company: name.trim(),
+        adType: packageType,
+        message: message.trim(),
+      });
+
+      setSuccessMessage(
+        "आपकी विज्ञापन पूछताछ सफलतापूर्वक प्राप्त हो गई है। हमारे विज्ञापन विभाग के प्रतिनिधि शीघ्र आपसे संपर्क करेंगे।"
+      );
+      setName("");
+      setEmail("");
+      setPhone("");
+      setMessage("");
+    } catch (err: any) {
+      setErrorMessage(
+        err?.message || "पूछताछ भेजने में समस्या आई। कृपया सीधे फोन या व्हाट्सएप पर संपर्क करें।"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const adPackages = [
     {
       title: "डिजिटल हेडर बैनर (Header Banner)",
@@ -129,22 +173,92 @@ export default function PayForAdvertisementPage() {
                 </div>
               </div>
 
-              <form className={styles.formCard} onSubmit={(e) => { e.preventDefault(); alert("आपकी विज्ञापन पूछताछ सफलतापूर्वक प्राप्त हो गई है। हमारे प्रतिनिधि जल्द ही आपसे संपर्क करेंगे।"); }}>
+              <form className={styles.formCard} onSubmit={handleSubmit}>
                 <h3 className={styles.formTitle}>विज्ञापन पूछताछ फॉर्म</h3>
+
+                {successMessage && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: "8px",
+                      padding: "12px",
+                      borderRadius: "6px",
+                      background: "rgba(34, 197, 94, 0.12)",
+                      border: "1px solid #22c55e",
+                      color: "#166534",
+                      fontSize: "0.9rem",
+                      marginBottom: "1rem",
+                    }}
+                  >
+                    <CheckCircle2 size={18} color="#166534" style={{ flexShrink: 0, marginTop: "2px" }} />
+                    <p style={{ margin: 0 }}>{successMessage}</p>
+                  </div>
+                )}
+
+                {errorMessage && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      gap: "8px",
+                      padding: "12px",
+                      borderRadius: "6px",
+                      background: "rgba(239, 68, 68, 0.12)",
+                      border: "1px solid #ef4444",
+                      color: "#991b1b",
+                      fontSize: "0.9rem",
+                      marginBottom: "1rem",
+                    }}
+                  >
+                    <AlertCircle size={18} color="#991b1b" style={{ flexShrink: 0, marginTop: "2px" }} />
+                    <p style={{ margin: 0 }}>{errorMessage}</p>
+                  </div>
+                )}
 
                 <div className={styles.fieldGroup}>
                   <label htmlFor="ad-name">नाम / कंपनी का नाम *</label>
-                  <input id="ad-name" type="text" placeholder="जैसे: राजेश शर्मा / सुयोग ट्रेडर्स" required />
+                  <input
+                    id="ad-name"
+                    type="text"
+                    placeholder="जैसे: राजेश शर्मा / सुयोग ट्रेडर्स"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label htmlFor="ad-email">ईमेल पता (Email) *</label>
+                  <input
+                    id="ad-email"
+                    type="email"
+                    placeholder="जैसे: contact@company.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
                 </div>
 
                 <div className={styles.fieldGroup}>
                   <label htmlFor="ad-phone">फ़ोन नंबर *</label>
-                  <input id="ad-phone" type="tel" placeholder="10 अंकों का मोबाइल नंबर" required />
+                  <input
+                    id="ad-phone"
+                    type="tel"
+                    placeholder="10 अंकों का मोबाइल नंबर"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                  />
                 </div>
 
                 <div className={styles.fieldGroup}>
                   <label htmlFor="ad-package">पैकेज चुनें</label>
-                  <select id="ad-package">
+                  <select
+                    id="ad-package"
+                    value={packageType}
+                    onChange={(e) => setPackageType(e.target.value)}
+                  >
                     <option>हेडर बैनर विज्ञापन (₹5,000)</option>
                     <option>ई-पेपर विज्ञापन (₹8,000)</option>
                     <option>प्रायोजित समाचार (₹3,500)</option>
@@ -155,12 +269,32 @@ export default function PayForAdvertisementPage() {
 
                 <div className={styles.fieldGroup}>
                   <label htmlFor="ad-msg">विवरण व संदेश</label>
-                  <textarea id="ad-msg" rows={4} placeholder="विज्ञापन की अवधि और अन्य विवरण..." />
+                  <textarea
+                    id="ad-msg"
+                    rows={4}
+                    placeholder="विज्ञापन की अवधि और अन्य विवरण..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                  />
                 </div>
 
-                <button type="submit" className={styles.submitBtn}>
-                  <Send size={16} />
-                  <span>पूछताछ भेजें (Submit Inquiry)</span>
+                <button
+                  type="submit"
+                  className={styles.submitBtn}
+                  disabled={isSubmitting}
+                  style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? "not-allowed" : "pointer" }}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" />
+                      <span>भेजा जा रहा है...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send size={16} />
+                      <span>पूछताछ भेजें (Submit Inquiry)</span>
+                    </>
+                  )}
                 </button>
               </form>
             </div>

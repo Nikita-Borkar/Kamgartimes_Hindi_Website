@@ -6,6 +6,14 @@ export type Article = {
   excerpt?: string;
   /** Wire-time metadata, e.g. "वृत्तसेवा · ५ तासांपूर्वी" */
   meta: string;
+  content?: string;
+  tags?: string[];
+  author?: { name: string; role?: string };
+  likes?: number;
+  dislikes?: number;
+  views?: number;
+  shares?: number;
+  publishedAt?: string;
 };
 
 export type VideoItem = {
@@ -14,6 +22,10 @@ export type VideoItem = {
   duration: string;
   title: string;
   meta: string;
+  category?: string;
+  excerpt?: string;
+  embedUrl?: string;
+  youtubeUrl?: string;
 };
 
 export type AdSlot = {
@@ -29,6 +41,8 @@ export type GalleryItem = {
   image: string;
   category: string;
   headline: string;
+  paragraphs?: string[];
+  galleryImages?: string[];
 };
 
 /* ---------- Reading page (article body, engagement, comments) ------------- */
@@ -108,6 +122,7 @@ export type InfoPageData = {
   /** Serif lede under the banner, max ~62ch. */
   lede: string;
   intro?: string[];
+  htmlContent?: string;
   facts?: { title: string; items: InfoFact[] };
   contacts?: InfoContact[];
   sections: InfoSection[];

@@ -1,12 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Clock3, Pause, Play } from "lucide-react";
+import { kamgarApi } from "@/services/apiClient";
+import { formatHindiTime } from "@/lib/apiAdapters";
 import styles from "./liveUpdates.module.css";
 
 interface UpdateItem {
   time: string;
   text: string;
+  linkUrl?: string;
+  linkText?: string;
 }
 
 const defaultUpdates: UpdateItem[] = [
@@ -34,9 +38,58 @@ const defaultUpdates: UpdateItem[] = [
 
 export function LiveUpdates() {
   const [isPaused, setIsPaused] = useState(false);
+  const [updates, setUpdates] = useState<UpdateItem[]>(defaultUpdates);
+  const [headline, setHeadline] = useState<string>(
+    "कामगार टाइम्स लाइव अपडेट्स और ब्रेकिंग बुलेटिन"
+  );
+
+  useEffect(() => {
+    // 1. First attempt to fetch dedicated Live News items from backend API
+    kamgarApi
+      .getLiveNews(10)
+      .then((liveItems) => {
+        if (Array.isArray(liveItems) && liveItems.length > 0) {
+          setHeadline(liveItems[0].heading);
+          const mapped: UpdateItem[] = liveItems.map((item) => ({
+            time: formatHindiTime(item.publishedAt || item.createdAt || new Date().toISOString()),
+            text: item.heading,
+            linkUrl: item.linkUrl,
+            linkText: item.linkText || "पढ़ें",
+          }));
+          setUpdates(mapped);
+          return;
+        }
+
+        // Fallback: If no live news items exist yet, load latest published articles
+        kamgarApi.getArticles({ limit: 6 }).then((res) => {
+          if (res?.articles && res.articles.length > 0) {
+            setHeadline(res.articles[0].title);
+            const mapped = res.articles.map((a) => ({
+              time: formatHindiTime(a.publishedAt),
+              text: a.title,
+              linkUrl: `/article/${a.slug}`,
+            }));
+            setUpdates(mapped);
+          }
+        }).catch(() => {});
+      })
+      .catch(() => {
+        kamgarApi.getArticles({ limit: 6 }).then((res) => {
+          if (res?.articles && res.articles.length > 0) {
+            setHeadline(res.articles[0].title);
+            const mapped = res.articles.map((a) => ({
+              time: formatHindiTime(a.publishedAt),
+              text: a.title,
+              linkUrl: `/article/${a.slug}`,
+            }));
+            setUpdates(mapped);
+          }
+        }).catch(() => {});
+      });
+  }, []);
 
   // Duplicate items for continuous seamless vertical loop
-  const scrollItems = [...defaultUpdates, ...defaultUpdates];
+  const scrollItems = [...updates, ...updates];
 
   return (
     <aside className={styles.liveUpdates} aria-label="लाइव अपडेट्स">
@@ -48,13 +101,13 @@ export function LiveUpdates() {
         </div>
 
         <div className={styles.liveActions}>
-          <span className={styles.liveBadge}>लाइव</span>
           <button
             type="button"
-            className={styles.pausePlayBtn}
+            className={styles.livePause}
             onClick={() => setIsPaused((prev) => !prev)}
             title={isPaused ? "स्क्रॉल शुरू करें" : "स्क्रॉल रोकें"}
             aria-label={isPaused ? "स्क्रॉल शुरू करें" : "स्क्रॉल रोकें"}
+            suppressHydrationWarning
           >
             {isPaused ? <Play size={12} /> : <Pause size={12} />}
           </button>
@@ -63,12 +116,10 @@ export function LiveUpdates() {
 
       {/* Main event headline */}
       <div className={styles.liveEventBox}>
-        <h3 className={styles.liveEventTitle}>
-          मुंबई मेट्रो विस्तार और औद्योगिक गलियारे की प्रगति पर विशेष बैठक
-        </h3>
+        <h3 className={styles.liveEventTitle}>{headline}</h3>
         <div className={styles.liveEventMeta}>
           <Clock3 size={13} aria-hidden="true" />
-          <span>संपादकीय लाइव ब्लॉग • {defaultUpdates.length} अपडेट्स</span>
+          <span>लाइव ब्लॉग • {updates.length} ताज़ा अपडेट्स</span>
         </div>
       </div>
 
@@ -84,12 +135,36 @@ export function LiveUpdates() {
           className={styles.tickerTrack}
           style={{ animationPlayState: isPaused ? "paused" : "running" }}
         >
-          {scrollItems.map((update, idx) => (
-            <div className={styles.liveItem} key={`${update.time}-${idx}`}>
-              <time className={styles.liveTime}>{update.time}</time>
-              <p className={styles.liveText}>{update.text}</p>
-            </div>
-          ))}
+          {scrollItems.map((update, idx) => {
+            const content = (
+              <>
+                <time className={styles.liveTime}>{update.time}</time>
+                <p className={styles.liveText}>
+                  {update.text}
+                  {update.linkText && (
+                    <span style={{ marginLeft: "6px", color: "#d32f2f", fontWeight: 600, fontSize: "0.85em" }}>
+                      ({update.linkText} →)
+                    </span>
+                  )}
+                </p>
+              </>
+            );
+
+            return update.linkUrl ? (
+              <a
+                href={update.linkUrl}
+                className={styles.liveItem}
+                key={`${update.time}-${idx}`}
+                style={{ textDecoration: "none", color: "inherit", display: "block" }}
+              >
+                {content}
+              </a>
+            ) : (
+              <div className={styles.liveItem} key={`${update.time}-${idx}`}>
+                {content}
+              </div>
+            );
+          })}
         </div>
       </div>
 

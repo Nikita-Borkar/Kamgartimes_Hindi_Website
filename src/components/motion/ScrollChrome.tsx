@@ -6,11 +6,9 @@ import { usePathname } from "next/navigation";
 /**
  * One observer for the whole page. Adds .is-visible to any .reveal element as
  * it enters the viewport, and toggles data-scrolled on the sticky nav.
- * Everything stays server-rendered; this only flips classes after mount.
  *
- * The root layout persists across client-side navigations, so the effect is
- * keyed on the pathname: without it the observer is created once and the
- * .reveal nodes of every later page stay hidden at opacity 0.
+ * Includes MutationObserver support so that dynamically fetched and rendered
+ * content (videos, galleries, articles) automatically gets observed and revealed!
  */
 export function ScrollChrome() {
   const pathname = usePathname();
@@ -38,30 +36,54 @@ export function ScrollChrome() {
           }
         }
       },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+      { rootMargin: "0px 0px -4% 0px", threshold: 0.05 },
     );
 
-    // Reveal what is already on screen before the observer's first callback
-    // lands, otherwise the top of the page paints blank for a frame.
-    for (const node of nodes) {
-      if (node.getBoundingClientRect().top < window.innerHeight) {
-        node.classList.add("is-visible");
+    const observeNode = (n: HTMLElement) => {
+      if (n.classList.contains("is-visible")) return;
+      if (n.getBoundingClientRect().top < window.innerHeight + 100) {
+        n.classList.add("is-visible");
       } else {
-        observer.observe(node);
+        observer.observe(n);
       }
+    };
+
+    for (const node of nodes) {
+      observeNode(node);
+    }
+
+    // Watch for dynamically rendered client components (API driven data)
+    let mutationObserver: MutationObserver | null = null;
+    if ("MutationObserver" in window) {
+      mutationObserver = new MutationObserver((mutations) => {
+        for (const m of mutations) {
+          for (const added of Array.from(m.addedNodes)) {
+            if (added instanceof HTMLElement) {
+              if (added.classList.contains("reveal")) {
+                observeNode(added);
+              }
+              const innerReveals = added.querySelectorAll<HTMLElement>(".reveal");
+              innerReveals.forEach(observeNode);
+            }
+          }
+        }
+      });
+
+      mutationObserver.observe(document.body, { childList: true, subtree: true });
     }
 
     const nav = document.querySelector<HTMLElement>("[data-sticky-nav]");
-    if (!nav) return () => observer.disconnect();
-
     const onScroll = () => {
-      nav.dataset.scrolled = String(window.scrollY > 24);
+      if (nav) {
+        nav.dataset.scrolled = String(window.scrollY > 24);
+      }
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
       observer.disconnect();
+      mutationObserver?.disconnect();
       window.removeEventListener("scroll", onScroll);
     };
   }, [pathname]);

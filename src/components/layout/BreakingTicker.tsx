@@ -1,13 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Pause, Play, Flame } from "lucide-react";
 import { breakingNews } from "@/data/site";
+import { kamgarApi } from "@/services/apiClient";
 import styles from "./layout.module.css";
+
+interface TickerItem {
+  label: string;
+  text: string;
+  href: string;
+}
 
 export function BreakingTicker() {
   const [isPaused, setIsPaused] = useState(false);
+  const [tickerItems, setTickerItems] = useState<TickerItem[]>([...breakingNews]);
+
+  useEffect(() => {
+    kamgarApi
+      .getNoticeTicker()
+      .then((notices) => {
+        if (Array.isArray(notices) && notices.length > 0) {
+          setTickerItems(
+            notices.map((n) => ({
+              label: n.title || "ब्रेकिंग",
+              text: n.message,
+              href: n.linkUrl || "#",
+            }))
+          );
+        }
+      })
+      .catch(() => {
+        // Fallback to static breakingNews
+      });
+  }, []);
 
   return (
     <div className={styles.ticker}>
@@ -27,10 +54,10 @@ export function BreakingTicker() {
             style={{ animationPlayState: isPaused ? "paused" : "running" }}
           >
             {[
-              ...breakingNews,
-              ...breakingNews,
-              ...breakingNews,
-              ...breakingNews,
+              ...tickerItems,
+              ...tickerItems,
+              ...tickerItems,
+              ...tickerItems,
             ].map((item, index) => (
               <div key={index} className={styles.tickerItem}>
                 <span className={styles.tickerChip}>{item.label}</span>
@@ -50,6 +77,7 @@ export function BreakingTicker() {
             onClick={() => setIsPaused(!isPaused)}
             title={isPaused ? "चलाएं" : "रोकें"}
             aria-label={isPaused ? "टिकर चलाएं" : "टिकर रोकें"}
+            suppressHydrationWarning
           >
             {isPaused ? <Play size={14} /> : <Pause size={14} />}
           </button>

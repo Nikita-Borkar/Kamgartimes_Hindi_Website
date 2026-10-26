@@ -5,6 +5,7 @@ import { citiesData } from "@/data/cities";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { leaderboardAds } from "@/data/ads";
 import { MapPin, ChevronRight, Sparkles } from "lucide-react";
+import { kamgarApi } from "@/services/apiClient";
 import styles from "./[slug]/city.module.css";
 
 export const metadata: Metadata = {
@@ -12,9 +13,36 @@ export const metadata: Metadata = {
   description: "नागपुर, चंद्रपुर, वर्धा, अमरावती, गढ़चिरौली, मुंबई, पुणे सहित सभी प्रमुख शहरों के स्थानीय समाचार।",
 };
 
-export default function CityIndexPage() {
-  const firstCities = citiesData.slice(0, 2);
-  const remainingCities = citiesData.slice(2);
+export default async function CityIndexPage() {
+  let allCities = [...citiesData];
+
+  try {
+    const res = await kamgarApi.getCities();
+    if (res?.cities && res.cities.length > 0) {
+      const apiMapped = res.cities.map((c) => ({
+        slug: c.slug,
+        name: c.name,
+        nameEn: c.name,
+        tagline: `${c.name} स्थानीय बुलेटिन व हलचल`,
+        temp: "31°C",
+        weather: "धूप खिली ☀️",
+        aqi: "48",
+        bannerImage: c.coverImage || "/img/img02.png",
+        description: c.description || `${c.name} के स्थानीय समाचार और अपडेट्स।`,
+        highlights: [`${c.name} की ताज़ा और प्रमाणित खबरें कामगार टाइम्स पर`],
+      }));
+
+      const existingSlugs = new Set(allCities.map((c) => c.slug));
+      for (const ac of apiMapped) {
+        if (!existingSlugs.has(ac.slug)) {
+          allCities.push(ac);
+        }
+      }
+    }
+  } catch {}
+
+  const firstCities = allCities.slice(0, 2);
+  const remainingCities = allCities.slice(2);
 
   return (
     <PageShell>

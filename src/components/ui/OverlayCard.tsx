@@ -51,6 +51,7 @@ export function OverlayCard({
           url={targetUrl}
           excerpt={article.excerpt}
           compact
+          articleId={article.id}
         />
       ) : null}
     </div>

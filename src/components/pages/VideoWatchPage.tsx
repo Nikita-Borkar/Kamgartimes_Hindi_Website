@@ -64,6 +64,8 @@ export function VideoWatchPage({
             src={video.image}
             title={video.title}
             duration={video.duration}
+            embedUrl={video.embedUrl}
+            youtubeUrl={video.youtubeUrl}
           />
 
           <h1 className={styles.watchTitle}>{video.title}</h1>

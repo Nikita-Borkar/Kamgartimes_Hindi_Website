@@ -24,7 +24,13 @@ export function InfoPage({ page }: { page: InfoPageData }) {
 
       <div className={`${styles.layout} ${hasAside ? "" : styles.layoutSingle}`}>
         <div className={`${styles.body} reveal`}>
-          {page.intro && (
+          {page.htmlContent ? (
+            <div
+              className={styles.prose}
+              dangerouslySetInnerHTML={{ __html: page.htmlContent }}
+              style={{ fontSize: "1.0625rem", lineHeight: 1.8, marginBottom: "var(--space-6)" }}
+            />
+          ) : page.intro ? (
             <div className={styles.prose}>
               {page.intro.map((para) => (
                 <p key={para} className={styles.para}>
@@ -32,7 +38,7 @@ export function InfoPage({ page }: { page: InfoPageData }) {
                 </p>
               ))}
             </div>
-          )}
+          ) : null}
 
           {page.contacts && (
             <div className={styles.contacts}>

@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronDown, Menu, Search, X, User, Mic } from "lucide-react";
-import { navItems, type NavItem } from "@/data/site";
+import { navItems, type NavItem, type NavLink } from "@/data/site";
+import { kamgarApi } from "@/services/apiClient";
+import type { Category } from "@/types/api";
 import { ThemeToggle } from "./ThemeToggle";
 import {
   FacebookIcon,
@@ -13,6 +15,7 @@ import {
   WhatsappIcon,
   TelegramIcon,
 } from "@/components/ui/SocialIcons";
+import { useSiteSettings } from "@/context/SiteSettingsContext";
 import styles from "./layout.module.css";
 
 function Caret({ open }: { open?: boolean }) {
@@ -94,7 +97,7 @@ function NavEntry({ item }: { item: NavItem }) {
     return (
       <div className={styles.navItem}>
         <Link className={styles.navLink} href={item.href}>
-          {item.label}
+          <span>{item.label}</span>
         </Link>
       </div>
     );
@@ -166,11 +169,14 @@ function NavEntry({ item }: { item: NavItem }) {
 /** The links that did not fit the bar, stacked as an accordion, with mobile quick links & socials. */
 function OverflowPanel({
   items,
+  heading,
   onNavigate,
 }: {
   items: NavItem[];
+  heading?: string;
   onNavigate: () => void;
 }) {
+  const { siteName, contactPhone, getSocialUrl } = useSiteSettings();
   const [openGroup, setOpenGroup] = useState<string | null>(null);
 
   const toggleGroup = (label: string) => {
@@ -185,7 +191,8 @@ function OverflowPanel({
           href="/join-us"
           className={styles.drawerJoinBtn}
           onClick={onNavigate}
-          aria-label="कामगार टाइम्स पत्रकार / प्रतिनिधी नियुक्ती अर्ज २०२६-२०२७"
+          aria-label={`${siteName} पत्रकार / प्रतिनिधी नियुक्ती अर्ज २०२६-२०२७`}
+          title={`${siteName} पत्रकार / प्रतिनिधी नियुक्ती अर्ज`}
         >
           <Mic size={17} strokeWidth={2.4} aria-hidden="true" />
           <span>पत्रकार बनें (Join as Reporter)</span>
@@ -213,7 +220,7 @@ function OverflowPanel({
         </div>
       </div>
 
-      <div className={styles.drawerMenuHeading}>सभी श्रेणियां (Categories)</div>
+      <div className={styles.drawerMenuHeading}>{heading || "सभी श्रेणियां (Categories)"}</div>
 
       <ul className={styles.panelList}>
         {items.map((item) => {
@@ -282,6 +289,16 @@ function OverflowPanel({
       </ul>
 
       <div className={styles.drawerQuickLinks}>
+        {contactPhone ? (
+          <a
+            href={`tel:${contactPhone.replace(/\s+/g, "")}`}
+            className={styles.drawerQuickBtnSecondary}
+            onClick={onNavigate}
+            title={`हेल्पलाइन: ${contactPhone}`}
+          >
+            हेल्पलाइन: {contactPhone}
+          </a>
+        ) : null}
         <Link href="/advertise" className={styles.drawerQuickBtnSecondary} onClick={onNavigate}>
           विज्ञापन दें (Advertise)
         </Link>
@@ -296,22 +313,64 @@ function OverflowPanel({
       <div className={styles.drawerSocialsSection}>
         <div className={styles.drawerSocialsTitle}>सोशल मीडिया पर फॉलो करें</div>
         <div className={styles.drawerSocialIcons}>
-          <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" aria-label="व्हाट्सएप" className={styles.drawerSocialDot}>
+          <a
+            href={getSocialUrl("whatsapp", "https://chat.whatsapp.com/kamgartimes")}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="व्हाट्सएप"
+            title={`${siteName} on व्हाट्सएप`}
+            className={styles.drawerSocialDot}
+          >
             <WhatsappIcon size={18} />
           </a>
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="फेसबुक" className={styles.drawerSocialDot}>
+          <a
+            href={getSocialUrl("facebook", "https://facebook.com/kamgartimes")}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="फेसबुक"
+            title={`${siteName} on फेसबुक`}
+            className={styles.drawerSocialDot}
+          >
             <FacebookIcon size={18} />
           </a>
-          <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="यूट्यूब" className={styles.drawerSocialDot}>
+          <a
+            href={getSocialUrl("youtube", "https://youtube.com/@kamgartimes")}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="यूट्यूब"
+            title={`${siteName} on यूट्यूब`}
+            className={styles.drawerSocialDot}
+          >
             <YoutubeIcon size={18} />
           </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="इंस्टाग्राम" className={styles.drawerSocialDot}>
+          <a
+            href={getSocialUrl("instagram", "https://instagram.com/kamgartimes")}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="इंस्टाग्राम"
+            title={`${siteName} on इंस्टाग्राम`}
+            className={styles.drawerSocialDot}
+          >
             <InstagramIcon size={18} />
           </a>
-          <a href="https://x.com" target="_blank" rel="noopener noreferrer" aria-label="एक्स" className={styles.drawerSocialDot}>
+          <a
+            href={getSocialUrl("x", "https://twitter.com/kamgartimes")}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="एक्स (Twitter)"
+            title={`${siteName} on एक्स`}
+            className={styles.drawerSocialDot}
+          >
             <TwitterXIcon size={16} />
           </a>
-          <a href="https://t.me" target="_blank" rel="noopener noreferrer" aria-label="टेलीग्राम" className={styles.drawerSocialDot}>
+          <a
+            href={getSocialUrl("telegram", "https://t.me")}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="टेलीग्राम"
+            title={`${siteName} on टेलीग्राम`}
+            className={styles.drawerSocialDot}
+          >
             <TelegramIcon size={18} />
           </a>
         </div>
@@ -320,15 +379,163 @@ function OverflowPanel({
   );
 }
 
+function buildNavItemsFromCategoryTree(tree: Category[]): NavItem[] {
+  if (!tree || !Array.isArray(tree) || tree.length === 0) {
+    return navItems;
+  }
+
+  const items: NavItem[] = [
+    {
+      label: "होम",
+      href: "/",
+    },
+  ];
+
+  // Exact header order matching user specification & reference layout
+  const NAVBAR_ORDER: Record<string, number> = {
+    "होम": 1,
+    "कामगार टाइम्स": 2,
+    "लोकल न्यूज़": 3,
+    "ताज़ा खबरें": 4,
+    "ताज़ा ख़बरें": 4,
+    "अपराध": 5,
+    "संपादकीय": 6,
+    "विशेष रिपोर्ट": 7,
+    "सरकारी नौकरी": 8,
+    "मनोरंजन": 9,
+    "राजनीति": 10,
+    "खेल": 11,
+    "व्यापार": 12,
+    "ब्रह्मांड": 13,
+    "ई-पेपर": 14,
+    "तकनीक": 20,
+    "शिक्षा": 21,
+    "स्वास्थ्य": 22,
+    "विशेष लेख": 23,
+    "फोटो गैलरी": 24,
+    "वीडियो": 25,
+  };
+
+  let epaperItem: NavItem | null = null;
+
+  for (const cat of tree) {
+    if (!cat.name) continue;
+    const trimmedName = cat.name.trim();
+
+    // Skip "होम" if someone added it in categories to avoid duplicate home links
+    if (trimmedName === "होम" || cat.slug === "home") continue;
+
+    // Separate "ई-पेपर" to ensure it stays pinned at position 14
+    if (
+      trimmedName === "ई-पेपर" ||
+      cat.slug === "ई-पेपर" ||
+      cat.slug === "e-paper" ||
+      cat.slug === "epaper"
+    ) {
+      epaperItem = {
+        label: "ई-पेपर",
+        href: "/e-paper",
+      };
+      continue;
+    }
+
+    const topHref =
+      cat.slug === "kamgar-times"
+        ? "/category/kamgar-times"
+        : `/category/${cat.slug || cat._id}`;
+
+    // Backend can return subcategories under `subcategories` or `children`
+    const rawSubcats =
+      Array.isArray(cat.children) && cat.children.length > 0
+        ? cat.children
+        : Array.isArray((cat as any).subcategories) && (cat as any).subcategories.length > 0
+        ? (cat as any).subcategories
+        : [];
+
+    const children: NavLink[] = [];
+    if (rawSubcats.length > 0) {
+      const sortedChildren = [...rawSubcats].sort(
+        (a, b) => (a.order ?? 0) - (b.order ?? 0)
+      );
+
+      for (const child of sortedChildren) {
+        if (!child.name) continue;
+        const childName = child.name.trim();
+        const displayLabel =
+          childName === "vichar"
+            ? "विचार"
+            : childName === "खाs"
+            ? "खास रिपोर्ट"
+            : childName;
+
+        let childHref = `/category/${child.slug || child._id}`;
+
+        if (
+          childName.includes("पत्रकार") ||
+          child.slug === "join-us" ||
+          child.slug === "पत्रकार-प्रतिनिधि-नियुक्ति"
+        ) {
+          childHref = "/join-us";
+        } else if (cat.slug === "लोकल-न्यूज़" || trimmedName === "लोकल न्यूज़") {
+          childHref = `/city/${child.slug || child.name}`;
+        }
+
+        children.push({
+          label: displayLabel,
+          href: childHref,
+        });
+      }
+    }
+
+    items.push({
+      label: trimmedName,
+      href: topHref,
+      ...(children.length > 0 ? { children } : {}),
+    });
+  }
+
+  // Always append "ई-पेपर"
+  if (epaperItem) {
+    items.push(epaperItem);
+  } else if (!items.some((i) => i.label === "ई-पेपर")) {
+    items.push({ label: "ई-पेपर", href: "/e-paper" });
+  }
+
+  // Sort canonical order
+  items.sort(
+    (a, b) => (NAVBAR_ORDER[a.label] ?? 100) - (NAVBAR_ORDER[b.label] ?? 100)
+  );
+
+  return items;
+}
+
 export function MainNav() {
-  const [visibleCount, setVisibleCount] = useState(navItems.length);
+  const [navItemsList, setNavItemsList] = useState<NavItem[]>(navItems);
+  const [visibleCount, setVisibleCount] = useState(14);
   const [panelOpen, setPanelOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const actionsRef = useRef<HTMLDivElement>(null);
   const measureRef = useRef<HTMLDivElement>(null);
 
-  /* Fit as many links as the bar can hold; the rest fall into the panel. */
+  useEffect(() => {
+    kamgarApi
+      .getCategoryTree()
+      .then((res) => {
+        const tree = Array.isArray(res)
+          ? res
+          : (res as any)?.data || (res as any)?.categories || [];
+        if (Array.isArray(tree) && tree.length > 0) {
+          const dynamicItems = buildNavItemsFromCategoryTree(tree);
+          setNavItemsList(dynamicItems);
+        }
+      })
+      .catch((err) => {
+        console.warn("Failed to fetch dynamic category tree, using fallback:", err);
+      });
+  }, []);
+
+  /* Fit as many links as the bar can hold up to 14 (ई-पेपर); the rest are in overflow panel. */
   const measure = useCallback(() => {
     const container = containerRef.current;
     const actions = actionsRef.current;
@@ -341,15 +548,12 @@ export function MainNav() {
 
     const cs = getComputedStyle(container);
     const pad = parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
-    const gap = parseFloat(cs.columnGap) || 12;
+    const gap = parseFloat(cs.columnGap) || 8;
     const content = container.clientWidth - pad;
 
-    const searchEl = actions.querySelector("a");
-    const burgerEl = actions.querySelector("button");
-    const searchW = searchEl ? searchEl.getBoundingClientRect().width : 34;
-    const burgerW = burgerEl?.getBoundingClientRect().width || 42;
+    const actionsW = actions.getBoundingClientRect().width || 120;
+    const itemGap = 1;
 
-    const itemGap = 2;
     const fit = (avail: number) => {
       let used = 0;
       let count = 0;
@@ -362,16 +566,17 @@ export function MainNav() {
       return count;
     };
 
-    const available = content - searchW - gap;
+    const available = content - actionsW - gap;
     let count = fit(available);
-    if (count < widths.length) {
-      count = fit(available - burgerW - gap);
-    }
+
+    // Primary items up to ई-पेपर are 14. Remaining items live in the overflow panel
+    count = Math.min(count, 14);
     setVisibleCount((prev) => (prev === count ? prev : count));
   }, []);
 
   useEffect(() => {
     measure();
+    const timer = window.setTimeout(measure, 60);
 
     const onResize = () => measure();
     window.addEventListener("resize", onResize);
@@ -387,12 +592,13 @@ export function MainNav() {
     }
 
     return () => {
+      window.clearTimeout(timer);
       window.removeEventListener("resize", onResize);
       observer?.disconnect();
     };
-  }, [measure]);
+  }, [measure, navItemsList]);
 
-  const overflow = visibleCount < navItems.length;
+  const overflow = visibleCount < navItemsList.length;
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -406,13 +612,6 @@ export function MainNav() {
       window.removeEventListener("resize", handleCheck);
     };
   }, []);
-
-  useEffect(() => {
-    if (!overflow) {
-      const timer = window.setTimeout(() => setPanelOpen(false), 0);
-      return () => window.clearTimeout(timer);
-    }
-  }, [overflow]);
 
   useEffect(() => {
     if (!panelOpen) return;
@@ -432,48 +631,60 @@ export function MainNav() {
     >
       <div className={styles.navContainer} ref={containerRef}>
         <div className={styles.navList}>
-          {navItems.slice(0, visibleCount).map((item) => (
-            <NavEntry key={item.label} item={item} />
+          {navItemsList.slice(0, visibleCount).map((item, idx) => (
+            <NavEntry key={`nav-${item.href}-${item.label}-${idx}`} item={item} />
           ))}
         </div>
 
         <div className={styles.navRightActions} ref={actionsRef}>
+          {/* Hamburger icon placed BEFORE search so users can view remaining categories */}
+          <button
+            type="button"
+            className={styles.navBurger}
+            aria-expanded={panelOpen}
+            aria-label={panelOpen ? "मेनू बंद करें" : "अन्य श्रेणियां / मेनू खोलें"}
+            title="अन्य श्रेणियां"
+            onClick={() => setPanelOpen((v) => !v)}
+          >
+            {panelOpen ? (
+              <X size={18} strokeWidth={2.4} />
+            ) : (
+              <Menu size={18} strokeWidth={2.4} />
+            )}
+          </button>
+
           <Link className={styles.searchBtn} href="/search" aria-label="खोजें" title="खोजें">
-            <Search size={17} strokeWidth={2.2} aria-hidden="true" />
+            <Search size={16} strokeWidth={2.2} aria-hidden="true" />
           </Link>
 
           <div className={styles.navThemeToggle}>
             <ThemeToggle />
           </div>
-
-          <button
-            type="button"
-            className={styles.navBurger}
-            aria-expanded={panelOpen}
-            aria-label={panelOpen ? "मेनू बंद करें" : "अन्य विकल्प खोलें"}
-            onClick={() => setPanelOpen((v) => !v)}
-          >
-            {panelOpen ? (
-              <X size={22} strokeWidth={2.2} />
-            ) : (
-              <Menu size={22} strokeWidth={2.2} />
-            )}
-          </button>
         </div>
+      </div>
 
-        <div className={styles.navPanel} data-open={panelOpen}>
-          <OverflowPanel
-            items={isMobile ? navItems : navItems.slice(visibleCount)}
-            onNavigate={() => setPanelOpen(false)}
-          />
-        </div>
+      <div className={styles.navPanel} data-open={panelOpen}>
+        <OverflowPanel
+          items={
+            isMobile || navItemsList.slice(visibleCount).length === 0
+              ? navItemsList
+              : navItemsList.slice(visibleCount)
+          }
+          heading={
+            isMobile || navItemsList.slice(visibleCount).length === 0
+              ? "सभी श्रेणियां (All Categories)"
+              : "अन्य श्रेणियां (Other Categories)"
+          }
+          onNavigate={() => setPanelOpen(false)}
+        />
+      </div>
 
         {/* Off-screen ruler: an unclipped copy whose natural widths tell us
             how many links fit on the strip. */}
         <div className={styles.navMeasure} aria-hidden="true" ref={measureRef}>
           <ul className={styles.navMeasureList}>
-            {navItems.map((item) => (
-              <li key={item.label} className={styles.navMeasureItem}>
+            {navItemsList.map((item, idx) => (
+              <li key={`measure-${item.href}-${item.label}-${idx}`} className={styles.navMeasureItem}>
                 <span
                   className={`${styles.navLink}${
                     item.children?.length ? ` ${styles.navLinkWithSub}` : ""
@@ -486,7 +697,6 @@ export function MainNav() {
             ))}
           </ul>
         </div>
-      </div>
     </nav>
   );
 }

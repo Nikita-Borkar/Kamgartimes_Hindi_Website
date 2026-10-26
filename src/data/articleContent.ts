@@ -549,37 +549,79 @@ export function buildArticleBody(article: Article): ArticleBody {
   const desk = deskFor(article.category);
   const seed = hash(article.id);
 
-  const sections: ArticleSection[] = desk.sections.map((section, index) => ({
-    id: `section-${index + 1}`,
-    heading: section.heading,
-    paragraphs: section.paragraphs,
-    points: section.points,
-  }));
+  // If article has live HTML or text content, extract real paragraphs
+  let liveParagraphs: string[] = [];
+  if (article.content) {
+    // Strip simple HTML tags to get pure paragraph strings if needed
+    const cleaned = article.content
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/<\/p>/gi, "\n\n")
+      .replace(/<[^>]+>/g, "")
+      .split("\n\n")
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0);
+    if (cleaned.length > 0) {
+      liveParagraphs = cleaned;
+    }
+  }
+
+  const sections: ArticleSection[] = liveParagraphs.length > 2
+    ? [
+        {
+          id: "section-1",
+          heading: "विस्तृत रिपोर्ट व पृष्ठभूमि",
+          paragraphs: liveParagraphs.slice(1, 4),
+        },
+        ...(liveParagraphs.length > 4
+          ? [
+              {
+                id: "section-2",
+                heading: "महत्वपूर्ण विश्लेषण व आगामी दिशा",
+                paragraphs: liveParagraphs.slice(4),
+              },
+            ]
+          : []),
+      ]
+    : desk.sections.map((section, index) => ({
+        id: `section-${index + 1}`,
+        heading: section.heading,
+        paragraphs: section.paragraphs,
+        points: section.points,
+      }));
 
   const comments = Array.from({ length: 3 }, (_, index) => {
     const template = commentPool[(seed + index) % commentPool.length];
     return { id: `${article.id}-c${index}`, ...template };
   });
 
+  const introText = article.excerpt || `${article.headline}: इस विषय से संबंधित संपूर्ण विवरण, पृष्ठभूमि और आगामी प्रभावों का समग्र विश्लेषण यहां प्रस्तुत है।`;
+
   return {
-    intro: [
-      `${article.headline}: इस विषय से संबंधित संपूर्ण विवरण, पृष्ठभूमि और आगामी प्रभावों का समग्र विश्लेषण यहां प्रस्तुत है।`,
-      ...desk.intro,
-    ],
+    intro: liveParagraphs.length > 0
+      ? [introText, liveParagraphs[0]]
+      : [introText, ...desk.intro],
     keyPoints: desk.keyPoints,
     sections,
-    tags: desk.tags,
-    author: authors[seed % authors.length],
-    published: article.meta.includes("·")
+    tags: article.tags && article.tags.length > 0 ? article.tags : desk.tags,
+    author: article.author
+      ? { name: article.author.name, role: article.author.role || "कामगार टाइम्स डेस्क" }
+      : authors[seed % authors.length],
+    published: article.publishedAt
+      ? `प्रकाशित: ${new Date(article.publishedAt).toLocaleDateString("hi-IN", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })}`
+      : article.meta.includes("·")
       ? `प्रकाशित: ${article.meta.split("·").pop()?.trim()}`
       : `प्रकाशित: ${article.meta}`,
     updated: seed % 2 === 0 ? "अद्यतन: आज सुबह १०:३०" : undefined,
     readTime: `${3 + (seed % 4)} मिनट में पढ़ें`,
     stats: {
-      likes: 120 + (seed % 480),
-      dislikes: 4 + (seed % 26),
+      likes: article.likes ?? (120 + (seed % 480)),
+      dislikes: article.dislikes ?? (4 + (seed % 26)),
       comments: comments.length,
-      shares: 30 + (seed % 220),
+      shares: article.shares ?? (30 + (seed % 220)),
     },
     comments,
   };
