@@ -81,6 +81,7 @@ export function MarketTicker() {
             onClick={() => setIsPaused(!isPaused)}
             title={isPaused ? "बाज़ार टिकर चलाएं" : "बाज़ार टिकर रोकें"}
             aria-label={isPaused ? "बाज़ार टिकर चलाएं" : "बाज़ार टिकर रोकें"}
+            suppressHydrationWarning
           >
             {isPaused ? <Play size={13} /> : <Pause size={13} />}
           </button>

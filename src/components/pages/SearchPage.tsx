@@ -1,32 +1,57 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
-import { allArticles } from "@/data/news";
+import { useEffect, useState } from "react";
+import { Search, Loader2 } from "lucide-react";
 import { RowArticle } from "@/components/ui/RowArticle";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { NewsGridSkeleton } from "@/components/ui/NewsGridSkeleton";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { leaderboardAds } from "@/data/ads";
+import { kamgarApi } from "@/services/apiClient";
+import { adaptArticleListItem } from "@/lib/apiAdapters";
+import type { Article } from "@/data/types";
 import { PageHero } from "./PageHero";
 import styles from "./pages.module.css";
 
 /**
- * Site search. Filters the flat article index by headline, section or excerpt
- * as the reader types. Client-side for now; swap the filter for an API call
- * when a search backend exists.
+ * Site search. Integrated with server-side live search API (GET /public/articles?search=...)
  */
 export function SearchPage() {
   const [query, setQuery] = useState("");
+  const [serverResults, setServerResults] = useState<Article[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const term = query.trim().toLowerCase();
 
-  const results = useMemo(() => {
-    if (!term) return [];
-    return allArticles.filter(
-      (article) =>
-        article.headline.toLowerCase().includes(term) ||
-        article.category.toLowerCase().includes(term) ||
-        (article.excerpt?.toLowerCase().includes(term) ?? false),
-    );
+  useEffect(() => {
+    if (!term || term.length < 2) {
+      setServerResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    const timer = setTimeout(() => {
+      kamgarApi
+        .getArticles({ search: term, limit: 20 })
+        .then((res) => {
+          if (res?.articles) {
+            setServerResults(res.articles.map(adaptArticleListItem));
+          } else {
+            setServerResults([]);
+          }
+        })
+        .catch(() => {
+          setServerResults([]);
+        })
+        .finally(() => {
+          setIsSearching(false);
+        });
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, [term]);
+
+  const results = term ? serverResults : [];
 
   return (
     <main id="main" className={styles.main}>
@@ -37,7 +62,11 @@ export function SearchPage() {
         role="search"
         onSubmit={(event) => event.preventDefault()}
       >
-        <Search size={20} strokeWidth={2} aria-hidden="true" />
+        {isSearching ? (
+          <Loader2 size={20} className={styles.spin} strokeWidth={2} aria-hidden="true" />
+        ) : (
+          <Search size={20} strokeWidth={2} aria-hidden="true" />
+        )}
         <input
           className={styles.searchInput}
           type="search"
@@ -52,12 +81,19 @@ export function SearchPage() {
 
       {!term ? (
         <p className={styles.searchHint}>
-          खोजने के लिए ऊपर शब्द लिखें — जैसे चुनाव, क्रिकेट, व्यापार।
+          खोजने के लिए ऊपर शब्द लिखें — जैसे चुनाव, बजट, कामगार, मुंबई, पुणे।
         </p>
+      ) : isSearching ? (
+        <NewsGridSkeleton count={3} />
       ) : results.length === 0 ? (
-        <p className={styles.searchHint}>
-          “{query.trim()}” के लिए कोई परिणाम नहीं मिला।
-        </p>
+        <EmptyState
+          title={`“${query.trim()}” के लिए कोई परिणाम नहीं मिला`}
+          description="कृपया वर्तनी जांचें या कोई अन्य कीवर्ड आज़माएं।"
+          actionLabel="मुख्य पृष्ठ पर जाएं"
+          actionHref="/"
+          secondaryLabel="ताज़ा समाचार देखें"
+          secondaryHref="/category/ताज़ा-खबरें"
+        />
       ) : (
         <>
           <p className={styles.searchCount}>
@@ -76,7 +112,7 @@ export function SearchPage() {
             ))}
           </div>
           <div className={styles.categoryAdBottom}>
-            <AdSlot ad={leaderboardAds[2]} />
+            <AdSlot ad={leaderboardAds[2]} slotKey="article_top" />
           </div>
         </>
       )}

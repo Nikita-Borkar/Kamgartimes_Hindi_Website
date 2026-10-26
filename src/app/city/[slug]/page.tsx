@@ -3,17 +3,18 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { PageShell } from "@/components/layout/PageShell";
 import { citiesData } from "@/data/cities";
-import { allArticles } from "@/data/news";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { StoryCard } from "@/components/ui/StoryCard";
 import { AdCard } from "@/components/ui/AdCard";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { cardAds, leaderboardAds } from "@/data/ads";
+import { kamgarApi } from "@/services/apiClient";
+import { adaptArticleListItem } from "@/lib/apiAdapters";
+import type { Article } from "@/data/types";
 import { MapPin, Sun, Wind, ShieldCheck, CheckCircle2, ChevronRight } from "lucide-react";
 import styles from "./city.module.css";
 
-export function generateStaticParams() {
-  return citiesData.map((city) => ({ slug: city.slug }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -21,10 +22,22 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const city = citiesData.find((c) => c.slug === slug);
+  const decodedSlug = decodeURIComponent(slug);
+  const city = citiesData.find(
+    (c) =>
+      c.slug === slug ||
+      c.slug === decodedSlug ||
+      c.name === slug ||
+      c.name === decodedSlug ||
+      c.nameEn?.toLowerCase() === decodedSlug.toLowerCase()
+  );
   return {
-    title: city ? `${city.name} स्थानीय समाचार – कामगार टाइम्स` : "शहर समाचार – कामगार टाइम्स",
-    description: city?.description || "विदर्भ और देश के प्रमुख शहरों के ताज़ा समाचार।",
+    title: city
+      ? `${city.name} स्थानीय समाचार – कामगार टाइम्स`
+      : `${decodedSlug} स्थानीय समाचार – कामगार टाइम्स`,
+    description:
+      city?.description ||
+      `${decodedSlug} और विदर्भ के प्रमुख शहरों के ताज़ा समाचार।`,
   };
 }
 
@@ -34,22 +47,115 @@ export default async function CityPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const city = citiesData.find((c) => c.slug === slug);
+  const decodedSlug = decodeURIComponent(slug);
 
+  // 1. First check dedicated backend Public Cities API
+  let city: any = null;
+  try {
+    const apiCity = await kamgarApi.getCityBySlug(slug).catch(() => kamgarApi.getCityBySlug(decodedSlug));
+    if (apiCity && apiCity.name) {
+      city = {
+        slug: apiCity.slug,
+        name: apiCity.name,
+        nameEn: apiCity.name,
+        tagline: `${apiCity.name} स्थानीय बुलेटिन व ताज़ा हलचल`,
+        temp: "31°C",
+        weather: "धूप खिली ☀️",
+        aqi: "48 (उत्तम)",
+        bannerImage: apiCity.coverImage || "/img/img02.png",
+        description:
+          apiCity.description ||
+          `${apiCity.name} के स्थानीय समाचार, घटनाएं व श्रमिक अपडेट्स।`,
+        highlights: [
+          `${apiCity.name} की ताज़ा और प्रमाणित खबरें कामगार टाइम्स पर`,
+          `स्थानीय प्रशासन व जनसरोकार से जुड़े विशेष मुद्दे`,
+          `नागरिकों और कामगारों के अधिकारों की प्रमुख आवाज़`,
+        ],
+      };
+    }
+  } catch {}
+
+  // 2. If not found in backend DB, match from local static citiesData
   if (!city) {
-    notFound();
+    city = citiesData.find(
+      (c) =>
+        c.slug === slug ||
+        c.slug === decodedSlug ||
+        c.name === slug ||
+        c.name === decodedSlug ||
+        c.nameEn?.toLowerCase() === decodedSlug.toLowerCase()
+    );
   }
 
-  // Filter articles for this city or general local articles
-  const cityArticles = allArticles.filter(
-    (a) =>
-      a.headline.includes(city.name) ||
-      a.excerpt?.includes(city.name) ||
-      a.category === "राज्य" ||
-      a.category === "लोकल न्यूज़",
-  );
+  // 3. If still not found, check dynamic categories from backend API
+  if (!city) {
+    try {
+      const catRes = await kamgarApi.getCategories();
+      const match = catRes?.categories?.find(
+        (c) =>
+          c.slug === slug ||
+          c.slug === decodedSlug ||
+          c.name === slug ||
+          c.name === decodedSlug
+      );
+      if (match) {
+        city = {
+          slug: match.slug,
+          name: match.name,
+          nameEn: match.name,
+          tagline: `${match.name} स्थानीय बुलेटिन व ताज़ा हलचल`,
+          temp: "31°C",
+          weather: "धूप खिली ☀️",
+          aqi: "48 (उत्तम)",
+          bannerImage: "/img/img02.png",
+          description:
+            match.description ||
+            `${match.name} के स्थानीय समाचार, घटनाएं व श्रमिक अपडेट्स।`,
+          highlights: [
+            `${match.name} की ताज़ा और प्रमाणित खबरें कामगार टाइम्स पर`,
+            `स्थानीय प्रशासन व जनसरोकार से जुड़े विशेष मुद्दे`,
+            `नागरिकों और कामगारों के अधिकारों की प्रमुख आवाज़`,
+          ],
+        };
+      }
+    } catch {}
+  }
 
-  const displayArticles = cityArticles.length > 0 ? cityArticles : allArticles.slice(0, 6);
+  // 4. Dynamic fallback city object if still not matched
+  if (!city) {
+    city = {
+      slug: decodedSlug,
+      name: decodedSlug,
+      nameEn: decodedSlug,
+      tagline: `${decodedSlug} स्थानीय बुलेटिन`,
+      temp: "31°C",
+      weather: "धूप खिली ☀️",
+      aqi: "48 (उत्तम)",
+      bannerImage: "/img/img02.png",
+      description: `${decodedSlug} के स्थानीय समाचार, घटनाएं व श्रमिक अपडेट्स।`,
+      highlights: [
+        `${decodedSlug} की ताज़ा और प्रमाणित खबरें कामगार टाइम्स पर`,
+        `स्थानीय प्रशासन व जनसरोकार से जुड़े विशेष मुद्दे`,
+      ],
+    };
+  }
+
+  // Filter articles for this city: first by citySlug, then category/search fallback
+  let liveArticles: Article[] = [];
+  try {
+    let res = await kamgarApi.getArticles({ citySlug: city.slug, limit: 12 }).catch(() => null);
+    if (!res?.articles || res.articles.length === 0) {
+      res = await kamgarApi.getArticles({ category: city.name, limit: 12 }).catch(() => null);
+    }
+    if (!res?.articles || res.articles.length === 0) {
+      res = await kamgarApi.getArticles({ search: city.name, limit: 12 }).catch(() => null);
+    }
+    if (res?.articles && res.articles.length > 0) {
+      liveArticles = res.articles.map(adaptArticleListItem);
+    }
+  } catch {}
+
+  const displayArticles = liveArticles;
 
   return (
     <PageShell>
@@ -103,7 +209,7 @@ export default async function CityPage({
               <span>{city.name} महत्वपूर्ण अपडेट्स</span>
             </h2>
             <div className={styles.highlightsGrid}>
-              {city.highlights.map((item, idx) => (
+              {city.highlights.map((item: string, idx: number) => (
                 <div key={idx} className={styles.highlightCard}>
                   <CheckCircle2 size={18} color="#d32f2f" />
                   <p>{item}</p>
@@ -118,18 +224,29 @@ export default async function CityPage({
               <span>{city.name} ताज़ा हलचल व समाचार</span>
             </h2>
 
-            <div className={styles.newsGrid}>
-              {displayArticles.slice(0, 2).map((article) => (
-                <StoryCard key={article.id} article={article} />
-              ))}
+            {displayArticles.length === 0 ? (
+              <EmptyState
+                title={`${city.name} में अभी कोई स्थानीय समाचार उपलब्ध नहीं है`}
+                description={`एडमिन पैनल से ${city.name} के लिए अभी कोई विशेष समाचार प्रकाशित नहीं किया गया है।`}
+                actionLabel="मुख्य पृष्ठ पर जाएं"
+                actionHref="/"
+                secondaryLabel="अन्य शहर देखें"
+                secondaryHref="/category/लोकल-न्यूज़"
+              />
+            ) : (
+              <div className={styles.newsGrid}>
+                {displayArticles.slice(0, 2).map((article) => (
+                  <StoryCard key={article.id} article={article} />
+                ))}
 
-              {/* In-grid blog/card-sized sponsored ad */}
-              <AdCard ad={cardAds[3]} />
+                {/* In-grid blog/card-sized sponsored ad */}
+                <AdCard ad={cardAds[3]} />
 
-              {displayArticles.slice(2).map((article) => (
-                <StoryCard key={article.id} article={article} />
-              ))}
-            </div>
+                {displayArticles.slice(2).map((article) => (
+                  <StoryCard key={article.id} article={article} />
+                ))}
+              </div>
+            )}
           </section>
 
           <div className={styles.adSection}>

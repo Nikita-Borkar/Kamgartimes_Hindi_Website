@@ -1,66 +1,143 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { User, Mic } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 import { site } from "@/data/site";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageTranslator } from "./LanguageTranslator";
-import { FacebookIcon, YoutubeIcon, InstagramIcon, TwitterXIcon, WhatsappIcon } from "@/components/ui/SocialIcons";
+import {
+  FacebookIcon,
+  YoutubeIcon,
+  InstagramIcon,
+  TwitterXIcon,
+  WhatsappIcon,
+  TelegramIcon,
+} from "@/components/ui/SocialIcons";
+import { kamgarApi, getAuthToken, clearAuthTokens } from "@/services/apiClient";
+import { useSiteSettings } from "@/context/SiteSettingsContext";
+import type { UserProfile } from "@/types/api";
 import styles from "./layout.module.css";
 
-const colorfulSocials = [
-  { id: "whatsapp", label: "व्हाट्सएप", icon: WhatsappIcon, href: "https://whatsapp.com" },
-  { id: "facebook", label: "फेसबुक", icon: FacebookIcon, href: "https://facebook.com" },
-  { id: "youtube", label: "यूट्यूब", icon: YoutubeIcon, href: "https://youtube.com" },
-  { id: "instagram", label: "इंस्टाग्राम", icon: InstagramIcon, href: "https://instagram.com" },
-  { id: "x", label: "एक्स", icon: TwitterXIcon, href: "https://x.com" },
+const defaultSocials = [
+  { id: "whatsapp", label: "व्हाट्सएप", icon: WhatsappIcon, fallback: "https://chat.whatsapp.com/kamgartimes" },
+  { id: "facebook", label: "फेसबुक", icon: FacebookIcon, fallback: "https://facebook.com/kamgartimes" },
+  { id: "youtube", label: "यूट्यूब", icon: YoutubeIcon, fallback: "https://youtube.com/@kamgartimes" },
+  { id: "instagram", label: "इंस्टाग्राम", icon: InstagramIcon, fallback: "https://instagram.com/kamgartimes" },
+  { id: "x", label: "एक्स (Twitter)", icon: TwitterXIcon, fallback: "https://twitter.com/kamgartimes" },
+  { id: "telegram", label: "टेलीग्राम", icon: TelegramIcon, fallback: "https://t.me" },
 ];
 
+function formatHindiDate(date: Date = new Date()): string {
+  const days = ["रविवार", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
+  const months = [
+    "जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून",
+    "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"
+  ];
+  const dayName = days[date.getDay()];
+  const dayNum = date.getDate();
+  const monthName = months[date.getMonth()];
+  const year = date.getFullYear();
+
+  return `${dayName}, ${dayNum} ${monthName} ${year}`;
+}
+
 export function TopBar() {
+  const { siteName, tagline, logoUrl, getSocialUrl } = useSiteSettings();
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
+  const [liveDate, setLiveDate] = useState<string>(`${site.edition} · ${site.editionTime}`);
+  const [logoSrc, setLogoSrc] = useState<string>("/img/logo_withtext.jpeg");
+  const [hasLogoError, setHasLogoError] = useState(false);
+
+  // Sync logoSrc when logoUrl from site setting updates
+  useEffect(() => {
+    if (logoUrl && logoUrl !== "/img/logo_withtext.jpeg") {
+      setLogoSrc(logoUrl);
+      setHasLogoError(false);
+    } else {
+      setLogoSrc("/img/logo_withtext.jpeg");
+    }
+  }, [logoUrl]);
+
+  // Dynamic live date in Hindi
+  useEffect(() => {
+    setLiveDate(formatHindiDate(new Date()));
+  }, []);
+
+  // Check user auth
+  useEffect(() => {
+    if (getAuthToken()) {
+      kamgarApi
+        .getMe()
+        .then((profile) => {
+          if (profile && profile.name) {
+            setCurrentUser(profile);
+          }
+        })
+        .catch(() => {});
+    }
+  }, []);
+
+  const handleLogout = () => {
+    clearAuthTokens();
+    setCurrentUser(null);
+    window.location.reload();
+  };
+
+  const handleLogoError = () => {
+    if (!hasLogoError) {
+      setHasLogoError(true);
+      setLogoSrc("/img/logo_withtext.jpeg");
+    }
+  };
+
   return (
     <div className={`${styles.shell} ${styles.topBar}`}>
+      {/* Left: Dynamic Live Hindi Edition / Date & Language Translator */}
       <div className={styles.editionArea}>
-        <p className={styles.edition}>
-          {site.edition} · {site.editionTime}
+        <p className={styles.edition} title={tagline}>
+          <span className={styles.editionDateText}>{liveDate}</span>
+          {tagline ? (
+            <span className={styles.editionTaglineText}> · {tagline}</span>
+          ) : null}
         </p>
         <LanguageTranslator />
       </div>
 
+      {/* Center: Dynamic Brand Logo & Site Identity */}
       <Link
         className={styles.headerLogoLink}
         href="/"
-        aria-label={`${site.name} - जनसामान्य की बुलंद आवाज़...`}
+        aria-label={`${siteName} - ${tagline}`}
+        title={`${siteName} - ${tagline}`}
       >
         <Image
-          src="/img/logo_withtext.jpeg"
-          alt="कामगार टाइम्स - जनसामान्य की बुलंद आवाज़..."
+          src={logoSrc}
+          alt={`${siteName} - ${tagline}`}
           className={styles.headerLogoImg}
           width={240}
           height={60}
           priority
+          unoptimized
+          onError={handleLogoError}
         />
       </Link>
 
+      {/* Right: Dynamic Social Links, Auth, Theme Toggle */}
       <div className={styles.actions}>
-        <Link
-          className={styles.joinUsBtnHeader}
-          href="/join-us"
-          aria-label="कामगार टाइम्स पत्रकार / प्रतिनिधी नियुक्ती अर्ज २०२६-२०२७"
-          title="पत्रकार / प्रतिनिधी नियुक्ती अर्ज २०२६-२०२७"
-        >
-          <Mic size={14} strokeWidth={2.4} aria-hidden="true" />
-          <span>पत्रकार बनें</span>
-        </Link>
-
+        {/* Dynamic Social Media Links */}
         <div className={styles.topSocials}>
-          {colorfulSocials.map((s) => {
+          {defaultSocials.map((s) => {
             const Icon = s.icon;
+            const targetUrl = getSocialUrl(s.id, s.fallback);
             return (
               <a
                 key={s.id}
                 className={styles.topSocialDot}
-                href={s.href}
+                href={targetUrl}
                 aria-label={s.label}
-                title={s.label}
+                title={`${siteName} on ${s.label}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -70,14 +147,43 @@ export function TopBar() {
           })}
         </div>
 
-        <Link
-          className={styles.loginDotHeader}
-          href="/login"
-          aria-label="लॉग इन"
-          title="लॉग इन करें"
-        >
-          <User size={18} strokeWidth={2} aria-hidden="true" />
-        </Link>
+        {/* User Account / Profile */}
+        {currentUser ? (
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: "var(--brand)",
+                background: "var(--surface)",
+                padding: "3px 8px",
+                borderRadius: 12,
+                border: "1px solid var(--border)",
+              }}
+              title={currentUser.email}
+            >
+              {currentUser.name}
+            </span>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className={styles.loginDotHeader}
+              title="लॉग आउट करें"
+              style={{ background: "none", border: "none", cursor: "pointer" }}
+            >
+              <LogOut size={16} strokeWidth={2} aria-hidden="true" />
+            </button>
+          </div>
+        ) : (
+          <Link
+            className={styles.loginDotHeader}
+            href="/login"
+            aria-label="लॉग इन"
+            title="लॉग इन करें"
+          >
+            <User size={18} strokeWidth={2} aria-hidden="true" />
+          </Link>
+        )}
 
         <ThemeToggle />
       </div>

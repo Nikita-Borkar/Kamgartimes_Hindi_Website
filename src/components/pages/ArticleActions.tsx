@@ -14,35 +14,48 @@ import {
   TwitterXIcon,
   WhatsappIcon,
 } from "@/components/ui/SocialIcons";
+import { kamgarApi, getAuthToken } from "@/services/apiClient";
 import styles from "./article.module.css";
 
-type Reaction = "like" | "dislike" | null;
+type Reaction = "LIKE" | "DISLIKE" | null;
 
-/**
- * Engagement bar: like, dislike, comment and share.
- *
- * Every control keeps the same min-height and font size in every state, so the
- * row does not jitter when a reaction is toggled or the share menu opens. Like
- * and dislike are mutually exclusive. Share prefers the native sheet and falls
- * back to a copy-link action; both are real, the counts are optimistic.
- */
 export function ArticleActions({
-  likes,
-  dislikes,
+  likes: initialLikes,
+  dislikes: initialDislikes,
   commentCount,
-  shareCount,
+  shareCount: initialShareCount,
   title,
+  articleId,
 }: {
   likes: number;
   dislikes: number;
   commentCount: number;
   shareCount: number;
   title: string;
+  articleId?: string;
 }) {
   const [reaction, setReaction] = useState<Reaction>(null);
+  const [likes, setLikes] = useState(initialLikes);
+  const [dislikes, setDislikes] = useState(initialDislikes);
+  const [shares, setShares] = useState(initialShareCount);
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (articleId) {
+      kamgarApi
+        .getArticleReactions(articleId)
+        .then((data) => {
+          if (data) {
+            setLikes(data.likes);
+            setDislikes(data.dislikes);
+            setReaction(data.userReaction);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [articleId]);
 
   useEffect(() => {
     if (!open) return;
@@ -53,35 +66,55 @@ export function ArticleActions({
     return () => document.removeEventListener("mousedown", onDown);
   }, [open]);
 
-  const likeCount = likes + (reaction === "like" ? 1 : 0);
-  const dislikeCount = dislikes + (reaction === "dislike" ? 1 : 0);
-  const shares = shareCount + (copied ? 1 : 0);
+  const toggle = async (type: "LIKE" | "DISLIKE") => {
+    if (!articleId) {
+      setReaction((cur) => (cur === type ? null : type));
+      return;
+    }
 
-  const toggle = (next: Exclude<Reaction, null>) =>
-    setReaction((current) => (current === next ? null : next));
+    if (!getAuthToken()) {
+      alert("प्रतिक्रिया देने के लिए कृपया लॉगिन करें। (Please login to react)");
+      return;
+    }
+
+    try {
+      const res = await kamgarApi.toggleArticleReaction(articleId, type);
+      if (res) {
+        setLikes(res.likes);
+        setDislikes(res.dislikes);
+        setReaction(res.userReaction);
+      }
+    } catch (err: any) {
+      alert(err.message || "प्रतिक्रिया अपडेट करने में त्रुटि हुई।");
+    }
+  };
 
   const url = typeof window === "undefined" ? "" : window.location.href;
   const shareText = encodeURIComponent(title);
 
   async function copyLink() {
+    if (articleId) {
+      kamgarApi.recordArticleShare(articleId).catch(() => {});
+    }
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
+      setShares((s) => s + 1);
       window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* Clipboard blocked: the visible share links still work. */
-    }
+    } catch {}
     setOpen(false);
   }
 
   async function onShare() {
+    if (articleId) {
+      kamgarApi.recordArticleShare(articleId).catch(() => {});
+    }
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
         await navigator.share({ title, url });
+        setShares((s) => s + 1);
         return;
-      } catch {
-        /* The reader dismissed the native sheet; fall through to the menu. */
-      }
+      } catch {}
     }
     setOpen((value) => !value);
   }
@@ -90,24 +123,24 @@ export function ArticleActions({
     <div className={styles.actions} role="group" aria-label="समाचार पर प्रतिक्रिया">
       <button
         type="button"
-        className={`${styles.action}${reaction === "like" ? ` ${styles.actionOn}` : ""}`}
-        aria-pressed={reaction === "like"}
-        onClick={() => toggle("like")}
+        className={`${styles.action}${reaction === "LIKE" ? ` ${styles.actionOn}` : ""}`}
+        aria-pressed={reaction === "LIKE"}
+        onClick={() => toggle("LIKE")}
       >
         <ThumbsUp size={18} strokeWidth={2} aria-hidden="true" />
         पसंद
-        <span className={styles.actionCount}>{likeCount}</span>
+        <span className={styles.actionCount}>{likes}</span>
       </button>
 
       <button
         type="button"
-        className={`${styles.action}${reaction === "dislike" ? ` ${styles.actionOn}` : ""}`}
-        aria-pressed={reaction === "dislike"}
-        onClick={() => toggle("dislike")}
+        className={`${styles.action}${reaction === "DISLIKE" ? ` ${styles.actionOn}` : ""}`}
+        aria-pressed={reaction === "DISLIKE"}
+        onClick={() => toggle("DISLIKE")}
       >
         <ThumbsDown size={18} strokeWidth={2} aria-hidden="true" />
         नापसंद
-        <span className={styles.actionCount}>{dislikeCount}</span>
+        <span className={styles.actionCount}>{dislikes}</span>
       </button>
 
       <a className={styles.action} href="#comments">
@@ -137,6 +170,9 @@ export function ArticleActions({
               href={`https://wa.me/?text=${shareText}%20${encodeURIComponent(url)}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => {
+                if (articleId) kamgarApi.recordArticleShare(articleId).catch(() => {});
+              }}
             >
               <WhatsappIcon size={16} />
               व्हाट्सएप
@@ -147,6 +183,9 @@ export function ArticleActions({
               href={`https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(url)}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => {
+                if (articleId) kamgarApi.recordArticleShare(articleId).catch(() => {});
+              }}
             >
               <TwitterXIcon size={14} />
               एक्स (ट्विटर)
@@ -157,6 +196,9 @@ export function ArticleActions({
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => {
+                if (articleId) kamgarApi.recordArticleShare(articleId).catch(() => {});
+              }}
             >
               <FacebookIcon size={16} />
               फेसबुक

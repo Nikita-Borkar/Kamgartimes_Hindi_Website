@@ -1,19 +1,65 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PageShell } from "@/components/layout/PageShell";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { leaderboardAds } from "@/data/ads";
 import Image from "next/image";
-import { Download, Maximize2, ChevronLeft, ChevronRight, FileText } from "lucide-react";
+import { Download, Maximize2, ChevronLeft, ChevronRight, FileText, Loader2 } from "lucide-react";
+import { kamgarApi } from "@/services/apiClient";
+import type { EpaperEditionItem } from "@/types/api";
 import styles from "./epaper.module.css";
+
+const formatHindiDate = (d: string | number | Date | undefined) => {
+  if (!d) return "";
+  try {
+    const dt = new Date(d);
+    return dt.toLocaleDateString("hi-IN", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  } catch {
+    return String(d);
+  }
+};
 
 export default function EPaperPage() {
   const [activePage, setActivePage] = useState(1);
-  const [edition, setEdition] = useState("nagpur");
+  const [editionsList, setEditionsList] = useState<EpaperEditionItem[]>([]);
+  const [selectedSlug, setSelectedSlug] = useState<string>("");
+  const [currentEdition, setCurrentEdition] = useState<EpaperEditionItem | null>(null);
   const [fullScreen, setFullScreen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const totalPages = 8;
+  const totalPages = currentEdition?.pageCount || 8;
+
+  useEffect(() => {
+    kamgarApi
+      .getEpaperEditions({ limit: 12 })
+      .then((res) => {
+        if (res?.editions && res.editions.length > 0) {
+          setEditionsList(res.editions);
+          const initial = res.latest || res.editions[0];
+          setCurrentEdition(initial);
+          setSelectedSlug(initial.slug);
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
+  const handleEditionChange = (slug: string) => {
+    setSelectedSlug(slug);
+    const matched = editionsList.find((e) => e.slug === slug);
+    if (matched) {
+      setCurrentEdition(matched);
+      setActivePage(1);
+    }
+  };
 
   const handlePrev = () => {
     setActivePage((prev) => (prev > 1 ? prev - 1 : totalPages));
@@ -31,8 +77,15 @@ export default function EPaperPage() {
           <header className={styles.header}>
             <div>
               <span className={styles.badge}>दैनिक ई-पेपर (E-Paper)</span>
-              <h1 className={styles.title}>कामगार टाइम्स डिजिटल ई-पेपर</h1>
-              <p className={styles.dateStr}>रविवार, ४ अक्टूबर २०२६ · मुख्य नागपुर संस्करण</p>
+              <h1 className={styles.title}>
+                {currentEdition?.title || "कामगार टाइम्स डिजिटल ई-पेपर"}
+              </h1>
+              <p className={styles.dateStr}>
+                {currentEdition?.editionDate
+                  ? formatHindiDate(currentEdition.editionDate)
+                  : "रविवार, ४ अक्टूबर २०२६ · मुख्य नागपुर संस्करण"}
+                {currentEdition?.city?.name ? ` · ${currentEdition.city.name}` : ""}
+              </p>
             </div>
 
             <div className={styles.headerActions}>
@@ -40,18 +93,30 @@ export default function EPaperPage() {
                 <label htmlFor="edition-select">संस्करण (Edition):</label>
                 <select
                   id="edition-select"
-                  value={edition}
-                  onChange={(e) => setEdition(e.target.value)}
+                  value={selectedSlug || "nagpur"}
+                  onChange={(e) => handleEditionChange(e.target.value)}
                 >
-                  <option value="nagpur">नागपुर मुख्य संस्करण</option>
-                  <option value="vidarbha">विदर्भ प्रादेशिक</option>
-                  <option value="mumbai">मुंबई विशेष</option>
+                  {editionsList.length > 0 ? (
+                    editionsList.map((ed) => (
+                      <option key={ed._id} value={ed.slug}>
+                        {ed.title} ({formatHindiDate(ed.editionDate)})
+                      </option>
+                    ))
+                  ) : (
+                    <>
+                      <option value="nagpur">नागपुर मुख्य संस्करण</option>
+                      <option value="vidarbha">विदर्भ प्रादेशिक</option>
+                      <option value="mumbai">मुंबई विशेष</option>
+                    </>
+                  )}
                 </select>
               </div>
 
               <a
-                href="/pdf/kamgartimes-epaper.pdf"
-                download="KamgarTimes-EPaper-4Oct2026.pdf"
+                href={currentEdition?.pdfUrl || "/pdf/kamgartimes-epaper.pdf"}
+                target="_blank"
+                rel="noopener noreferrer"
+                download={currentEdition?.slug ? `${currentEdition.slug}.pdf` : "KamgarTimes-EPaper.pdf"}
                 className={styles.downloadPdfBtn}
                 title="संपूर्ण PDF डाउनलोड करें"
               >

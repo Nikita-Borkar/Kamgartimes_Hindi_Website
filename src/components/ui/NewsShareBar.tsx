@@ -15,6 +15,7 @@ import {
   WhatsappIcon,
   TelegramIcon,
 } from "./SocialIcons";
+import { kamgarApi } from "@/services/apiClient";
 import styles from "./ui.module.css";
 
 interface NewsShareBarProps {
@@ -22,6 +23,7 @@ interface NewsShareBarProps {
   url?: string;
   excerpt?: string;
   compact?: boolean;
+  articleId?: string;
 }
 
 export function NewsShareBar({
@@ -29,6 +31,7 @@ export function NewsShareBar({
   url,
   excerpt,
   compact = false,
+  articleId,
 }: NewsShareBarProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -51,6 +54,9 @@ export function NewsShareBar({
   const handleShare = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (articleId) {
+      kamgarApi.recordArticleShare(articleId).catch(() => {});
+    }
     if (navigator.share) {
       try {
         await navigator.share({
@@ -69,6 +75,9 @@ export function NewsShareBar({
   const handleCopyLink = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (articleId) {
+      kamgarApi.recordArticleShare(articleId).catch(() => {});
+    }
     navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -186,6 +195,7 @@ export function NewsShareBar({
               aria-label={btn.label}
               style={{ color: btn.color, backgroundColor: btn.bg }}
               onClick={btn.onClick}
+              suppressHydrationWarning
             >
               <RenderIcon />
             </button>
@@ -205,6 +215,7 @@ export function NewsShareBar({
                 e.stopPropagation();
                 setShowMore(!showMore);
               }}
+              suppressHydrationWarning
             >
               <MoreHorizontal size={iconSize} strokeWidth={2.2} />
             </button>
@@ -215,6 +226,7 @@ export function NewsShareBar({
                   type="button"
                   className={styles.moreMenuItem}
                   onClick={handleCopyLink}
+                  suppressHydrationWarning
                 >
                   {copied ? <Check size={14} /> : <Copy size={14} />}
                   <span>{copied ? "कॉपी हो गया!" : "लिंक कॉपी करें"}</span>
@@ -234,6 +246,7 @@ export function NewsShareBar({
             backgroundColor: isPlaying ? "#d32f2f" : "#fef2f2",
           }}
           onClick={handleListen}
+          suppressHydrationWarning
         >
           {isPlaying ? (
             <VolumeX size={iconSize} strokeWidth={2.2} />

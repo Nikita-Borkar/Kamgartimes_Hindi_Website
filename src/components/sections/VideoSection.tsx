@@ -1,9 +1,12 @@
-import { videos } from "@/data/news";
+"use client";
+
+import { useEffect, useState } from "react";
 import { Media } from "@/components/ui/Media";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { stagger } from "@/components/motion/stagger";
 import { videoHref } from "@/lib/links";
-import { Play } from "lucide-react";
+import { Play, VideoOff, Loader2 } from "lucide-react";
+import { kamgarApi } from "@/services/apiClient";
 import ui from "@/components/ui/ui.module.css";
 import styles from "./sections.module.css";
 import type { VideoItem } from "@/data/types";
@@ -14,6 +17,23 @@ function PlayGlyph() {
       <Play size={22} fill="currentColor" strokeWidth={1.5} />
     </span>
   );
+}
+
+function extractYoutubeId(input?: string): string {
+  if (!input) return "";
+  const patterns = [
+    /youtube\.com\/watch\?(?:.*&)?v=([A-Za-z0-9_-]{11})/i,
+    /youtu\.be\/([A-Za-z0-9_-]{11})/i,
+    /youtube\.com\/shorts\/([A-Za-z0-9_-]{11})/i,
+    /youtube\.com\/embed\/([A-Za-z0-9_-]{11})/i,
+    /youtube\.com\/live\/([A-Za-z0-9_-]{11})/i,
+  ];
+  for (const pattern of patterns) {
+    const match = input.match(pattern);
+    if (match) return match[1];
+  }
+  if (/^[A-Za-z0-9_-]{11}$/.test(input.trim())) return input.trim();
+  return "";
 }
 
 function VideoCard({
@@ -48,11 +68,79 @@ function VideoCard({
 }
 
 /**
- * वीडियो. The only band on the page that inverts to --surface, so it reads
- * as a distinct desk without needing a border or a shadow.
+ * वीडियो - Exclusively integrated with GET /public/media/videos (Zero Dummy Data)
  */
 export function VideoSection() {
-  const { feature, longVideos, shorts } = videos;
+  const [feature, setFeature] = useState<VideoItem | null>(null);
+  const [longVideos, setLongVideos] = useState<VideoItem[]>([]);
+  const [shorts, setShorts] = useState<VideoItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    kamgarApi
+      .getMediaVideos({ limit: 30 })
+      .then((res) => {
+        if (res?.videos && res.videos.length > 0) {
+          // Categorize by videoType and category
+          const apiShortsRaw = res.videos.filter(
+            (v) =>
+              v.videoType === "SHORT" ||
+              v.category?.slug === "youtube-shorts" ||
+              v.category?.name?.includes("शॉर्ट्स")
+          );
+
+          const apiLongsRaw = res.videos.filter(
+            (v) =>
+              v.videoType !== "SHORT" &&
+              v.category?.slug !== "youtube-shorts" &&
+              !v.category?.name?.includes("शॉर्ट्स")
+          );
+
+          const mapToVideoItem = (v: any, defaultDuration: string): VideoItem => {
+            const yId = v.youtubeVideoID || extractYoutubeId(v.youtubeUrl);
+            const thumb =
+              v.thumbnailUrl ||
+              (yId ? `https://img.youtube.com/vi/${yId}/hqdefault.jpg` : "/img/logo.png");
+            return {
+              id: v._id,
+              title: v.title,
+              image: thumb,
+              category: v.category?.name || "कामगार वार्ता",
+              duration: v.videoType === "SHORT" ? "शॉर्ट्स" : defaultDuration,
+              meta: v.category?.name || "विशेष वीडियो",
+              excerpt: v.title,
+            };
+          };
+
+          const mappedLongs = apiLongsRaw.map((v) => mapToVideoItem(v, "विशेष कवरेज"));
+          const mappedShorts = apiShortsRaw.map((v) => mapToVideoItem(v, "शॉर्ट्स"));
+
+          if (mappedLongs.length > 0) {
+            setFeature(mappedLongs[0]);
+            setLongVideos(mappedLongs.slice(1));
+          } else {
+            setFeature(null);
+            setLongVideos([]);
+          }
+
+          setShorts(mappedShorts);
+        } else {
+          setFeature(null);
+          setLongVideos([]);
+          setShorts([]);
+        }
+      })
+      .catch(() => {
+        setFeature(null);
+        setLongVideos([]);
+        setShorts([]);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  const hasAnyVideo = feature !== null || longVideos.length > 0 || shorts.length > 0;
 
   return (
     <section className={styles.videoPanel} aria-label="वीडियो">
@@ -60,52 +148,99 @@ export function VideoSection() {
         <SectionHeader title="वीडियो" action="और देखें" href="/videos" />
       </div>
 
-      <div className={`${styles.videoGroups} reveal`}>
-        <section className={styles.videoGroup} aria-label="विस्तृत वीडियो">
-          <div className={styles.videoGroupHead}>
-            <h3>विस्तृत वीडियो</h3>
-            <span>संपूर्ण रिपोर्ट और विश्लेषण</span>
-          </div>
-          <div className={styles.videoLongGrid}>
-            <a className={styles.videoMain} href={videoHref(feature.id)} aria-label={feature.title}>
-              <span className={`${styles.thumb} ${styles.thumbMain}`}>
-                <Media
-                  src={feature.image}
-                  alt=""
-                  sizes="(max-width: 900px) 100vw, 40vw"
-                  className={styles.thumbMedia}
-                />
-                <PlayGlyph />
-                <span className={styles.duration}>{feature.duration}</span>
-              </span>
-              <div className={ui.cat}>{feature.category}</div>
-              <h4 className={`${styles.videoMainTitle} ${ui.titleM}`}>
-                {feature.title}
-              </h4>
-              <p className={ui.excerpt}>{feature.excerpt}</p>
-            </a>
-            {longVideos.map((item, i) => (
-              <div className="reveal" key={item.id} style={stagger(i)}>
-                <VideoCard item={item} />
-              </div>
-            ))}
-          </div>
-        </section>
+      {loading && (
+        <div className={styles.noDataLoading}>
+          <Loader2 className="animate-spin" size={22} />
+          <span>वीडियो लोड हो रहे हैं...</span>
+        </div>
+      )}
 
-        <section className={styles.videoGroup} aria-label="शॉर्ट वीडियो">
-          <div className={styles.videoGroupHead}>
-            <h3>शॉर्ट्स</h3>
-            <span>एक मिनट में प्रमुख घटनाक्रम</span>
-          </div>
-          <div className={styles.videoShortGrid}>
-            {shorts.map((item, i) => (
-              <div className="reveal" key={item.id} style={stagger(i)}>
-                <VideoCard item={item} short />
+      {!loading && !hasAnyVideo && (
+        <div className={styles.noDataCard}>
+          <VideoOff className={styles.noDataIcon} size={42} />
+          <h4 className={styles.noDataTitle}>वीडियो उपलब्ध नहीं हैं</h4>
+          <p className={styles.noDataDesc}>
+            एडमिन पैनल से वीडियो अपलोड होने के बाद यहाँ प्रदर्शित किए जाएंगे।
+          </p>
+        </div>
+      )}
+
+      {!loading && hasAnyVideo && (
+        <div className={styles.videoGroups}>
+          {/* Subsection 1: विस्तृत वीडियो */}
+          <section className={styles.videoGroup} aria-label="विस्तृत वीडियो">
+            <div className={styles.videoGroupHead}>
+              <h3>विस्तृत वीडियो</h3>
+              <span>संपूर्ण रिपोर्ट और विश्लेषण</span>
+            </div>
+
+            {feature ? (
+              <div className={styles.videoLongGrid}>
+                <a
+                  className={styles.videoMain}
+                  href={videoHref(feature.id)}
+                  aria-label={feature.title}
+                >
+                  <span className={`${styles.thumb} ${styles.thumbMain}`}>
+                    <Media
+                      src={feature.image}
+                      alt=""
+                      sizes="(max-width: 900px) 100vw, 40vw"
+                      className={styles.thumbMedia}
+                    />
+                    <PlayGlyph />
+                    <span className={styles.duration}>{feature.duration}</span>
+                  </span>
+                  <div className={ui.cat}>{feature.category}</div>
+                  <h4 className={`${styles.videoMainTitle} ${ui.titleM}`}>
+                    {feature.title}
+                  </h4>
+                  <p className={ui.excerpt}>{feature.excerpt}</p>
+                </a>
+                {longVideos.map((item, i) => (
+                  <div key={item.id} style={stagger(i)}>
+                    <VideoCard item={item} />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
-      </div>
+            ) : (
+              <div className={styles.noDataCard}>
+                <VideoOff className={styles.noDataIcon} size={32} />
+                <h4 className={styles.noDataTitle}>विस्तृत वीडियो उपलब्ध नहीं हैं</h4>
+                <p className={styles.noDataDesc}>
+                  एडमिन पैनल से &apos;विस्तृत वीडियो&apos; श्रेणी में वीडियो अपलोड होने पर यहाँ दिखेंगे।
+                </p>
+              </div>
+            )}
+          </section>
+
+          {/* Subsection 2: शॉर्ट्स */}
+          <section className={styles.videoGroup} aria-label="शॉर्ट वीडियो">
+            <div className={styles.videoGroupHead}>
+              <h3>शॉर्ट्स</h3>
+              <span>एक मिनट में प्रमुख घटनाक्रम</span>
+            </div>
+
+            {shorts.length > 0 ? (
+              <div className={styles.videoShortGrid}>
+                {shorts.map((item, i) => (
+                  <div key={item.id} style={stagger(i)}>
+                    <VideoCard item={item} short />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.noDataCard}>
+                <Play className={styles.noDataIcon} size={32} />
+                <h4 className={styles.noDataTitle}>शॉर्ट्स वीडियो उपलब्ध नहीं हैं</h4>
+                <p className={styles.noDataDesc}>
+                  एडमिन पैनल से &apos;शॉर्ट्स&apos; श्रेणी में वीडियो अपलोड होने पर यहाँ दिखेंगे।
+                </p>
+              </div>
+            )}
+          </section>
+        </div>
+      )}
     </section>
   );
 }
