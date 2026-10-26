@@ -294,10 +294,18 @@ export const kamgarApi = {
   getCategoryTree: () => api.get<Category[]>('/public/categories'),
 
   // 4.5 Public Ads
-  getAds: (slotKey: string) => api.get<AdSlotResponse>(`/public/ads?slot=${slotKey}`),
+  getAds: (slotKey: string) =>
+    api.get<AdSlotResponse>(`/public/ads?slot=${encodeURIComponent(slotKey)}`),
 
   recordAdClick: async (adCampaignId: string, adSlotId?: string) => {
     return api.post<{ clickUrl: string; target: string }>('/public/ads/click', {
+      adCampaignId,
+      adSlotId,
+    });
+  },
+
+  recordAdImpression: async (adCampaignId: string, adSlotId?: string) => {
+    return api.post<{ recorded: boolean }>('/public/ads/impression', {
       adCampaignId,
       adSlotId,
     });

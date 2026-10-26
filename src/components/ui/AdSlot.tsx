@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Ad } from "@/data/ads";
 import { kamgarApi } from "@/services/apiClient";
 import { Media } from "./Media";
@@ -14,6 +14,8 @@ const variantClass: Record<string, string> = {
   content: styles.adContent,
 };
 
+type DisplayAd = Ad & { campaignId?: string; slotId?: string; target?: string };
+
 export function AdSlot({
   ad: initialAd,
   slotKey,
@@ -23,33 +25,53 @@ export function AdSlot({
   slotKey?: string;
   priority?: boolean;
 }) {
-  const [adData, setAdData] = useState<any>(initialAd || null);
+  const [adData, setAdData] = useState<DisplayAd | null>(
+    slotKey ? null : initialAd || null,
+  );
+  const impressedRef = useRef<string | null>(null);
 
   useEffect(() => {
-    const key = slotKey || (initialAd?.id ? `hero_leaderboard` : "hero_leaderboard");
-    if (slotKey || !initialAd) {
-      kamgarApi
-        .getAds(key)
-        .then((res) => {
-          if (res?.ads && res.ads.length > 0) {
-            const topAd = res.ads[0];
-            setAdData({
-              id: topAd.campaignId,
-              campaignId: topAd.campaignId,
-              slotId: topAd.slotId,
-              label: "विज्ञापन",
-              headline: topAd.title,
-              href: topAd.clickUrl,
-              image: topAd.image,
-              target: topAd.target || "_blank",
-              variant: initialAd?.variant || "leaderboard",
-            });
-          }
-        })
-        .catch(() => {
-          // Fallback to initialAd
+    if (!slotKey) return;
+
+    let active = true;
+    kamgarApi
+      .getAds(slotKey)
+      .then((res) => {
+        if (!active) return;
+        const topAd = res?.ads?.[0];
+        if (!topAd) {
+          // Slot is configured but has no active campaign — render nothing
+          // rather than silently showing the local design placeholder.
+          setAdData(null);
+          return;
+        }
+
+        setAdData({
+          id: topAd.adCampaignId,
+          campaignId: topAd.adCampaignId,
+          slotId: topAd.adSlotId,
+          label: initialAd?.label || "विज्ञापन",
+          headline: topAd.title || topAd.imageAlt || initialAd?.headline,
+          href: topAd.clickUrl,
+          image: topAd.imageUrl,
+          target: topAd.target || "_blank",
+          variant: initialAd?.variant || "leaderboard",
         });
-    }
+
+        const impressionKey = `${topAd.adCampaignId}:${topAd.adSlotId}`;
+        if (impressedRef.current !== impressionKey) {
+          impressedRef.current = impressionKey;
+          kamgarApi.recordAdImpression(topAd.adCampaignId, topAd.adSlotId).catch(() => {});
+        }
+      })
+      .catch(() => {
+        // Slot missing or API unavailable — fall back to the local placeholder.
+        if (active) setAdData(initialAd || null);
+      });
+
+    return () => {
+      active = false;
+    };
   }, [slotKey, initialAd]);
 
   if (!adData) return null;
