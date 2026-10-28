@@ -6,7 +6,6 @@ import Image from "next/image";
 import { User, LogOut } from "lucide-react";
 import { site } from "@/data/site";
 import { ThemeToggle } from "./ThemeToggle";
-import { LanguageTranslator } from "./LanguageTranslator";
 import {
   FacebookIcon,
   YoutubeIcon,
@@ -94,7 +93,7 @@ export function TopBar() {
 
   return (
     <div className={`${styles.shell} ${styles.topBar}`}>
-      {/* Left: Dynamic Live Hindi Edition / Date & Language Translator */}
+      {/* Left: Dynamic Live Hindi Edition / Date */}
       <div className={styles.editionArea}>
         <p className={styles.edition} title={tagline}>
           <span className={styles.editionDateText}>{liveDate}</span>
@@ -102,7 +101,6 @@ export function TopBar() {
             <span className={styles.editionTaglineText}> · {tagline}</span>
           ) : null}
         </p>
-        <LanguageTranslator />
       </div>
 
       {/* Center: Dynamic Brand Logo & Site Identity */}
