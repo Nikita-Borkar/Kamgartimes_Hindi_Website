@@ -3,9 +3,41 @@
 import { useState, useEffect, useId } from "react";
 import Link from "next/link";
 import { CheckCircle2, Award, Search, MessageSquarePlus, BarChart3, HelpCircle, Loader2 } from "lucide-react";
-import { activePoll, pollCategories, Poll } from "@/data/polls";
 import { kamgarApi } from "@/services/apiClient";
 import type { QotdQuestion, QotdAnswerResult, ArchiveQuestionItem, PublicPoll } from "@/types/api";
+
+// Local Poll interface (moved from @/data/polls - now using API)
+interface PollOption {
+  id: string;
+  label: string;
+  votes: number;
+  percent: number;
+}
+
+interface Poll {
+  id: string;
+  question: string;
+  description?: string;
+  category: string;
+  date: string;
+  endDate?: string;
+  totalVotes: number;
+  status: "active" | "closed";
+  options: PollOption[];
+  winningOptionId?: string;
+}
+
+// Static category list for filter pills (UI only, not data)
+const pollCategories = [
+  "सभी",
+  "विकास और बुनियादी ढांचा",
+  "रोजगार व श्रम",
+  "राजनीति व कृषि",
+  "अर्थव्यवस्था",
+  "पर्यावरण व स्वास्थ्य",
+  "यातायात व सुरक्षा",
+  "शिक्षा",
+];
 import styles from "./polls.module.css";
 
 const formatHindiDate = (d: string | number | Date | undefined) => {
@@ -25,7 +57,15 @@ const formatHindiDate = (d: string | number | Date | undefined) => {
 export function PollsPage() {
   const [selectedOption, setSelectedOption] = useState<string>("");
   const [hasVoted, setHasVoted] = useState<boolean>(false);
-  const [currentPoll, setCurrentPoll] = useState<Poll>(activePoll);
+  const [currentPoll, setCurrentPoll] = useState<Poll>({
+  id: "",
+  question: "",
+  category: "जनमत सर्वेक्षण",
+  status: "active",
+  date: "",
+  totalVotes: 0,
+  options: [],
+});
   const [activePollData, setActivePollData] = useState<PublicPoll | null>(null);
   const [qotd, setQotd] = useState<QotdQuestion | null>(null);
   const [checkResult, setCheckResult] = useState<QotdAnswerResult | null>(null);
@@ -49,9 +89,7 @@ export function PollsPage() {
             question: poll.question,
             category: "जनमत सर्वेक्षण",
             status: "active",
-            date: formatHindiDate(poll.startDate || Date.now()),
-            endDate: formatHindiDate(poll.endDate || Date.now()),
-            description: "कामगार टाइम्स सक्रिय जनमत सर्वेक्षण — अपना बहुमूल्य मत दर्ज करें।",
+            date: formatHindiDate(Date.now()),
             totalVotes: poll.totalVotes,
             options: poll.options.map((opt) => ({
               id: opt._id,
@@ -222,31 +260,19 @@ export function PollsPage() {
     if (optIndex === -1 || !chosenOpt) return;
 
     try {
-      const res = await kamgarApi.voteQuestion({
+      const res = await kamgarApi.checkAnswer({
+        answer: chosenOpt.label,
+        category: qotd.category,
         questionId: qotd._id,
-        optionIndex: optIndex,
-        optionLabel: chosenOpt.label,
       });
 
       if (res) {
         const resultPayload: QotdAnswerResult = {
           correct: res.correct,
           correctAnswer: res.correctAnswer,
-          explanation: res.explanation,
         };
 
         setCheckResult(resultPayload);
-
-        setCurrentPoll((prev) => ({
-          ...prev,
-          totalVotes: res.totalVotes,
-          options: res.options.map((o) => ({
-            id: `q-opt-${o.id}`,
-            label: o.label,
-            votes: o.votes,
-            percent: o.percent,
-          })),
-        }));
 
         setHasVoted(true);
         setSubmittingVote(false);
@@ -464,11 +490,6 @@ export function PollsPage() {
                         ? "✓ सही उत्तर! बधाई हो।"
                         : `✗ गलत उत्तर। सही उत्तर: ${checkResult.correctAnswer}`}
                     </div>
-                    {checkResult.explanation && (
-                      <p style={{ margin: 0, fontSize: 14, color: "var(--text)", lineHeight: 1.5 }}>
-                        <strong>स्पष्टीकरण:</strong> {checkResult.explanation}
-                      </p>
-                    )}
                   </div>
                 )}
               </div>

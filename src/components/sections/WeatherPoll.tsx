@@ -492,19 +492,6 @@ export function WeatherPoll() {
                         </>
                       )}
                     </strong>
-                    {qotdResult.explanation ? (
-                      <p
-                        style={{
-                          margin: "8px 0 0",
-                          fontSize: "13px",
-                          lineHeight: "1.5",
-                          color: "inherit",
-                          opacity: 0.9,
-                        }}
-                      >
-                        {qotdResult.explanation}
-                      </p>
-                    ) : null}
                   </div>
                 )}
               </div>

@@ -198,13 +198,11 @@ export interface QotdVoteResult {
   options: QotdOptionMeta[];
   correct: boolean;
   correctAnswer: string;
-  explanation: string;
 }
 
 export interface QotdAnswerResult {
   correct: boolean;
   correctAnswer: string;
-  explanation: string;
 }
 
 // ==================== Site Settings ====================
@@ -289,8 +287,6 @@ export interface PublicPoll {
   _id: string;
   question: string;
   totalVotes: number;
-  startDate?: string;
-  endDate?: string;
   options: PublicPollOption[];
 }
 
