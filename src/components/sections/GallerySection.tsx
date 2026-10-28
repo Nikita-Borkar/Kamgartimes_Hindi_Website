@@ -99,7 +99,7 @@ export function GallerySection() {
           <ImageOff className={styles.noDataIcon} size={40} />
           <h4 className={styles.noDataTitle}>फोटो गैलरी उपलब्ध नहीं है</h4>
           <p className={styles.noDataDesc}>
-            एडमिन पैनल से फोटो गैलरी या तस्वीरें अपलोड होने के बाद यहाँ प्रदर्शित की जाएंगी।
+            शीघ्र ही नई फोटो गैलरी यहाँ उपलब्ध होगी।
           </p>
         </div>
       )}

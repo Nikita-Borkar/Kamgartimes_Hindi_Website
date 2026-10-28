@@ -379,7 +379,7 @@ export function WeatherPoll() {
         <div className={styles.pollContent}>
           <div className={styles.pollQuestion}>
             <h3>
-              {pollTitle || "एडमिन पैनल द्वारा प्रकाशित आज का सवाल लोड हो रहा है..."}
+              {pollTitle || "आज का सवाल लोड हो रहा है..."}
             </h3>
             <p>
               {activePoll

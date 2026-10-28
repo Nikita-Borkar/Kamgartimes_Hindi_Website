@@ -137,8 +137,9 @@
   font-weight: 700;
   margin-bottom: var(--space-5);
   padding-bottom: var(--space-2);
-  border-bottom: 2px solid var(--rule, #e2e8f0);
+  border-bottom: 2px solid var(--border, #e2e8f0);
   position: relative;
+  color: var(--text);
 }
 
 .sectionTitle span::after {
@@ -168,7 +169,7 @@
   background: var(--surface, #f8fafc);
   padding: var(--space-4);
   border-radius: var(--r-md, 8px);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.06));
   font-size: 15px;
   line-height: 1.5;
   color: var(--text);
@@ -192,7 +193,7 @@
   background: var(--surface, #f8fafc);
   padding: var(--space-6);
   border-radius: var(--r-lg, 12px);
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border, rgba(0, 0, 0, 0.08));
 }
 
 .otherTitle {
@@ -200,6 +201,7 @@
   font-weight: 700;
   margin-top: 0;
   margin-bottom: var(--space-4);
+  color: var(--text);
 }
 
 .citiesPills {
@@ -218,21 +220,62 @@
   border-radius: 20px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--text);
+  color: #1e293b;
   text-decoration: none;
   transition: all 0.2s ease;
 }
 
 .cityPill:hover {
   background: #d32f2f;
-  color: #ffffff;
+  color: #ffffff !important;
   border-color: #d32f2f;
 }
 
 .activePill {
+  background: #d32f2f !important;
+  color: #ffffff !important;
+  border-color: #d32f2f !important;
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.35);
+}
+
+/* Dark mode theme overrides */
+[data-theme="dark"] .sectionTitle {
+  color: #f1f5f9;
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .highlightCard {
+  background: #181d24;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .otherCitiesSection {
+  background: #181d24;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .otherTitle {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .cityPill {
+  background: #232b38;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .cityPill:hover {
   background: #d32f2f;
-  color: #ffffff;
   border-color: #d32f2f;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .activePill {
+  background: #d32f2f !important;
+  border-color: #d32f2f !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(211, 47, 47, 0.45);
 }
 
 .indexHeader {

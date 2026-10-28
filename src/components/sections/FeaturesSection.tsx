@@ -77,7 +77,7 @@ export function FeaturesSection() {
           <FileText className={styles.noDataIcon} size={40} />
           <h4 className={styles.noDataTitle}>विशेष लेख उपलब्ध नहीं हैं</h4>
           <p className={styles.noDataDesc}>
-            एडमिन पैनल से &apos;विशेष रिपोर्ट&apos; या &apos;संपादकीय&apos; में लेख प्रकाशित होने के बाद यहाँ दिखेंगे।
+            शीघ्र ही विशेष रिपोर्ट व संपादकीय लेख यहाँ उपलब्ध होंगे।
           </p>
         </div>
       )}

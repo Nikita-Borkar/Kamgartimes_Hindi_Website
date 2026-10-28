@@ -64,7 +64,7 @@ export function LatestTrending() {
           <div className={styles.categoryNoDataCard}>
             <FileText className={styles.noDataIcon} size={28} />
             <h4 className={styles.noDataTitle}>ताज़ा समाचार उपलब्ध नहीं हैं</h4>
-            <p className={styles.noDataDesc}>एडमिन पैनल से ताज़ा समाचार प्रकाशित होने के बाद यहाँ दिखेंगे।</p>
+            <p className={styles.noDataDesc}>शीघ्र ही ताज़ा समाचार यहाँ उपलब्ध होंगे।</p>
           </div>
         )}
 
@@ -91,7 +91,7 @@ export function LatestTrending() {
           <div className={styles.categoryNoDataCard}>
             <FileText className={styles.noDataIcon} size={28} />
             <h4 className={styles.noDataTitle}>ट्रेंडिंग समाचार उपलब्ध नहीं हैं</h4>
-            <p className={styles.noDataDesc}>एडमिन पैनल से अधिक समाचार प्रकाशित होने पर ट्रेंडिंग सूची यहाँ दिखेगी।</p>
+            <p className={styles.noDataDesc}>शीघ्र ही ट्रेंडिंग समाचार यहाँ उपलब्ध होंगे।</p>
           </div>
         )}
 

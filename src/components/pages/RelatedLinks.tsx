@@ -10,8 +10,8 @@ export function RelatedLinks({ currentHref }: { currentHref?: string }) {
   const links = companyLinks.filter((link) => link.href !== currentHref);
 
   return (
-    <nav className={styles.related} aria-label="अन्य जानकारी पृष्ठ">
-      <h2 className={styles.relatedTitle}>अन्य जानकारी</h2>
+    <nav className={styles.related} aria-label="Related pages">
+      <h2 className={styles.relatedTitle}>Related Links</h2>
       <div className={styles.relatedLinks}>
         {links.map((link) => (
           <Link key={link.href} className={styles.relatedLink} href={link.href}>

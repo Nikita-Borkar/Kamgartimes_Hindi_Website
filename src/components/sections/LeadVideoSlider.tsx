@@ -200,7 +200,7 @@ export function LeadVideoSlider() {
           <VideoOff className={styles.noDataIcon} size={40} />
           <h4 className={styles.noDataTitle}>कामगार टाइम्स यूट्यूब वीडियो उपलब्ध नहीं हैं</h4>
           <p className={styles.noDataDesc}>
-            एडमिन पैनल से &apos;कामगार टाइम्स यूट्यूब वीडियो&apos; श्रेणी में वीडियो अपलोड होने के बाद यहाँ प्रदर्शित होंगे।
+            शीघ्र ही नए यूट्यूब वीडियो यहाँ उपलब्ध होंगे।
           </p>
         </div>
       )}

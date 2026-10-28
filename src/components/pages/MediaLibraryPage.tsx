@@ -107,7 +107,7 @@ export function VideoLibrary() {
           <VideoOff className={styles.noDataIcon} size={48} />
           <h4 className={styles.noDataTitle}>वीडियो उपलब्ध नहीं हैं</h4>
           <p className={styles.noDataDesc}>
-            एडमिन पैनल से वीडियो अपलोड होने के बाद यहाँ प्रदर्शित किए जाएंगे।
+            शीघ्र ही नए वीडियो यहाँ उपलब्ध होंगे। कृपया थोड़ी देर बाद देखें।
           </p>
         </div>
       )}
@@ -218,7 +218,7 @@ export function ShortsLibrary() {
           <VideoOff className={styles.noDataIcon} size={48} />
           <h4 className={styles.noDataTitle}>शॉर्ट्स वीडियो उपलब्ध नहीं हैं</h4>
           <p className={styles.noDataDesc}>
-            एडमिन पैनल से &apos;शॉर्ट्स&apos; श्रेणी में वीडियो अपलोड होने के बाद यहाँ दिखेंगे।
+            शीघ्र ही नए शॉर्ट्स वीडियो यहाँ उपलब्ध होंगे।
           </p>
         </div>
       )}
@@ -321,7 +321,7 @@ export function GalleryLibrary() {
           <ImageOff className={styles.noDataIcon} size={48} />
           <h4 className={styles.noDataTitle}>फोटो गैलरी उपलब्ध नहीं है</h4>
           <p className={styles.noDataDesc}>
-            एडमिन पैनल से फोटो गैलरी या तस्वीरें अपलोड होने के बाद यहाँ प्रदर्शित की जाएंगी।
+            शीघ्र ही नई फोटो गैलरी यहाँ उपलब्ध होगी।
           </p>
         </div>
       )}

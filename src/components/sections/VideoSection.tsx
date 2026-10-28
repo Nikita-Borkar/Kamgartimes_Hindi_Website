@@ -160,7 +160,7 @@ export function VideoSection() {
           <VideoOff className={styles.noDataIcon} size={42} />
           <h4 className={styles.noDataTitle}>वीडियो उपलब्ध नहीं हैं</h4>
           <p className={styles.noDataDesc}>
-            एडमिन पैनल से वीडियो अपलोड होने के बाद यहाँ प्रदर्शित किए जाएंगे।
+            शीघ्र ही नए वीडियो यहाँ उपलब्ध होंगे। कृपया थोड़ी देर बाद देखें।
           </p>
         </div>
       )}
@@ -208,7 +208,7 @@ export function VideoSection() {
                 <VideoOff className={styles.noDataIcon} size={32} />
                 <h4 className={styles.noDataTitle}>विस्तृत वीडियो उपलब्ध नहीं हैं</h4>
                 <p className={styles.noDataDesc}>
-                  एडमिन पैनल से &apos;विस्तृत वीडियो&apos; श्रेणी में वीडियो अपलोड होने पर यहाँ दिखेंगे।
+                  शीघ्र ही नए विस्तृत वीडियो यहाँ उपलब्ध होंगे।
                 </p>
               </div>
             )}
@@ -234,7 +234,7 @@ export function VideoSection() {
                 <Play className={styles.noDataIcon} size={32} />
                 <h4 className={styles.noDataTitle}>शॉर्ट्स वीडियो उपलब्ध नहीं हैं</h4>
                 <p className={styles.noDataDesc}>
-                  एडमिन पैनल से &apos;शॉर्ट्स&apos; श्रेणी में वीडियो अपलोड होने पर यहाँ दिखेंगे।
+                  शीघ्र ही नए शॉर्ट्स वीडियो यहाँ उपलब्ध होंगे।
                 </p>
               </div>
             )}

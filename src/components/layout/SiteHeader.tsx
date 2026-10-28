@@ -18,14 +18,16 @@ export function SiteHeader() {
   }, []);
 
   return (
-    <header
-      id="top"
-      className={styles.stickyHeaderGroup}
-      data-scrolled={scrolled}
-      role="banner"
-    >
+    <>
       <TopBar />
-      <MainNav />
-    </header>
+      <header
+        id="top"
+        className={styles.stickyNavHeader}
+        data-scrolled={scrolled}
+        role="banner"
+      >
+        <MainNav />
+      </header>
+    </>
   );
 }

@@ -14,8 +14,7 @@
 html {
   scroll-padding-top: var(--safe-top);
   -webkit-text-size-adjust: 100%;
-  overflow-x: hidden;
-  max-width: 100vw;
+  overflow-x: clip;
 }
 
 body {
@@ -26,8 +25,7 @@ body {
   padding-bottom: var(--safe-bottom);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
-  max-width: 100vw;
+  overflow-x: clip;
 }
 
 img,
@@ -124,5 +122,9 @@ body {
 .goog-text-highlight {
   background: none !important;
   box-shadow: none !important;
+}
+
+body.notice-ticker-on {
+  padding-bottom: 46px;
 }
 

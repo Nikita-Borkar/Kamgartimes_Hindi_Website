@@ -108,7 +108,7 @@ export function EditorsPicks() {
           <FileText className={styles.noDataIcon} size={40} />
           <h4 className={styles.noDataTitle}>संपादक की पसंद के लेख उपलब्ध नहीं हैं</h4>
           <p className={styles.noDataDesc}>
-            एडमिन पैनल से &apos;संपादकीय&apos; में लेख प्रकाशित होने के बाद यहाँ दिखेंगे।
+            शीघ्र ही संपादक की पसंद के लेख यहाँ उपलब्ध होंगे।
           </p>
         </div>
       )}

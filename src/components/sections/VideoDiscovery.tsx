@@ -65,7 +65,7 @@ export function VideoDiscovery() {
           <VideoOff className={styles.noDataIcon} size={36} />
           <h4 className={styles.noDataTitle}>वीडियो उपलब्ध नहीं हैं</h4>
           <p className={styles.noDataDesc}>
-            एडमिन पैनल से वीडियो अपलोड होने के बाद यहाँ प्रदर्शित किए जाएंगे।
+            शीघ्र ही नए वीडियो यहाँ उपलब्ध होंगे। कृपया थोड़ी देर बाद देखें।
           </p>
         </div>
       )}
