@@ -1,5 +1,84 @@
 // src/services/weatherService.ts
-import type { CityWeatherData, DailyRecord, HourlyForecast } from "@/data/weather";
+// Interfaces moved from @/data/weather (static data removed, now using API)
+
+export interface DailyRecord {
+  date: string;
+  dayName: string;
+  high: number;
+  low: number;
+  avg: number;
+  condition: string;
+  iconType: "sun" | "cloud" | "rain" | "cloud-sun";
+  rainfallMm: number;
+  humidity: number;
+  windSpeed: number;
+}
+
+export interface HourlyForecast {
+  time: string;
+  temp: number;
+  condition: string;
+  iconType: "sun" | "cloud" | "rain" | "cloud-sun";
+  rainProb: number;
+}
+
+export interface CityWeatherData {
+  slug: string;
+  name: string;
+  state: string;
+  currentTemp: number;
+  feelsLike: number;
+  high: number;
+  low: number;
+  condition: string;
+  iconType: "sun" | "cloud" | "rain" | "cloud-sun";
+  humidity: number;
+  windSpeed: string;
+  rainChance: string;
+  aqi: number;
+  aqiStatus: string;
+  sunrise: string;
+  sunset: string;
+  pressure: string;
+  uvIndex: string;
+  updatedAt: string;
+  pastRecords: DailyRecord[];
+  hourly: HourlyForecast[];
+  forecast: DailyRecord[];
+}
+
+/** Default fallback city weather data generator (used when API fails) */
+export function getDefaultCityWeatherData(cityKey: string): CityWeatherData {
+  const conf = CITY_COORDINATES[cityKey] || {
+    name: "मुंबई",
+    state: "महाराष्ट्र",
+    aqiBase: 110,
+  };
+  return {
+    slug: cityKey,
+    name: conf.name,
+    state: conf.state,
+    currentTemp: 30,
+    feelsLike: 33,
+    high: 32,
+    low: 24,
+    condition: "साफ़ मौसम",
+    iconType: "sun",
+    humidity: 60,
+    windSpeed: "10 किमी/घंटा",
+    rainChance: "20%",
+    aqi: conf.aqiBase,
+    aqiStatus: getAqiStatusHindi(conf.aqiBase),
+    sunrise: "06:30 AM",
+    sunset: "06:15 PM",
+    pressure: "1012 hPa",
+    uvIndex: "6 (मध्यम)",
+    updatedAt: getHindiTimeNow(),
+    pastRecords: [],
+    hourly: [],
+    forecast: [],
+  };
+}
 
 export interface LiveDailyForecast {
   day: string;

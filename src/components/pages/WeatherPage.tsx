@@ -18,12 +18,13 @@ import {
   Eye,
   Clock,
 } from "lucide-react";
-import { maharashtraWeatherData, CityWeatherData } from "@/data/weather";
 import {
   fetchFullCityWeather,
   fetchAllCitiesOverview,
   CityOverviewData,
   CITY_COORDINATES,
+  CityWeatherData,
+  getDefaultCityWeatherData,
 } from "@/services/weatherService";
 import styles from "./weather.module.css";
 
@@ -53,11 +54,11 @@ const INITIAL_OVERVIEW: CityOverviewData[] = Object.entries(CITY_COORDINATES).ma
     slug,
     name: conf.name,
     state: conf.state,
-    currentTemp: maharashtraWeatherData[slug]?.currentTemp ?? 30,
-    condition: maharashtraWeatherData[slug]?.condition ?? "साफ़ मौसम",
-    iconType: maharashtraWeatherData[slug]?.iconType ?? "cloud-sun",
-    high: maharashtraWeatherData[slug]?.high ?? 32,
-    low: maharashtraWeatherData[slug]?.low ?? 24,
+    currentTemp: 30,
+    condition: "साफ़ मौसम",
+    iconType: "sun" as const,
+    high: 32,
+    low: 24,
     aqi: conf.aqiBase,
     aqiStatus: "मध्यम",
   })
@@ -65,38 +66,56 @@ const INITIAL_OVERVIEW: CityOverviewData[] = Object.entries(CITY_COORDINATES).ma
 
 export function WeatherPage() {
   const [selectedCityKey, setSelectedCityKey] = useState<string>("mumbai");
-  const defaultCityData: CityWeatherData =
-    maharashtraWeatherData[selectedCityKey] || maharashtraWeatherData.mumbai;
-  const [cityData, setCityData] = useState<CityWeatherData>(defaultCityData);
+  const [cityData, setCityData] = useState<CityWeatherData>(getDefaultCityWeatherData("mumbai"));
   const [overviewCities, setOverviewCities] =
     useState<CityOverviewData[]>(INITIAL_OVERVIEW);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // 1. Fetch live overview and temperatures for all cities
+  // 2. Fetch full detailed weather for selected city
   useEffect(() => {
-    fetchAllCitiesOverview()
-      .then((cities) => {
+    let mounted = true;
+    const loadWeather = async () => {
+      setLoading(true);
+      const fallback = getDefaultCityWeatherData(selectedCityKey);
+      try {
+        const fullData = await fetchFullCityWeather(selectedCityKey, fallback);
+        if (mounted) {
+          setCityData(fullData);
+          setLoading(false);
+        }
+      } catch {
+        if (mounted) setLoading(false);
+      }
+    };
+
+    loadWeather();
+
+    // Auto-refresh weather every hour
+    const intervalId = setInterval(() => {
+      loadWeather();
+    }, 3600000); // 1 hour
+
+    return () => {
+      mounted = false;
+      clearInterval(intervalId);
+    };
+  }, [selectedCityKey]);
+
+  // 3. Auto-refresh overview every hour
+  useEffect(() => {
+    const loadOverview = async () => {
+      try {
+        const cities = await fetchAllCitiesOverview();
         if (cities && cities.length > 0) {
           setOverviewCities(cities);
         }
-      })
-      .catch(() => {});
-  }, []);
+      } catch {}
+    };
 
-  // 2. Fetch full detailed weather for selected city
-  useEffect(() => {
-    setLoading(true);
-    const fallback =
-      maharashtraWeatherData[selectedCityKey] || maharashtraWeatherData.mumbai;
-    fetchFullCityWeather(selectedCityKey, fallback)
-      .then((fullData) => {
-        setCityData(fullData);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
-  }, [selectedCityKey]);
+    loadOverview();
+    const intervalId = setInterval(loadOverview, 3600000); // 1 hour
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <main className={styles.main}>
