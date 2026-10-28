@@ -36,7 +36,7 @@ export function CategoryPage({
       ) : articles.length === 0 ? (
         <EmptyState
           title={`'${label}' श्रेणी में अभी कोई समाचार उपलब्ध नहीं है`}
-          description="एडमिन पैनल से इस श्रेणी में अभी तक कोई लेख प्रकाशित नहीं हुआ है। नए अपडेट और ताज़ा खबरों के लिए कृपया थोड़ी देर बाद देखें।"
+          description="ताज़ा खबरों और नए अपडेट के लिए कृपया थोड़ी देर बाद पुनः देखें।"
           actionLabel="मुख्य पृष्ठ पर जाएं"
           actionHref="/"
           secondaryLabel="ताज़ा खबरें देखें"

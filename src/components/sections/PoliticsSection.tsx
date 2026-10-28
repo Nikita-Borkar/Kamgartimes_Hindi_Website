@@ -72,7 +72,7 @@ export function PoliticsSection() {
           <FileText className={styles.noDataIcon} size={40} />
           <h4 className={styles.noDataTitle}>राजनीति समाचार उपलब्ध नहीं हैं</h4>
           <p className={styles.noDataDesc}>
-            एडमिन पैनल से &apos;राजनीति&apos; श्रेणी में समाचार प्रकाशित होने के बाद यहाँ दिखेंगे।
+            शीघ्र ही राजनीति से जुड़े ताज़ा समाचार यहाँ उपलब्ध होंगे।
           </p>
         </div>
       )}

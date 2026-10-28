@@ -32,12 +32,12 @@ function Caret({ open }: { open?: boolean }) {
 function NavEntry({ item }: { item: NavItem }) {
   const [open, setOpen] = useState(false);
   const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const itemRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLUListElement>(null);
 
   const updatePosition = useCallback(() => {
-    if (!buttonRef.current) return;
-    const rect = buttonRef.current.getBoundingClientRect();
+    if (!itemRef.current) return;
+    const rect = itemRef.current.getBoundingClientRect();
     const menuWidth = 240;
     const left = Math.max(8, Math.min(rect.left, window.innerWidth - menuWidth - 8));
     setCoords({
@@ -61,8 +61,8 @@ function NavEntry({ item }: { item: NavItem }) {
     const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       const target = e.target as Node;
       if (
-        buttonRef.current &&
-        !buttonRef.current.contains(target) &&
+        itemRef.current &&
+        !itemRef.current.contains(target) &&
         menuRef.current &&
         !menuRef.current.contains(target)
       ) {
@@ -105,6 +105,7 @@ function NavEntry({ item }: { item: NavItem }) {
 
   return (
     <div
+      ref={itemRef}
       className={styles.navItem}
       onMouseEnter={() => {
         if (typeof window !== "undefined" && window.innerWidth > 768) {
@@ -118,17 +119,32 @@ function NavEntry({ item }: { item: NavItem }) {
         }
       }}
     >
-      <button
-        ref={buttonRef}
-        type="button"
+      <div
         className={`${styles.navLink} ${styles.navLinkWithSub}${open ? ` ${styles.navLinkActive}` : ""}`}
-        onClick={handleToggle}
-        aria-expanded={open}
-        suppressHydrationWarning
       >
-        <span>{item.label}</span>
-        <Caret open={open} />
-      </button>
+        <Link
+          className={styles.navLinkAnchor}
+          href={item.href}
+          onClick={() => setOpen(false)}
+        >
+          <span>{item.label}</span>
+        </Link>
+        <button
+          type="button"
+          className={styles.navCaretBtn}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleToggle();
+          }}
+          aria-expanded={open}
+          aria-label={`${item.label} उप-श्रेणियां`}
+          title={`${item.label} उप-श्रेणियां`}
+          suppressHydrationWarning
+        >
+          <Caret open={open} />
+        </button>
+      </div>
 
       {open && coords && (
         <ul
@@ -203,10 +219,10 @@ function OverflowPanel({
             href="/login"
             className={styles.drawerToolBtn}
             onClick={onNavigate}
-            aria-label="लॉग इन करें"
+            aria-label="Login"
           >
             <User size={16} strokeWidth={2.2} />
-            <span>लॉग इन / प्रोफ़ाइल</span>
+            <span>Login / Profile</span>
           </Link>
           <Link
             href="/search"
@@ -231,14 +247,20 @@ function OverflowPanel({
             <li key={item.label} className={styles.panelItem}>
               {hasDropdown ? (
                 <div className={styles.panelRow}>
+                  <Link
+                    className={styles.panelDirectLink}
+                    href={item.href}
+                    onClick={onNavigate}
+                  >
+                    <span className={styles.panelLabelText}>{item.label}</span>
+                  </Link>
                   <button
                     type="button"
-                    className={styles.panelAccordionBtn}
+                    className={styles.panelAccordionCaretBtn}
                     aria-expanded={isOpen}
                     aria-label={`${item.label} उप-श्रेणी ${isOpen ? "बंद करें" : "खोलें"}`}
                     onClick={() => toggleGroup(item.label)}
                   >
-                    <span className={styles.panelLabelText}>{item.label}</span>
                     <ChevronDown
                       size={18}
                       strokeWidth={2.4}
@@ -690,8 +712,14 @@ export function MainNav() {
                     item.children?.length ? ` ${styles.navLinkWithSub}` : ""
                   }`}
                 >
-                  <span>{item.label}</span>
-                  {item.children?.length ? <Caret /> : null}
+                  <span className={item.children?.length ? styles.navLinkAnchor : undefined}>
+                    <span>{item.label}</span>
+                  </span>
+                  {item.children?.length ? (
+                    <span className={styles.navCaretBtn}>
+                      <Caret />
+                    </span>
+                  ) : null}
                 </span>
               </li>
             ))}

@@ -36,14 +36,14 @@ export function AuthForm({ mode }: { mode: Mode }) {
         const res = await kamgarApi.login({ email, password });
         if (res?.accessToken) {
           setAuthTokens(res.accessToken, res.refreshToken);
-          setSuccessMsg(`स्वागत है, ${res.user?.name || "पाठक"}! लॉग इन सफल रहा।`);
+          setSuccessMsg(`स्वागत है, ${res.user?.name || "पाठक"}! Login सफल रहा।`);
           setTimeout(() => {
             router.push("/");
           }, 1200);
         }
       } else {
         const res = await kamgarApi.register({ name, email, password });
-        setSuccessMsg(`पंजीकरण सफल रहा! अब आप लॉग इन कर सकते हैं।`);
+        setSuccessMsg(`Registration सफल रहा! अब आप Login कर सकते हैं।`);
         setTimeout(() => {
           router.push("/login");
         }, 1500);
@@ -144,7 +144,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
           )}
 
           <button className={styles.formSubmit} type="submit" disabled={loading}>
-            {loading ? "कृपया प्रतीक्षा करें..." : isLogin ? "लॉग इन करें" : "पंजीकरण करें"}
+            {loading ? "कृपया प्रतीक्षा करें..." : isLogin ? "Login" : "Register"}
           </button>
 
           <p className={styles.formSwitch}>
@@ -153,7 +153,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
               className={styles.formSwitchLink}
               href={isLogin ? "/register" : "/login"}
             >
-              {isLogin ? "पंजीकरण करें" : "लॉग इन करें"}
+              {isLogin ? "Register" : "Login"}
             </Link>
           </p>
         </>

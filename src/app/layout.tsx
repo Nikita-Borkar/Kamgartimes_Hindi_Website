@@ -9,6 +9,7 @@ import { ScrollChrome } from "@/components/motion/ScrollChrome";
 import { NavigationProgressBar } from "@/components/motion/NavigationProgressBar";
 import { NotificationPrompt } from "@/components/layout/NotificationPrompt";
 import { FloatingWidgets } from "@/components/layout/FloatingWidgets";
+import { NoticeTicker } from "@/components/layout/NoticeTicker";
 import { SiteSettingsProvider } from "@/context/SiteSettingsContext";
 import "@/design/tokens.css";
 import "@/design/base.css";
@@ -105,6 +106,7 @@ export default function RootLayout({
           <NotificationPrompt />
           {children}
           <FloatingWidgets />
+          <NoticeTicker />
         </SiteSettingsProvider>
       </body>
     </html>

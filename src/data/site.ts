@@ -3,9 +3,6 @@ export const site = {
   /** The single glyph inside the crimson brand square. */
   mark: "क",
   tagline: "राजनीति, अर्थव्यवस्था, श्रम अधिकार, खेल और संस्कृति पर निष्पक्ष व स्वतंत्र पत्रकारिता.",
-  /** Top bar, left of the wordmark. */
-  edition: "रविवार, ४ अक्टूबर २०२६",
-  editionTime: "सुबह १०:३०",
   language: "हिन्दी",
   description:
     "कामगार टाइम्स — भारत और महाराष्ट्र का विश्वसनीय दैनिक समाचार पत्र एवं डिजिटल पोर्टल. श्रम अधिकार, राजनीति, अर्थव्यवस्था, खेल, मनोरंजन, तकनीक और राष्ट्रीय-अंतरराष्ट्रीय समाचारों का निष्पक्ष मंच.",
@@ -228,20 +225,20 @@ export const notice = {
   text: "कामगार टाइम्स महाराष्ट्र राज्य पत्रकार / प्रतिनिधी नियुक्ती अर्ज 2026-2027 सुरू (ऑनलाइन अर्ज भरें) • विज्ञापन देने के लिए संपर्क करें: 8055502228",
 } as const;
 
-/* The four internal utility pages. Single source for the footer "कंपनी"
+/* The four internal utility pages. Single source for the footer "Company"
    column and the cross-links shown at the base of each utility page. */
 export const companyLinks = [
-  { label: "हमारे बारे में", href: "/about" },
-  { label: "पत्रकार भर्ती 2026-27", href: "/join-us" },
-  { label: "संपर्क करें", href: "/contact" },
-  { label: "अस्वीकरण", href: "/disclaimer" },
-  { label: "गोपनीयता नीति", href: "/privacy" },
+  { label: "About Us", href: "/about" },
+  { label: "Reporter Recruitment 2026-27", href: "/join-us" },
+  { label: "Contact Us", href: "/contact" },
+  { label: "Disclaimer", href: "/disclaimer" },
+  { label: "Privacy Policy", href: "/privacy" },
 ] as const;
 
 export const footer = {
   sections: [
     {
-      title: "कंपनी",
+      title: "Company",
       links: companyLinks,
     },
   ],

@@ -227,7 +227,7 @@ export default async function CityPage({
             {displayArticles.length === 0 ? (
               <EmptyState
                 title={`${city.name} में अभी कोई स्थानीय समाचार उपलब्ध नहीं है`}
-                description={`एडमिन पैनल से ${city.name} के लिए अभी कोई विशेष समाचार प्रकाशित नहीं किया गया है।`}
+                description={`${city.name} से जुड़ी ताज़ा खबरों और नए अपडेट के लिए कृपया थोड़ी देर बाद पुनः देखें।`}
                 actionLabel="मुख्य पृष्ठ पर जाएं"
                 actionHref="/"
                 secondaryLabel="अन्य शहर देखें"
@@ -257,17 +257,26 @@ export default async function CityPage({
           <section className={styles.otherCitiesSection}>
             <h3 className={styles.otherTitle}>अन्य शहरों के समाचार देखें</h3>
             <div className={styles.citiesPills}>
-              {citiesData.map((c) => (
-                <Link
-                  key={c.slug}
-                  href={`/city/${c.slug}`}
-                  className={`${styles.cityPill} ${c.slug === slug ? styles.activePill : ""}`}
-                >
-                  <MapPin size={13} />
-                  <span>{c.name}</span>
-                  <ChevronRight size={13} />
-                </Link>
-              ))}
+              {citiesData.map((c) => {
+                const isCurrentCity =
+                  c.slug === slug ||
+                  c.slug === decodedSlug ||
+                  c.name === slug ||
+                  c.name === decodedSlug ||
+                  (city && (c.slug === city.slug || c.name === city.name));
+
+                return (
+                  <Link
+                    key={c.slug}
+                    href={`/city/${c.slug}`}
+                    className={`${styles.cityPill} ${isCurrentCity ? styles.activePill : ""}`}
+                  >
+                    <MapPin size={13} />
+                    <span>{c.name}</span>
+                    <ChevronRight size={13} />
+                  </Link>
+                );
+              })}
             </div>
           </section>
         </div>
