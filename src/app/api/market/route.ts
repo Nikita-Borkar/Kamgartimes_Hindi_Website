@@ -11,6 +11,7 @@ export interface MarketQuote {
 
 let cachedQuotes: MarketQuote[] | null = null;
 let lastFetchTime = 0;
+let cachedTimestamp = 0;
 const CACHE_TTL = 45 * 1000; // 45 seconds cache
 
 function formatIndianNumber(num: number, decimals = 2): string {
@@ -50,6 +51,10 @@ async function fetchSymbol(symbol: string) {
       prevClose,
       diff,
       percent,
+      marketTime:
+        typeof meta.regularMarketTime === "number"
+          ? meta.regularMarketTime * 1000
+          : Date.now(),
     };
   } catch {
     return null;
@@ -63,7 +68,7 @@ export async function GET() {
       success: true,
       data: cachedQuotes,
       source: "cache",
-      timestamp: lastFetchTime,
+      timestamp: cachedTimestamp,
     });
   }
 
@@ -81,7 +86,7 @@ export async function GET() {
 
     const quotes: MarketQuote[] = [];
 
-    // 1. NIFTY 50
+    // Only publish quotes returned by the provider. Never show fabricated prices.
     if (nifty && nifty.price > 0) {
       const isUp = nifty.percent >= 0;
       quotes.push({
@@ -90,16 +95,8 @@ export async function GET() {
         change: `${isUp ? "+" : ""}${nifty.percent.toFixed(2)}%`,
         trend: isUp ? "up" : "down",
       });
-    } else {
-      quotes.push({
-        name: "NIFTY 50",
-        value: "22,600.00",
-        change: "-0.39%",
-        trend: "down",
-      });
     }
 
-    // 2. SENSEX
     if (sensex && sensex.price > 0) {
       const isUp = sensex.percent >= 0;
       quotes.push({
@@ -108,16 +105,8 @@ export async function GET() {
         change: `${isUp ? "+" : ""}${sensex.percent.toFixed(2)}%`,
         trend: isUp ? "up" : "down",
       });
-    } else {
-      quotes.push({
-        name: "SENSEX",
-        value: "73,123.83",
-        change: "-0.17%",
-        trend: "down",
-      });
     }
 
-    // 3. BANK NIFTY
     if (bankNifty && bankNifty.price > 0) {
       const isUp = bankNifty.percent >= 0;
       quotes.push({
@@ -126,16 +115,8 @@ export async function GET() {
         change: `${isUp ? "+" : ""}${bankNifty.percent.toFixed(2)}%`,
         trend: isUp ? "up" : "down",
       });
-    } else {
-      quotes.push({
-        name: "BANK NIFTY",
-        value: "54,287.35",
-        change: "-1.16%",
-        trend: "down",
-      });
     }
 
-    // 4. NIFTY IT
     if (niftyIt && niftyIt.price > 0) {
       const isUp = niftyIt.percent >= 0;
       quotes.push({
@@ -144,17 +125,8 @@ export async function GET() {
         change: `${isUp ? "+" : ""}${niftyIt.percent.toFixed(2)}%`,
         trend: isUp ? "up" : "down",
       });
-    } else {
-      quotes.push({
-        name: "NIFTY IT",
-        value: "31,995.50",
-        change: "-0.27%",
-        trend: "down",
-      });
     }
 
-    // 5. USD/INR
-    const usdinrRate = usdinr?.price || 94.94;
     if (usdinr && usdinr.price > 0) {
       const isUp = usdinr.percent >= 0;
       quotes.push({
@@ -163,18 +135,11 @@ export async function GET() {
         change: `${isUp ? "+" : ""}${usdinr.percent.toFixed(2)}%`,
         trend: isUp ? "up" : "down",
       });
-    } else {
-      quotes.push({
-        name: "USD/INR",
-        value: `₹${usdinrRate.toFixed(2)}`,
-        change: "+0.14%",
-        trend: "up",
-      });
     }
 
-    // 6. GOLD (10g) in INR (Calculated from GC=F futures + USD/INR + duty/taxes)
-    if (goldFuture && goldFuture.price > 0) {
-      const gold10g = (goldFuture.price / 31.1035) * 10 * usdinrRate * 1.13;
+    // Approximate INR commodity values from futures and USD/INR quotes.
+    if (goldFuture && goldFuture.price > 0 && usdinr && usdinr.price > 0) {
+      const gold10g = (goldFuture.price / 31.1035) * 10 * usdinr.price * 1.13;
       const isUp = goldFuture.percent >= 0;
       quotes.push({
         name: "GOLD (10g)",
@@ -182,18 +147,10 @@ export async function GET() {
         change: `${isUp ? "+" : ""}${goldFuture.percent.toFixed(2)}%`,
         trend: isUp ? "up" : "down",
       });
-    } else {
-      quotes.push({
-        name: "GOLD (10g)",
-        value: "₹1,38,240",
-        change: "-1.29%",
-        trend: "down",
-      });
     }
 
-    // 7. SILVER (1kg) in INR (Calculated from SI=F futures + USD/INR + duty/taxes)
-    if (silverFuture && silverFuture.price > 0) {
-      const silver1kg = (silverFuture.price / 31.1035) * 1000 * usdinrRate * 1.13;
+    if (silverFuture && silverFuture.price > 0 && usdinr && usdinr.price > 0) {
+      const silver1kg = (silverFuture.price / 31.1035) * 1000 * usdinr.price * 1.13;
       const isUp = silverFuture.percent >= 0;
       quotes.push({
         name: "SILVER (1kg)",
@@ -201,23 +158,37 @@ export async function GET() {
         change: `${isUp ? "+" : ""}${silverFuture.percent.toFixed(2)}%`,
         trend: isUp ? "up" : "down",
       });
-    } else {
-      quotes.push({
-        name: "SILVER (1kg)",
-        value: "₹1,86,084",
-        change: "-1.92%",
-        trend: "down",
-      });
+    }
+
+    if (quotes.length === 0) {
+      if (cachedQuotes?.length) {
+        return NextResponse.json({
+          success: true,
+          data: cachedQuotes,
+          source: "cache-stale",
+          timestamp: cachedTimestamp,
+        });
+      }
+
+      return NextResponse.json(
+        { success: false, data: [], message: "Market data is temporarily unavailable." },
+        { status: 502 }
+      );
     }
 
     cachedQuotes = quotes;
     lastFetchTime = now;
+    cachedTimestamp = Math.max(
+      ...[nifty, sensex, bankNifty, niftyIt, usdinr, goldFuture, silverFuture]
+        .filter((quote): quote is NonNullable<typeof quote> => quote !== null)
+        .map((quote) => quote.marketTime)
+    );
 
     return NextResponse.json({
       success: true,
       data: quotes,
       source: "live",
-      timestamp: now,
+      timestamp: cachedTimestamp,
     });
   } catch (err: any) {
     if (cachedQuotes) {
@@ -225,6 +196,7 @@ export async function GET() {
         success: true,
         data: cachedQuotes,
         source: "cache-stale",
+        timestamp: cachedTimestamp,
       });
     }
     return NextResponse.json(

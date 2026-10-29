@@ -3,45 +3,42 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Pause, Play, Flame } from "lucide-react";
-import { breakingNews } from "@/data/site";
 import { kamgarApi } from "@/services/apiClient";
+import type { ArticleListItem } from "@/types/api";
 import styles from "./layout.module.css";
-
-interface TickerItem {
-  label: string;
-  text: string;
-  href: string;
-}
 
 export function BreakingTicker() {
   const [isPaused, setIsPaused] = useState(false);
-  const [tickerItems, setTickerItems] = useState<TickerItem[]>([...breakingNews]);
+  const [tickerItems, setTickerItems] = useState<ArticleListItem[]>([]);
 
   useEffect(() => {
-    kamgarApi
-      .getNoticeTicker()
-      .then((notices) => {
-        if (Array.isArray(notices) && notices.length > 0) {
-          setTickerItems(
-            notices.map((n) => ({
-              label: "ब्रेकिंग",
-              text: n.message,
-              href: n.linkUrl || "#",
-            }))
-          );
-        }
-      })
-      .catch(() => {
-        // Fallback to static breakingNews
-      });
+    let active = true;
+    const loadLatestNews = async () => {
+      try {
+        const articles = await kamgarApi.getLatestArticleTicker(20);
+        if (active && Array.isArray(articles)) setTickerItems(articles);
+      } catch {
+        if (active) setTickerItems([]);
+      }
+    };
+
+    void loadLatestNews();
+    const refreshTimer = window.setInterval(loadLatestNews, 60_000);
+
+    return () => {
+      active = false;
+      window.clearInterval(refreshTimer);
+    };
   }, []);
+
+  if (tickerItems.length === 0) return null;
 
   return (
     <div className={styles.ticker}>
       <div className={`${styles.shell} ${styles.tickerInner}`}>
         <div className={styles.tickerBadge}>
           <Flame size={16} className={styles.flameIcon} />
-          <span>ब्रेकिंग न्यूज़</span>
+          <span>ताज़ा खबरें</span>
         </div>
 
         <div
@@ -60,9 +57,9 @@ export function BreakingTicker() {
               ...tickerItems,
             ].map((item, index) => (
               <div key={index} className={styles.tickerItem}>
-                <span className={styles.tickerChip}>{item.label}</span>
-                <Link className={styles.tickerLink} href={item.href}>
-                  {item.text}
+                <span className={styles.tickerChip}>{item.category?.name || "ताज़ा"}</span>
+                <Link className={styles.tickerLink} href={`/article/${item.slug}`}>
+                  {item.title}
                 </Link>
                 <span className={styles.tickerDot}>•</span>
               </div>

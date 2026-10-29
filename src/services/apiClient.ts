@@ -350,6 +350,8 @@ export const kamgarApi = {
 
   // 4.8 Breaking News Ticker
   getNoticeTicker: () => api.get<NoticeTickerItem[]>('/public/notices/ticker'),
+  getLatestArticleTicker: (limit = 20) =>
+    api.get<ArticleListItem[]>(`/public/articles/ticker?limit=${limit}`),
 
   // 4.9 Question of the Day (QOTD)
   getTodayQuestion: (category?: string) =>

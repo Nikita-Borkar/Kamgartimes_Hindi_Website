@@ -81,9 +81,27 @@
   text-transform: uppercase;
 }
 
+.marketStatusMuted {
+  color: var(--muted, #64748b);
+  background: rgba(100, 116, 139, 0.12);
+}
+
+.marketStatusMuted .liveDot {
+  background: currentColor;
+}
+
+.marketStatusMuted .liveDot::after {
+  animation: none;
+}
+
 [data-theme="dark"] .liveIndicator {
   color: #4ade80;
   background: rgba(74, 222, 128, 0.15);
+}
+
+[data-theme="dark"] .marketStatusMuted {
+  color: #94a3b8;
+  background: rgba(148, 163, 184, 0.14);
 }
 
 .liveDot {
@@ -151,6 +169,20 @@
     black calc(100% - 20px),
     transparent 100%
   );
+}
+
+.marketEmptyState {
+  padding-left: 8px;
+  color: var(--muted, #64748b);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.marketUpdatedAt {
+  flex-shrink: 0;
+  color: var(--muted, #64748b);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
 }
 
 .tickerTrack {
@@ -368,6 +400,10 @@
 
   .liveIndicator {
     padding: 2px 4px;
+  }
+
+  .marketUpdatedAt {
+    display: none;
   }
 
   .marketItem {

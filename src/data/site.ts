@@ -198,24 +198,6 @@ export const socialLinks = [
   { id: "x", label: "एक्स", short: "X", href: "#" },
 ] as const;
 
-export const breakingNews = [
-  {
-    label: "ताज़ा ख़बर",
-    text: "राज्य सरकार द्वारा नए मेट्रो कॉरिडोर की घोषणा; आगामी तिमाही में कार्य शुरू होगा",
-    href: "/category/latest",
-  },
-  {
-    label: "ताज़ा ख़बर",
-    text: "मुंबई और तटीय इलाकों में भारी बारिश का अलर्ट; प्रशासन पूरी तरह सतर्क",
-    href: "/category/maharashtra",
-  },
-  {
-    label: "ताज़ा ख़बर",
-    text: "राज्य में नई औद्योगिक व श्रमिक कल्याण नीति को कैबिनेट की हरी झंडी",
-    href: "/category/labor",
-  },
-] as const;
-
 /* Rolling notice shown in the bar pinned to the bottom of the homepage. */
 export const notice = {
   label: "सूचना",
