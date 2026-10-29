@@ -223,21 +223,10 @@ export const notice = {
   text: "",
 } as const;
 
-/* The four internal utility pages. Single source for the footer "कंपनी"
-   column and the cross-links shown at the base of each utility page. */
-export const companyLinks = [
-  { label: "हमारे बारे में", href: "/about" },
-  { label: "पत्रकार भर्ती 2026-27", href: "/join-us" },
-  { label: "संपर्क करें", href: "/contact" },
-  { label: "अस्वीकरण", href: "/disclaimer" },
-  { label: "गोपनीयता नीति", href: "/privacy" },
-] as const;
-
 export const footer = {
   sections: [
     {
       title: "कंपनी",
-      links: companyLinks,
     },
   ],
   sectionLinks: [

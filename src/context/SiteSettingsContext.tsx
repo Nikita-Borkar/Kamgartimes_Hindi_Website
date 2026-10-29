@@ -1,6 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { kamgarApi } from "@/services/apiClient";
 import type { SiteSettings, SocialLink } from "@/types/api";
 import { site } from "@/data/site";
@@ -26,6 +27,7 @@ const defaultSocialLinks: SocialLink[] = [
   { platform: "facebook", url: "https://facebook.com/kamgartimes" },
   { platform: "instagram", url: "https://instagram.com/kamgartimes" },
   { platform: "twitter", url: "https://twitter.com/kamgartimes" },
+  { platform: "telegram", url: "https://t.me" },
 ];
 
 const SiteSettingsContext = createContext<SiteSettingsContextValue>({
@@ -46,13 +48,16 @@ const SiteSettingsContext = createContext<SiteSettingsContextValue>({
 export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<SiteSettings | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const pathname = usePathname();
+  const previousSiteName = useRef<string>(site.name);
 
   const fetchSettings = useCallback(async () => {
     try {
       const data = await kamgarApi.getSiteSettings();
-      if (data && (data.siteName || data.logoUrl || data.socialLinks)) {
-        setSettings(data);
+      if (!data || typeof data !== "object") {
+        throw new Error("The public site settings response was empty.");
       }
+      setSettings(data);
     } catch (err) {
       console.warn("Failed to load public site settings:", err);
     } finally {
@@ -72,10 +77,25 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
   const address = settings?.address?.trim() || "";
   const isMaintenanceMode = Boolean(settings?.isMaintenanceMode);
   const socialLinks = useMemo(() => {
-    return settings?.socialLinks && settings.socialLinks.length > 0
-      ? settings.socialLinks
-      : defaultSocialLinks;
-  }, [settings?.socialLinks]);
+    if (!settings) return defaultSocialLinks;
+    return Array.isArray(settings.socialLinks) ? settings.socialLinks : [];
+  }, [settings]);
+
+  useEffect(() => {
+    const currentTitle = document.title;
+    document.title = currentTitle
+      .replaceAll(previousSiteName.current, siteName)
+      .replaceAll(site.name, siteName);
+    previousSiteName.current = siteName;
+
+    const iconUrl =
+      logoUrl === "/img/logo_withtext.jpeg" ? "/img/logo.png" : logoUrl;
+    document
+      .querySelectorAll<HTMLLinkElement>('link[rel~="icon"]')
+      .forEach((icon) => {
+        icon.href = iconUrl;
+      });
+  }, [siteName, logoUrl, pathname]);
 
   const getSocialUrl = useCallback(
     (platform: string, fallbackUrl = "#"): string => {

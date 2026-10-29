@@ -206,8 +206,9 @@ export interface QotdAnswerResult {
 
 // ==================== Site Settings ====================
 export interface SocialLink {
-  platform: 'whatsapp' | 'youtube' | 'facebook' | 'instagram' | 'twitter';
+  platform: string;
   url: string;
+  icon?: string;
 }
 
 export interface SiteSettings {
@@ -223,16 +224,24 @@ export interface SiteSettings {
 }
 
 // ==================== Static Pages ====================
-export interface StaticPage {
+export interface StaticPageMenuItem {
   _id: string;
   title: string;
   slug: string;
+  showInFooter?: boolean;
+  sortOrder?: number;
+}
+
+export interface StaticPage extends StaticPageMenuItem {
   content: string;
   excerpt?: string;
-  showInFooter: boolean;
-  showInHeader: boolean;
-  sortOrder: number;
-  publishedAt: string;
+  publishedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+  };
 }
 
 // ==================== Live News ====================
@@ -367,4 +376,3 @@ export interface PublicHomeFeed {
   notices: any[];
   poll: PublicPoll | null;
 }
-

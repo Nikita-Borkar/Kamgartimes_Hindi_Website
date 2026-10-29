@@ -1,38 +1,41 @@
 import type { Metadata } from "next";
+import { cache } from "react";
+import { notFound } from "next/navigation";
 import { PageShell } from "@/components/layout/PageShell";
 import { InfoPage } from "@/components/pages/InfoPage";
-import { privacyPage } from "@/data/pages";
 import { site } from "@/data/site";
-import { kamgarApi } from "@/services/apiClient";
-import type { InfoPageData } from "@/data/types";
+import { toInfoPageData } from "@/lib/staticPageInfo";
+import { ApiError, kamgarApi } from "@/services/apiClient";
 
-export const metadata: Metadata = {
-  title: `${privacyPage.title} – ${site.name}`,
-  description: privacyPage.lede,
-};
+const getPrivacyPolicy = cache(() => kamgarApi.getStaticPage("privacy-policy"));
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const page = await getPrivacyPolicy();
+    return {
+      title: `${page.seo?.metaTitle?.trim() || page.title} – ${site.name}`,
+      description: page.seo?.metaDescription?.trim() || page.excerpt || undefined,
+    };
+  } catch (error) {
+    if (error instanceof ApiError && error.statusCode === 404) {
+      return { title: `Privacy Policy – ${site.name}` };
+    }
+    throw error;
+  }
+}
 
 export default async function PrivacyPolicy() {
-  const pageData: InfoPageData = { ...privacyPage };
-
+  let page;
   try {
-    const staticPage = await kamgarApi.getStaticPage("privacy-policy");
-    if (staticPage?.title) {
-      pageData.title = staticPage.title;
-      if (staticPage.excerpt) pageData.lede = staticPage.excerpt;
-      if (staticPage.content) pageData.htmlContent = staticPage.content;
-      if (staticPage.publishedAt) {
-        pageData.updated = new Date(staticPage.publishedAt).toLocaleDateString("hi-IN", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        });
-      }
-    }
-  } catch {}
+    page = await getPrivacyPolicy();
+  } catch (error) {
+    if (error instanceof ApiError && error.statusCode === 404) notFound();
+    throw error;
+  }
 
   return (
     <PageShell>
-      <InfoPage page={pageData} />
+      <InfoPage page={toInfoPageData(page, "गोपनीयता नीति")} />
     </PageShell>
   );
 }

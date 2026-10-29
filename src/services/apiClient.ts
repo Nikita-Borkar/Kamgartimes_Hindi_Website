@@ -15,6 +15,7 @@ import {
   QotdVoteResult,
   SiteSettings,
   StaticPage,
+  StaticPageMenuItem,
   AuthResponse,
   UserProfile,
   LiveNewsItem,
@@ -291,7 +292,18 @@ export const kamgarApi = {
   getCategories: (isActive = true) =>
     api.get<{ categories: Category[]; total: number }>(`/categories?isActive=${isActive}`),
 
-  getCategoryTree: () => api.get<Category[]>('/public/categories'),
+  getCategoryTree: async (): Promise<Category[]> => {
+    const response = await api.get<
+      Category[] | { data?: Category[]; categories?: Category[] } | null
+    >('/public/categories');
+
+    if (Array.isArray(response)) return response;
+
+    const tree = response?.data ?? response?.categories;
+    if (Array.isArray(tree)) return tree;
+
+    throw new ApiError('The public category response was not a list.');
+  },
 
   // 4.5 Public Ads
   getAds: (slotKey: string) =>
@@ -365,7 +377,17 @@ export const kamgarApi = {
   getSiteSettings: () => api.get<SiteSettings>('/public/site-setting'),
 
   // 4.11 Static Pages
-  getStaticPage: (slug: string) => api.get<StaticPage>(`/public/static-pages/${slug}`),
+  getStaticPages: (params?: { showInFooter?: boolean }) => {
+    const query = new URLSearchParams();
+    if (params?.showInFooter !== undefined) query.set('showInFooter', String(params.showInFooter));
+    const qs = query.toString();
+    return api.get<{ pages: StaticPageMenuItem[]; total: number }>(
+      `/public/static-pages${qs ? `?${qs}` : ''}`
+    );
+  },
+
+  getStaticPage: (slug: string) =>
+    api.get<StaticPage>(`/public/static-pages/${encodeURIComponent(slug)}`),
 
   // 4.12 Live News
   getLiveNews: (limit?: number) => {

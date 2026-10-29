@@ -15,50 +15,52 @@ export const metadata: Metadata = {
 export default async function Contact() {
   const pageData: InfoPageData = { ...contactPage };
 
-  try {
-    const [staticPage, settings] = await Promise.allSettled([
-      kamgarApi.getStaticPage("contact-us"),
-      kamgarApi.getSiteSettings(),
-    ]);
+  const [staticPage, settings] = await Promise.allSettled([
+    kamgarApi.getStaticPage("contact-us"),
+    kamgarApi.getSiteSettings(),
+  ]);
 
-    if (staticPage.status === "fulfilled" && staticPage.value?.title) {
-      const sp = staticPage.value;
-      pageData.title = sp.title;
-      if (sp.excerpt) pageData.lede = sp.excerpt;
-      if (sp.content) pageData.htmlContent = sp.content;
+  if (staticPage.status === "fulfilled" && staticPage.value?.title) {
+    const sp = staticPage.value;
+    pageData.title = sp.title;
+    if (sp.excerpt) pageData.lede = sp.excerpt;
+    if (sp.content) pageData.htmlContent = sp.content;
+  } else if (staticPage.status === "rejected") {
+    console.warn("Failed to load the public Contact page:", staticPage.reason);
+  }
+
+  if (settings.status === "fulfilled" && settings.value) {
+    const s = settings.value;
+    const liveContacts = [...(pageData.contacts || [])];
+
+    if (s.contactEmail) {
+      liveContacts[0] = {
+        id: "email",
+        label: "ई-मेल (Email)",
+        value: s.contactEmail,
+        href: `mailto:${s.contactEmail}`,
+      };
+    }
+    if (s.contactPhone) {
+      liveContacts.push({
+        id: "phone",
+        label: "फ़ोन / हेल्पलाइन (Phone)",
+        value: s.contactPhone,
+        href: `tel:${s.contactPhone.replace(/\s+/g, "")}`,
+      });
+    }
+    if (s.address) {
+      liveContacts.push({
+        id: "address",
+        label: "कार्यालय पता (Office Address)",
+        value: s.address,
+      });
     }
 
-    if (settings.status === "fulfilled" && settings.value) {
-      const s = settings.value;
-      const liveContacts = [...(pageData.contacts || [])];
-
-      if (s.contactEmail) {
-        liveContacts[0] = {
-          id: "email",
-          label: "ई-मेल (Email)",
-          value: s.contactEmail,
-          href: `mailto:${s.contactEmail}`,
-        };
-      }
-      if (s.contactPhone) {
-        liveContacts.push({
-          id: "phone",
-          label: "फ़ोन / हेल्पलाइन (Phone)",
-          value: s.contactPhone,
-          href: `tel:${s.contactPhone.replace(/\s+/g, "")}`,
-        });
-      }
-      if (s.address) {
-        liveContacts.push({
-          id: "address",
-          label: "कार्यालय पता (Office Address)",
-          value: s.address,
-        });
-      }
-
-      pageData.contacts = liveContacts;
-    }
-  } catch {}
+    pageData.contacts = liveContacts;
+  } else if (settings.status === "rejected") {
+    console.warn("Failed to load site settings for the Contact page:", settings.reason);
+  }
 
   return (
     <PageShell>

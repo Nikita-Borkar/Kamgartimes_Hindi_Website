@@ -1,38 +1,41 @@
 import type { Metadata } from "next";
+import { cache } from "react";
+import { notFound } from "next/navigation";
 import { PageShell } from "@/components/layout/PageShell";
 import { InfoPage } from "@/components/pages/InfoPage";
-import { disclaimerPage } from "@/data/pages";
 import { site } from "@/data/site";
-import { kamgarApi } from "@/services/apiClient";
-import type { InfoPageData } from "@/data/types";
+import { toInfoPageData } from "@/lib/staticPageInfo";
+import { ApiError, kamgarApi } from "@/services/apiClient";
 
-export const metadata: Metadata = {
-  title: `${disclaimerPage.title} – ${site.name}`,
-  description: disclaimerPage.lede,
-};
+const getDisclaimer = cache(() => kamgarApi.getStaticPage("disclaimer"));
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const page = await getDisclaimer();
+    return {
+      title: `${page.seo?.metaTitle?.trim() || page.title} – ${site.name}`,
+      description: page.seo?.metaDescription?.trim() || page.excerpt || undefined,
+    };
+  } catch (error) {
+    if (error instanceof ApiError && error.statusCode === 404) {
+      return { title: `Disclaimer – ${site.name}` };
+    }
+    throw error;
+  }
+}
 
 export default async function Disclaimer() {
-  const pageData: InfoPageData = { ...disclaimerPage };
-
+  let page;
   try {
-    const staticPage = await kamgarApi.getStaticPage("disclaimer");
-    if (staticPage?.title) {
-      pageData.title = staticPage.title;
-      if (staticPage.excerpt) pageData.lede = staticPage.excerpt;
-      if (staticPage.content) pageData.htmlContent = staticPage.content;
-      if (staticPage.publishedAt) {
-        pageData.updated = new Date(staticPage.publishedAt).toLocaleDateString("hi-IN", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        });
-      }
-    }
-  } catch {}
+    page = await getDisclaimer();
+  } catch (error) {
+    if (error instanceof ApiError && error.statusCode === 404) notFound();
+    throw error;
+  }
 
   return (
     <PageShell>
-      <InfoPage page={pageData} />
+      <InfoPage page={toInfoPageData(page, "अस्वीकरण")} />
     </PageShell>
   );
 }

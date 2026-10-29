@@ -1,4 +1,5 @@
 import type { Article } from "@/data/types";
+import Link from "next/link";
 import { StoryCard } from "@/components/ui/StoryCard";
 import { AdCard } from "@/components/ui/AdCard";
 import { VerticalAd } from "@/components/ui/VerticalAd";
@@ -6,6 +7,7 @@ import { AdSlot } from "@/components/ui/AdSlot";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { NewsGridSkeleton } from "@/components/ui/NewsGridSkeleton";
 import { cardAds, verticalTowerAds, leaderboardAds } from "@/data/ads";
+import type { Category } from "@/types/api";
 import { PageHero } from "./PageHero";
 import styles from "./pages.module.css";
 
@@ -16,10 +18,12 @@ import styles from "./pages.module.css";
  */
 export function CategoryPage({
   label,
+  subcategories = [],
   articles,
   isLoading = false,
 }: {
   label: string;
+  subcategories?: Pick<Category, "_id" | "name" | "slug">[];
   articles: Article[];
   isLoading?: boolean;
 }) {
@@ -30,6 +34,23 @@ export function CategoryPage({
   return (
     <main id="main" className={styles.main}>
       <PageHero eyebrow="श्रेणी" title={label} />
+
+      {subcategories.length > 0 && (
+        <nav className={styles.categorySections} aria-label={`${label} की उपश्रेणियां`}>
+          <span className={styles.categorySectionsLabel}>इस श्रेणी में</span>
+          <div className={styles.categorySectionLinks}>
+            {subcategories.map((subcategory) => (
+              <Link
+                key={subcategory._id}
+                className={styles.categorySectionLink}
+                href={`/category/${encodeURIComponent(subcategory.slug)}`}
+              >
+                {subcategory.name}
+              </Link>
+            ))}
+          </div>
+        </nav>
+      )}
 
       {isLoading ? (
         <NewsGridSkeleton count={6} />

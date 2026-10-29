@@ -6,7 +6,6 @@ import { Check, Copy, ShieldCheck, QrCode } from "lucide-react";
 import type { DonatePageData } from "@/data/types";
 import { BankDetails } from "./BankDetails";
 import { PageHero } from "./PageHero";
-import { RelatedLinks } from "./RelatedLinks";
 import styles from "./pages.module.css";
 
 /**
@@ -172,7 +171,6 @@ export function DonatePage({ page }: { page: DonatePageData }) {
         </aside>
       </div>
 
-      <RelatedLinks currentHref={`/${page.slug}`} />
     </main>
   );
 }

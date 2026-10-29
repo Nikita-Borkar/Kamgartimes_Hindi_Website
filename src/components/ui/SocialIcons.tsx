@@ -1,3 +1,58 @@
+import { Link2 } from "lucide-react";
+
+const socialLabels: Record<string, string> = {
+  facebook: "फेसबुक",
+  instagram: "इंस्टाग्राम",
+  telegram: "टेलीग्राम",
+  twitter: "एक्स (ट्विटर)",
+  x: "एक्स (ट्विटर)",
+  whatsapp: "व्हाट्सएप",
+  youtube: "यूट्यूब",
+};
+
+export function socialPlatformLabel(platform: string): string {
+  const normalized = platform.trim().toLowerCase();
+  return (
+    socialLabels[normalized] ||
+    normalized.replace(/[-_]+/g, " ").replace(/\b[a-z]/g, (letter) => letter.toUpperCase())
+  );
+}
+
+export function getSafeSocialUrl(value: string): string | null {
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
+export function SocialPlatformIcon({
+  platform,
+  size = 18,
+}: {
+  platform: string;
+  size?: number;
+}) {
+  switch (platform.trim().toLowerCase()) {
+    case "facebook":
+      return <FacebookIcon size={size} />;
+    case "instagram":
+      return <InstagramIcon size={size} />;
+    case "telegram":
+      return <TelegramIcon size={size} />;
+    case "twitter":
+    case "x":
+      return <TwitterXIcon size={size} />;
+    case "whatsapp":
+      return <WhatsappIcon size={size} />;
+    case "youtube":
+      return <YoutubeIcon size={size} />;
+    default:
+      return <Link2 size={size} aria-hidden="true" />;
+  }
+}
+
 export function FacebookIcon({ size = 18, color = "#1877F2" }: { size?: number; color?: string }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none">

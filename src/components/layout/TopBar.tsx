@@ -7,26 +7,14 @@ import { User, LogOut } from "lucide-react";
 import { site } from "@/data/site";
 import { ThemeToggle } from "./ThemeToggle";
 import {
-  FacebookIcon,
-  YoutubeIcon,
-  InstagramIcon,
-  TwitterXIcon,
-  WhatsappIcon,
-  TelegramIcon,
+  getSafeSocialUrl,
+  SocialPlatformIcon,
+  socialPlatformLabel,
 } from "@/components/ui/SocialIcons";
 import { kamgarApi, getAuthToken, clearAuthTokens } from "@/services/apiClient";
 import { useSiteSettings } from "@/context/SiteSettingsContext";
 import type { UserProfile } from "@/types/api";
 import styles from "./layout.module.css";
-
-const defaultSocials = [
-  { id: "whatsapp", label: "व्हाट्सएप", icon: WhatsappIcon, fallback: "https://chat.whatsapp.com/kamgartimes" },
-  { id: "facebook", label: "फेसबुक", icon: FacebookIcon, fallback: "https://facebook.com/kamgartimes" },
-  { id: "youtube", label: "यूट्यूब", icon: YoutubeIcon, fallback: "https://youtube.com/@kamgartimes" },
-  { id: "instagram", label: "इंस्टाग्राम", icon: InstagramIcon, fallback: "https://instagram.com/kamgartimes" },
-  { id: "x", label: "एक्स (Twitter)", icon: TwitterXIcon, fallback: "https://twitter.com/kamgartimes" },
-  { id: "telegram", label: "टेलीग्राम", icon: TelegramIcon, fallback: "https://t.me" },
-];
 
 function formatHindiDate(date: Date = new Date()): string {
   const days = ["रविवार", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
@@ -43,7 +31,7 @@ function formatHindiDate(date: Date = new Date()): string {
 }
 
 export function TopBar() {
-  const { siteName, tagline, logoUrl, getSocialUrl } = useSiteSettings();
+  const { siteName, tagline, logoUrl, socialLinks } = useSiteSettings();
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [liveDate, setLiveDate] = useState<string>(`${site.edition} · ${site.editionTime}`);
   const [logoSrc, setLogoSrc] = useState<string>("/img/logo_withtext.jpeg");
@@ -126,20 +114,22 @@ export function TopBar() {
       <div className={styles.actions}>
         {/* Dynamic Social Media Links */}
         <div className={styles.topSocials}>
-          {defaultSocials.map((s) => {
-            const Icon = s.icon;
-            const targetUrl = getSocialUrl(s.id, s.fallback);
+          {socialLinks.map((social, index) => {
+            const targetUrl = getSafeSocialUrl(social.url);
+            if (!targetUrl) return null;
+            const label = socialPlatformLabel(social.platform);
+
             return (
               <a
-                key={s.id}
+                key={`${social.platform}-${index}`}
                 className={styles.topSocialDot}
                 href={targetUrl}
-                aria-label={s.label}
-                title={`${siteName} on ${s.label}`}
+                aria-label={label}
+                title={`${siteName} on ${label}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Icon size={18} />
+                <SocialPlatformIcon platform={social.platform} size={18} />
               </a>
             );
           })}

@@ -1,6 +1,5 @@
 import type { InfoPageData } from "@/data/types";
 import { PageHero } from "./PageHero";
-import { RelatedLinks } from "./RelatedLinks";
 import styles from "./pages.module.css";
 
 /**
@@ -28,7 +27,6 @@ export function InfoPage({ page }: { page: InfoPageData }) {
             <div
               className={styles.prose}
               dangerouslySetInnerHTML={{ __html: page.htmlContent }}
-              style={{ fontSize: "1.0625rem", lineHeight: 1.8, marginBottom: "var(--space-6)" }}
             />
           ) : page.intro ? (
             <div className={styles.prose}>
@@ -114,7 +112,6 @@ export function InfoPage({ page }: { page: InfoPageData }) {
         )}
       </div>
 
-      <RelatedLinks currentHref={`/${page.slug}`} />
     </main>
   );
 }

@@ -3,18 +3,18 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { categories, footer, site } from "@/data/site";
+import { Mail, MapPin, Phone } from "lucide-react";
+import { footer, site } from "@/data/site";
 import {
-  FacebookIcon,
-  YoutubeIcon,
-  InstagramIcon,
-  TwitterXIcon,
-  WhatsappIcon,
-  TelegramIcon,
+  getSafeSocialUrl,
+  SocialPlatformIcon,
+  socialPlatformLabel,
 } from "@/components/ui/SocialIcons";
 import { useSiteSettings } from "@/context/SiteSettingsContext";
-import styles from "./layout.module.css";
+import { kamgarApi } from "@/services/apiClient";
 import { categoryHref } from "@/lib/links";
+import styles from "./layout.module.css";
+import type { Category, StaticPageMenuItem } from "@/types/api";
 
 /** Resolves a section label to its /category/[slug] route, or the video/media desks. */
 function sectionHref(label: string) {
@@ -26,22 +26,119 @@ function sectionHref(label: string) {
   return categoryHref(label);
 }
 
-const defaultSocials = [
-  { id: "whatsapp", label: "व्हाट्सएप", icon: WhatsappIcon, fallback: "https://chat.whatsapp.com/kamgartimes" },
-  { id: "facebook", label: "फेसबुक", icon: FacebookIcon, fallback: "https://facebook.com/kamgartimes" },
-  { id: "youtube", label: "यूट्यूब", icon: YoutubeIcon, fallback: "https://youtube.com/@kamgartimes" },
-  { id: "instagram", label: "इंस्टाग्राम", icon: InstagramIcon, fallback: "https://instagram.com/kamgartimes" },
-  { id: "x", label: "एक्स (ट्विटर)", icon: TwitterXIcon, fallback: "https://twitter.com/kamgartimes" },
-  { id: "telegram", label: "टेलीग्राम", icon: TelegramIcon, fallback: "https://t.me" },
-];
+type FooterCategory = Pick<Category, "_id" | "name" | "slug" | "parent" | "order">;
+type FooterCompanyLink = { label: string; href: string };
+type FooterAction = { label: string; href: string };
+
+const footerActionPageSlugs = ["donate-us", "pay-for-ads"] as const;
+
+const fallbackCategories: FooterCategory[] = footer.sectionLinks.map((label) => ({
+  _id: label,
+  name: label,
+  slug: "",
+  parent: null,
+}));
+
+function footerCategoryHref(category: FooterCategory): string {
+  if (!category.slug) return sectionHref(category.name);
+
+  const slug = category.slug.toLowerCase();
+  if (slug === "e-paper" || slug === "epaper") return "/e-paper";
+  if (slug === "videos") return "/videos";
+  if (slug === "shorts") return "/shorts";
+  return `/category/${encodeURIComponent(category.slug)}`;
+}
 
 interface SiteFooterProps {
   withNoticeTicker?: boolean;
 }
 
 export function SiteFooter({ withNoticeTicker = false }: SiteFooterProps = {}) {
-  const { siteName, tagline, logoUrl, getSocialUrl } = useSiteSettings();
+  const {
+    siteName,
+    tagline,
+    logoUrl,
+    socialLinks,
+    contactEmail,
+    contactPhone,
+    address,
+  } = useSiteSettings();
   const [logoSrc, setLogoSrc] = useState<string>("/img/logo_withtext.jpeg");
+  const [parentCategories, setParentCategories] =
+    useState<FooterCategory[]>(fallbackCategories);
+  const [companyPages, setCompanyPages] =
+    useState<FooterCompanyLink[]>([]);
+  const [footerActions, setFooterActions] = useState<FooterAction[]>([]);
+
+  useEffect(() => {
+    let active = true;
+
+    kamgarApi
+      .getCategoryTree()
+      .then((tree) => {
+        if (!Array.isArray(tree)) {
+          throw new Error("The public category response was not a list.");
+        }
+
+        const categories = tree
+          .filter((category) => category.parent == null)
+          .sort(
+            (left, right) =>
+              (left.order ?? Number.MAX_SAFE_INTEGER) -
+                (right.order ?? Number.MAX_SAFE_INTEGER) ||
+              left.name.localeCompare(right.name, "hi")
+          )
+          .slice(0, 16);
+
+        if (active) setParentCategories(categories);
+      })
+      .catch((error) => {
+        console.warn("Failed to load public footer categories:", error);
+      });
+
+    kamgarApi
+      .getStaticPages()
+      .then(({ pages }) => {
+        if (!Array.isArray(pages)) {
+          throw new Error("The public static-pages response was not a list.");
+        }
+
+        const activePages = [...pages].sort(
+          (left: StaticPageMenuItem, right: StaticPageMenuItem) =>
+            (left.sortOrder ?? 0) - (right.sortOrder ?? 0) ||
+            left.title.localeCompare(right.title, "hi")
+        );
+        const actionSlugs: Set<string> = new Set(footerActionPageSlugs);
+        const backendLinks = activePages
+          .filter((page: StaticPageMenuItem) => page.showInFooter)
+          .filter((page: StaticPageMenuItem) => !actionSlugs.has(page.slug))
+          .map((page: StaticPageMenuItem) => ({
+            label: page.title,
+            href: `/${encodeURIComponent(page.slug)}`,
+          }));
+        const backendActions = footer.actions
+          .filter((action) => action.href !== "/join-us")
+          .flatMap((action, index) => {
+          const page = activePages.find(
+            (candidate) => candidate.slug === footerActionPageSlugs[index]
+          );
+          return page
+            ? [{ label: action.label, href: `/${encodeURIComponent(page.slug)}` }]
+            : [];
+          });
+        if (active) {
+          setCompanyPages(backendLinks);
+          setFooterActions(backendActions);
+        }
+      })
+      .catch((error) => {
+        console.warn("Failed to load public footer pages:", error);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (logoUrl && logoUrl !== "/img/logo_withtext.jpeg") {
@@ -67,42 +164,69 @@ export function SiteFooter({ withNoticeTicker = false }: SiteFooterProps = {}) {
             />
           </Link>
           <p className={styles.footerBlurb}>{tagline}</p>
+          {(contactEmail || contactPhone || address) && (
+            <address className={styles.footerContacts}>
+              {contactEmail && (
+                <a className={styles.footerContact} href={`mailto:${contactEmail}`}>
+                  <Mail size={15} aria-hidden="true" />
+                  <span>{contactEmail}</span>
+                </a>
+              )}
+              {contactPhone && (
+                <a
+                  className={styles.footerContact}
+                  href={`tel:${contactPhone.replace(/[^\d+]/g, "")}`}
+                >
+                  <Phone size={15} aria-hidden="true" />
+                  <span>{contactPhone}</span>
+                </a>
+              )}
+              {address && (
+                <span className={styles.footerContact}>
+                  <MapPin size={15} aria-hidden="true" />
+                  <span>{address}</span>
+                </span>
+              )}
+            </address>
+          )}
           <div className={styles.socialsGroup}>
-            {defaultSocials.map((s) => {
-              const Icon = s.icon;
-              const href = getSocialUrl(s.id, s.fallback);
+            {socialLinks.map((social, index) => {
+              const href = getSafeSocialUrl(social.url);
+              if (!href) return null;
+              const label = socialPlatformLabel(social.platform);
 
               return (
                 <a
-                  key={s.id}
+                  key={`${social.platform}-${index}`}
                   className={styles.socialBtn}
                   href={href}
-                  aria-label={s.label}
-                  title={`${siteName} on ${s.label}`}
+                  aria-label={label}
+                  title={`${siteName} on ${label}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <Icon size={20} />
+                  <SocialPlatformIcon platform={social.platform} size={20} />
                 </a>
               );
             })}
           </div>
         </div>
 
-        <div>
-          <nav className={styles.footerLinks} aria-label="फ़ूटर नेविगेशन">
-            {footer.sectionLinks.map((label) => (
+        <div className={styles.footerCol}>
+          <h4 className={styles.footerColTitle}>श्रेणियां</h4>
+          <nav className={styles.footerLinks} aria-label="समाचार श्रेणियां">
+            {parentCategories.map((category) => (
               <Link
-                key={label}
+                key={category._id || category.slug || category.name}
                 className={styles.footerLink}
-                href={sectionHref(label)}
+                href={footerCategoryHref(category)}
               >
-                {label}
+                {category.name}
               </Link>
             ))}
           </nav>
           <div className={styles.footerActions}>
-            {footer.actions.map((action) => (
+            {footerActions.map((action) => (
               <Link
                 key={action.href}
                 className={styles.footerBtn}
@@ -114,25 +238,23 @@ export function SiteFooter({ withNoticeTicker = false }: SiteFooterProps = {}) {
           </div>
         </div>
 
-        <div className={styles.footerCol}>
+        <nav className={styles.footerCol} aria-label="कंपनी">
           <h4 className={styles.footerColTitle}>{footer.sections[0].title}</h4>
-          {footer.sections[0].links.map((link) => (
-            <Link
-              key={link.href}
-              className={styles.footerLink}
-              href={link.href}
-            >
+          {companyPages.map((link) => (
+            <Link key={link.href} className={styles.footerLink} href={link.href}>
               {link.label}
             </Link>
           ))}
-        </div>
+        </nav>
       </div>
 
       <div
         className={`${styles.copy} ${withNoticeTicker ? styles.copyWithTicker : ""}`}
       >
         <div className={styles.copyInner}>
-          <p className={styles.copyText}>{footer.copyright}</p>
+          <p className={styles.copyText}>
+            {footer.copyright.replace(site.name, siteName)}
+          </p>
         </div>
       </div>
     </footer>

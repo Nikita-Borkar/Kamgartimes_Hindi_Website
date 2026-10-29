@@ -8,12 +8,9 @@ import { kamgarApi } from "@/services/apiClient";
 import type { Category } from "@/types/api";
 import { ThemeToggle } from "./ThemeToggle";
 import {
-  FacebookIcon,
-  YoutubeIcon,
-  InstagramIcon,
-  TwitterXIcon,
-  WhatsappIcon,
-  TelegramIcon,
+  getSafeSocialUrl,
+  SocialPlatformIcon,
+  socialPlatformLabel,
 } from "@/components/ui/SocialIcons";
 import { useSiteSettings } from "@/context/SiteSettingsContext";
 import styles from "./layout.module.css";
@@ -176,7 +173,7 @@ function OverflowPanel({
   heading?: string;
   onNavigate: () => void;
 }) {
-  const { siteName, contactPhone, getSocialUrl } = useSiteSettings();
+  const { siteName, contactPhone, socialLinks } = useSiteSettings();
   const [openGroup, setOpenGroup] = useState<string | null>(null);
 
   const toggleGroup = (label: string) => {
@@ -313,66 +310,25 @@ function OverflowPanel({
       <div className={styles.drawerSocialsSection}>
         <div className={styles.drawerSocialsTitle}>सोशल मीडिया पर फॉलो करें</div>
         <div className={styles.drawerSocialIcons}>
-          <a
-            href={getSocialUrl("whatsapp", "https://chat.whatsapp.com/kamgartimes")}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="व्हाट्सएप"
-            title={`${siteName} on व्हाट्सएप`}
-            className={styles.drawerSocialDot}
-          >
-            <WhatsappIcon size={18} />
-          </a>
-          <a
-            href={getSocialUrl("facebook", "https://facebook.com/kamgartimes")}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="फेसबुक"
-            title={`${siteName} on फेसबुक`}
-            className={styles.drawerSocialDot}
-          >
-            <FacebookIcon size={18} />
-          </a>
-          <a
-            href={getSocialUrl("youtube", "https://youtube.com/@kamgartimes")}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="यूट्यूब"
-            title={`${siteName} on यूट्यूब`}
-            className={styles.drawerSocialDot}
-          >
-            <YoutubeIcon size={18} />
-          </a>
-          <a
-            href={getSocialUrl("instagram", "https://instagram.com/kamgartimes")}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="इंस्टाग्राम"
-            title={`${siteName} on इंस्टाग्राम`}
-            className={styles.drawerSocialDot}
-          >
-            <InstagramIcon size={18} />
-          </a>
-          <a
-            href={getSocialUrl("x", "https://twitter.com/kamgartimes")}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="एक्स (Twitter)"
-            title={`${siteName} on एक्स`}
-            className={styles.drawerSocialDot}
-          >
-            <TwitterXIcon size={16} />
-          </a>
-          <a
-            href={getSocialUrl("telegram", "https://t.me")}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="टेलीग्राम"
-            title={`${siteName} on टेलीग्राम`}
-            className={styles.drawerSocialDot}
-          >
-            <TelegramIcon size={18} />
-          </a>
+          {socialLinks.map((social, index) => {
+            const href = getSafeSocialUrl(social.url);
+            if (!href) return null;
+            const label = socialPlatformLabel(social.platform);
+
+            return (
+              <a
+                key={`${social.platform}-${index}`}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                title={`${siteName} on ${label}`}
+                className={styles.drawerSocialDot}
+              >
+                <SocialPlatformIcon platform={social.platform} size={18} />
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>

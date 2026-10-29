@@ -924,7 +924,6 @@ Fetch pages like About Us, Privacy Policy, Terms & Conditions by slug.
       "content": "<h2>कामगार टाईम्स बद्दल</h2><p>कामगार टाईम्स हे महाराष्ट्रातील आघाडीचे कामगार व जनहित वृत्तपत्र आहे...</p>",
       "excerpt": "कामगार आणि कष्टकरी जनतेचा आवाज बनणारे व्यासपीठ.",
       "showInFooter": true,
-      "showInHeader": false,
       "sortOrder": 1,
       "publishedAt": "2026-10-22T00:00:00.000Z"
     }
@@ -1100,7 +1099,6 @@ export interface StaticPage {
   content: string;
   excerpt?: string;
   showInFooter: boolean;
-  showInHeader: boolean;
   sortOrder: number;
   publishedAt: string;
 }

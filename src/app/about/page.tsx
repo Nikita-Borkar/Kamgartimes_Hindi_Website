@@ -28,7 +28,9 @@ export default async function About() {
         });
       }
     }
-  } catch {}
+  } catch (error) {
+    console.warn("Failed to load the public About page:", error);
+  }
 
   return (
     <PageShell>

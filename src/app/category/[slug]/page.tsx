@@ -5,6 +5,7 @@ import { categories, site } from "@/data/site";
 import { kamgarApi } from "@/services/apiClient";
 import { adaptArticleListItem } from "@/lib/apiAdapters";
 import type { Article } from "@/data/types";
+import type { Category as ApiCategory } from "@/types/api";
 
 export const dynamic = "force-dynamic";
 
@@ -19,8 +20,8 @@ export async function generateMetadata({
 
   if (!categoryLabel) {
     try {
-      const res = await kamgarApi.getCategories();
-      const match = res?.categories?.find(
+      const tree = await kamgarApi.getCategoryTree();
+      const match = tree.flatMap((parent) => [parent, ...(parent.subcategories ?? [])]).find(
         (c) => c.slug === slug || c.slug === decodedSlug || c._id === slug || c.name === decodedSlug
       );
       if (match) categoryLabel = match.name;
@@ -42,12 +43,13 @@ export default async function Category({
   const decodedSlug = decodeURIComponent(slug);
   let categoryLabel = categories.find((entry) => entry.slug === slug || entry.slug === decodedSlug)?.label;
   let apiCategoryId: string | undefined;
+  let subcategories: Pick<ApiCategory, "_id" | "name" | "slug">[] = [];
 
-  // Try finding category in live API categories
+  // Resolve the category and its child sections from the public navigation tree.
   try {
-    const catRes = await kamgarApi.getCategories();
-    if (catRes?.categories) {
-      const match = catRes.categories.find(
+    const tree = await kamgarApi.getCategoryTree();
+    if (tree.length > 0) {
+      const match = tree.flatMap((parent) => [parent, ...(parent.subcategories ?? [])]).find(
         (c) =>
           c.slug === slug ||
           c.slug === decodedSlug ||
@@ -58,6 +60,13 @@ export default async function Category({
       if (match) {
         apiCategoryId = match._id;
         if (!categoryLabel) categoryLabel = match.name;
+        if (match.parent == null) {
+          subcategories = (match.subcategories ?? []).map(({ _id, name, slug: categorySlug }) => ({
+            _id,
+            name,
+            slug: categorySlug,
+          }));
+        }
       }
     }
   } catch {}
@@ -87,7 +96,11 @@ export default async function Category({
   // Pure dynamic data: No dummy or fallback data. If no articles exist in DB, CategoryPage renders EmptyState.
   return (
     <PageShell>
-      <CategoryPage label={categoryLabel ?? decodedSlug ?? "समाचार"} articles={articles} />
+      <CategoryPage
+        label={categoryLabel ?? decodedSlug ?? "समाचार"}
+        subcategories={subcategories}
+        articles={articles}
+      />
     </PageShell>
   );
 }

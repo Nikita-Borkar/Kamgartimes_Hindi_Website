@@ -215,14 +215,15 @@
   justify-content: center;
   text-decoration: none;
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 .topSocialDot:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  color: var(--brand);
+  border-color: var(--brand);
 }
 
 .socialsGroup {
@@ -236,20 +237,23 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--bg);
+  border: var(--rule);
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  color: var(--text);
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
 }
 
 .socialBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background: var(--surface);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 
 .footerLogoLink {
@@ -1292,13 +1296,17 @@ a.navLinkActive {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--text);
   text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
 }
 
 .drawerSocialDot:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  border-color: var(--brand);
+  color: var(--brand);
 }
 
 .panelSubLink:hover {
@@ -1612,6 +1620,35 @@ a.navLinkActive {
   outline-offset: 2px;
 }
 
+/* ---------- Maintenance notice ------------------------------------------- */
+.maintenanceNotice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--shell-pad);
+  border-bottom: 2px solid var(--brand);
+  background: var(--surface);
+  color: var(--text);
+  font: var(--fw-medium) var(--fs-meta) / var(--lh-body) var(--font-sans);
+  text-align: center;
+}
+
+.maintenanceNotice strong {
+  color: var(--brand);
+}
+
+.maintenanceNoticeIcon {
+  flex: none;
+  color: var(--brand);
+}
+
+.maintenanceNotice span {
+  min-width: 0;
+  text-wrap: pretty;
+}
+
 /* ---------- Footer -------------------------------------------------------- */
 .footer {
   margin-top: var(--space-12);
@@ -1634,7 +1671,7 @@ a.navLinkActive {
 
 .footerInner {
   display: grid;
-  grid-template-columns: 1.4fr 2fr 1fr;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr) minmax(0, 1fr);
   gap: var(--space-12);
   padding-top: var(--space-12);
   padding-bottom: var(--space-8);
@@ -1651,6 +1688,39 @@ a.navLinkActive {
   color: var(--muted);
   margin: var(--space-4) 0;
   max-width: 34ch;
+}
+
+.footerContacts {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+  font-style: normal;
+}
+
+.footerContact {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--muted);
+  font-size: var(--fs-meta);
+  line-height: var(--lh-meta);
+  overflow-wrap: anywhere;
+}
+
+a.footerContact {
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+a.footerContact:hover {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footerContact svg {
+  flex: none;
+  margin-top: 1px;
 }
 
 .socials {
@@ -1681,23 +1751,35 @@ a.navLinkActive {
 
 .footerLinks {
   display: grid;
-  grid-template-rows: repeat(4, auto);
-  grid-auto-flow: column;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--space-3) var(--space-6);
   align-content: start;
 }
 
 .footerLink {
+  min-width: 0;
   color: var(--text);
   text-decoration: none;
   font-weight: var(--fw-medium);
   font-size: var(--fs-body);
+  overflow-wrap: anywhere;
   transition: color var(--dur-fast) var(--ease-out);
 }
 
 .footerLink:hover {
   color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.footerLink:focus-visible,
+.footerBtn:focus-visible,
+.socialBtn:focus-visible,
+.topSocialDot:focus-visible,
+.drawerSocialDot:focus-visible,
+.footerContact:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
 }
 
 .footerActions {
@@ -1715,12 +1797,11 @@ a.navLinkActive {
   border-radius: var(--r-sm);
   text-decoration: none;
   white-space: nowrap;
-  transition: all var(--dur-fast) var(--ease-out);
+  transition: background-color var(--dur-fast) var(--ease-out);
 }
 
 .footerBtn:hover {
-  opacity: 0.85;
-  transform: translateY(-1px);
+  background: var(--brand);
 }
 
 
@@ -1920,7 +2001,8 @@ a.navLinkActive {
   }
 
   .editionTaglineText {
-    display: none;
+    display: inline;
+    max-width: min(45vw, 280px);
   }
 
   .actions {
@@ -1941,9 +2023,7 @@ a.navLinkActive {
   }
 
   .footerLinks {
-    grid-template-rows: none;
-    grid-auto-flow: row;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .footerBlurb {
@@ -1993,10 +2073,30 @@ a.navLinkActive {
   }
 
   .edition {
+    max-width: 100%;
     font-size: 11.5px;
+    flex-wrap: wrap;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .editionDateText {
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  }
+
+  .editionTaglineText {
+    flex-basis: 100%;
+    max-width: none;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    text-align: left;
+  }
+
+  .maintenanceNotice {
+    padding-left: var(--shell-pad-compact);
+    padding-right: var(--shell-pad-compact);
   }
 
   .headerLogoImg {

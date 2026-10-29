@@ -8,7 +8,9 @@ import { site } from "@/data/site";
 import { ScrollChrome } from "@/components/motion/ScrollChrome";
 import { NotificationPrompt } from "@/components/layout/NotificationPrompt";
 import { FloatingWidgets } from "@/components/layout/FloatingWidgets";
+import { SiteMaintenanceNotice } from "@/components/layout/SiteMaintenanceNotice";
 import { SiteSettingsProvider } from "@/context/SiteSettingsContext";
+import { kamgarApi } from "@/services/apiClient";
 import "@/design/tokens.css";
 import "@/design/base.css";
 import "@/design/motion.css";
@@ -32,13 +34,28 @@ const mukta = Mukta({
   variable: "--font-mukta",
 });
 
-export const metadata: Metadata = {
-  title: `${site.name} – मुख्य पृष्ठ`,
-  description: site.description,
-  icons: {
-    icon: "/img/logo.png",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const settings = await kamgarApi.getSiteSettings();
+    const siteName = settings.siteName?.trim() || site.name;
+    return {
+      title: `${siteName} – मुख्य पृष्ठ`,
+      description: settings.tagline?.trim() || site.description,
+      icons: {
+        icon: settings.logoUrl?.trim() || "/img/logo.png",
+      },
+    };
+  } catch (error) {
+    console.warn("Failed to load public site settings for metadata:", error);
+    return {
+      title: `${site.name} – मुख्य पृष्ठ`,
+      description: site.description,
+      icons: {
+        icon: "/img/logo.png",
+      },
+    };
+  }
+}
 
 const themeScript = `(function(){
   var d=document.documentElement;
@@ -99,6 +116,7 @@ export default function RootLayout({
           <a className="skipLink" href="#main">
             मुख्य सामग्री पर जाएं
           </a>
+          <SiteMaintenanceNotice />
           <ScrollChrome />
           <NotificationPrompt />
           {children}
