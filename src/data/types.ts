@@ -131,42 +131,6 @@ export type InfoPageData = {
   signature?: InfoSignature;
 };
 
-/* ---------- Donate page ------------------------------------------------- */
-
-export type BankDetailsBlock = {
-  title: string;
-  items: { label: string; value: string }[];
-};
-
-export type DonatePageData = Omit<InfoPageData, "intro" | "sections" | "note"> & {
-  qr: { src: string; alt: string; caption: string; upi: string };
-  intro: string[];
-  sections: InfoSection[];
-  facts: { title: string; items: InfoFact[] };
-  bank: BankDetailsBlock;
-  note: string;
-};
-
-/* ---------- Advertise page ---------------------------------------------- */
-
-export type AdvertisePageData = {
-  slug: string;
-  eyebrow: string;
-  title: string;
-  /** Marketing pitch rendered alongside the enquiry form. */
-  promo: {
-    heading: string;
-    body: string;
-    lines: string[];
-    closing: string;
-    sizes: string[];
-  };
-  /** Bank account block shown with the payment call-to-action. */
-  bank: BankDetailsBlock;
-  /** Label for the payment button. */
-  payNow: string;
-};
-
 /* ---------- Auth pages (login / register) -------------------------------- */
 
 export type AuthPageData = {

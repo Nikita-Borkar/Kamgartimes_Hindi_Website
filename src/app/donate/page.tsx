@@ -1,18 +1,35 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { PageShell } from "@/components/layout/PageShell";
-import { DonatePage } from "@/components/pages/DonatePage";
-import { donatePage } from "@/data/marketing";
+import { InfoPage } from "@/components/pages/InfoPage";
+import { toInfoPageData } from "@/lib/staticPageInfo";
+import { kamgarApi } from "@/services/apiClient";
 import { site } from "@/data/site";
+import type { StaticPage } from "@/types/api";
 
-export const metadata: Metadata = {
-  title: `${donatePage.title} – ${site.name}`,
-  description: donatePage.lede,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const page = await kamgarApi.getStaticPage("donate-us");
+    return {
+      title: `${page.seo?.metaTitle || page.title} – ${site.name}`,
+      description: page.seo?.metaDescription || page.excerpt,
+    };
+  } catch {
+    return { title: `सहयोग करें – ${site.name}` };
+  }
+}
 
-export default function Donate() {
+export default async function Donate() {
+  let page: StaticPage;
+  try {
+    page = await kamgarApi.getStaticPage("donate-us");
+  } catch {
+    notFound();
+  }
+
   return (
     <PageShell>
-      <DonatePage page={donatePage} />
+      <InfoPage page={toInfoPageData(page, "सहयोग करें")} />
     </PageShell>
   );
 }

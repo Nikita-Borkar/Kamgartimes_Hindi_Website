@@ -1,306 +1,62 @@
-"use client";
-
-import { useState } from "react";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { PageShell } from "@/components/layout/PageShell";
-import { Megaphone, CheckCircle2, Phone, Mail, Send, Building, Loader2, AlertCircle } from "lucide-react";
+import { InfoPage } from "@/components/pages/InfoPage";
+import { toInfoPageData } from "@/lib/staticPageInfo";
 import { kamgarApi } from "@/services/apiClient";
-import styles from "./advertise.module.css";
+import { site } from "@/data/site";
+import type { SiteSettings, StaticPage } from "@/types/api";
 
-export default function PayForAdvertisementPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [packageType, setPackageType] = useState("हेडर बैनर विज्ञापन (₹5,000)");
-  const [message, setMessage] = useState("");
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const page = await kamgarApi.getStaticPage("pay-for-ads");
+    return {
+      title: `${page.seo?.metaTitle || page.title} – ${site.name}`,
+      description: page.seo?.metaDescription || page.excerpt,
+    };
+  } catch {
+    return { title: `विज्ञापन – ${site.name}` };
+  }
+}
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+export default async function PayForAdvertisementPage() {
+  let page: StaticPage;
+  let settings: SiteSettings | null;
+  try {
+    [page, settings] = await Promise.all([
+      kamgarApi.getStaticPage("pay-for-ads"),
+      kamgarApi.getSiteSettings().catch(() => null),
+    ]);
+  } catch {
+    notFound();
+  }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setErrorMessage(null);
-    setSuccessMessage(null);
-
-    try {
-      await kamgarApi.submitAdInquiry({
-        name: name.trim(),
-        email: email.trim(),
-        phone: phone.trim(),
-        company: name.trim(),
-        adType: packageType,
-        message: message.trim(),
-      });
-
-      setSuccessMessage(
-        "आपकी विज्ञापन पूछताछ सफलतापूर्वक प्राप्त हो गई है। हमारे विज्ञापन विभाग के प्रतिनिधि शीघ्र आपसे संपर्क करेंगे।"
-      );
-      setName("");
-      setEmail("");
-      setPhone("");
-      setMessage("");
-    } catch (err: any) {
-      setErrorMessage(
-        err?.message || "पूछताछ भेजने में समस्या आई। कृपया सीधे फोन या व्हाट्सएप पर संपर्क करें।"
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const adPackages = [
-    {
-      title: "डिजिटल हेडर बैनर (Header Banner)",
-      price: "₹ 5,000 / माह",
-      features: [
-        "वेबसाइट के मुख्य पृष्ठ पर सर्वोच्च स्थान",
-        "मोबाइल और डेस्कटॉप दोनों पर स्पष्ट विज़िबिलिटी",
-        "सीधे वेबसाइट या व्हाट्सएप लिंक की सुविधा",
-        "प्रति माह 50,000+ इम्प्रेशन्स की गारंटी",
-      ],
-      tag: "सर्वाधिक लोकप्रिय",
-    },
-    {
-      title: "दैनिक ई-पेपर विज्ञापन (E-Paper Ad)",
-      price: "₹ 8,000 / माह",
-      features: [
-        "डिजिटल ई-पेपर के पहले या अंतिम पृष्ठ पर प्रमुख स्थान",
-        "उच्च गुणवत्ता वाली HD रिज़ॉल्यूशन प्रिंट विज्ञापन",
-        "PDF डाउनलोड में विज्ञापन स्थायी रूप से शामिल",
-        "विदर्भ व संपूर्ण देश के लाखों पाठकों तक पहुंच",
-      ],
-      tag: "बेस्ट वैल्यू",
-    },
-    {
-      title: "प्रायोजित समाचार (Sponsored Article)",
-      price: "₹ 3,500 / समाचार",
-      features: [
-        "आपके ब्रांड, उत्पाद या सेवा की विस्तृत स्टोरी",
-        "गूगल सर्च और सोशल मीडिया पर विशेष प्रमोशन",
-        "असीमित विवरण, तस्वीरें और संपर्क जानकारी",
-        "वेबसाइट पर स्थायी रूप से लाइव",
-      ],
-      tag: "हाई एंगेजमेंट",
-    },
-    {
-      title: "वीडियो व शॉर्ट्स विज्ञापन (Video Ad)",
-      price: "₹ 10,000 / माह",
-      features: [
-        "कामगार टाइम्स यूट्यूब और शॉर्ट्स वीडियो में स्थान",
-        "1 मिनट का प्रायोजित वीडियो या लोगो वॉटरमार्क",
-        "50,000+ यूट्यूब दर्शकों तक सीधी पहुंच",
-        "व्हाट्सएप चैनल पर विशेष साझाकरण",
-      ],
-      tag: "वीडियो ब्रांडिंग",
-    },
-  ];
+  const content = toInfoPageData(page, "विज्ञापन");
+  content.contacts = [
+    settings?.contactPhone
+      ? {
+          id: "phone",
+          label: "फ़ोन",
+          value: settings.contactPhone,
+          href: `tel:${settings.contactPhone.replace(/\s+/g, "")}`,
+        }
+      : null,
+    settings?.contactEmail
+      ? {
+          id: "email",
+          label: "ईमेल",
+          value: settings.contactEmail,
+          href: `mailto:${settings.contactEmail}`,
+        }
+      : null,
+    settings?.address
+      ? { id: "address", label: "कार्यालय", value: settings.address }
+      : null,
+  ].filter((contact): contact is NonNullable<typeof contact> => contact !== null);
 
   return (
     <PageShell>
-      <main id="main" className={styles.main}>
-        <div className={styles.shell}>
-          {/* Hero Banner */}
-          <header className={styles.hero}>
-            <div className={styles.badge}>
-              <Megaphone size={16} />
-              <span>विज्ञापन केंद्र</span>
-            </div>
-            <h1 className={styles.heroTitle}>विज्ञापन के लिए भुगतान (Pay for Advertisement)</h1>
-            <p className={styles.heroSub}>
-              कामगार टाइम्स देश और प्रदेश के असंगठित श्रमिकों, कर्मचारियों, व्यापारियों और युवाओं का विश्वसनीय डिजिटल मंच है। अपने ब्रांड को दें नई पहचान!
-            </p>
-          </header>
-
-          {/* Ad Packages Grid */}
-          <section className={styles.packagesSection}>
-            <h2 className={styles.sectionHeading}>हमारे विज्ञापन पैकेज (Ad Packages)</h2>
-            <div className={styles.grid}>
-              {adPackages.map((pkg, i) => (
-                <div key={i} className={styles.packageCard}>
-                  <span className={styles.pkgTag}>{pkg.tag}</span>
-                  <h3 className={styles.pkgTitle}>{pkg.title}</h3>
-                  <div className={styles.pkgPrice}>{pkg.price}</div>
-                  <ul className={styles.pkgFeatures}>
-                    {pkg.features.map((feat, fIdx) => (
-                      <li key={fIdx}>
-                        <CheckCircle2 size={16} color="#22c55e" />
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <a href="#inquiry-form" className={styles.pkgBtn}>
-                    विज्ञापन बुक करें
-                  </a>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Booking & Inquiry Form */}
-          <section className={styles.inquirySection} id="inquiry-form">
-            <div className={styles.inquiryGrid}>
-              <div className={styles.inquiryInfo}>
-                <h2 className={styles.infoTitle}>सीधे विज्ञापन संपर्क करें</h2>
-                <p className={styles.infoText}>
-                  किसी भी प्रकार के व्यावसायिक विज्ञापन, बैनर या सरकारी निविदा (Tenders) के लिए हमारे विज्ञापन विभाग से सीधे संपर्क करें।
-                </p>
-
-                <div className={styles.contactList}>
-                  <div className={styles.contactItem}>
-                    <Phone size={20} color="#d32f2f" />
-                    <div>
-                      <strong>फ़ोन / व्हाट्सएप:</strong>
-                      <p>8055502228 / 9422100000</p>
-                    </div>
-                  </div>
-
-                  <div className={styles.contactItem}>
-                    <Mail size={20} color="#d32f2f" />
-                    <div>
-                      <strong>ईमेल:</strong>
-                      <p>advertise@kamgartimes.com / contact@kamgartimes.com</p>
-                    </div>
-                  </div>
-
-                  <div className={styles.contactItem}>
-                    <Building size={20} color="#d32f2f" />
-                    <div>
-                      <strong>मुख्य कार्यालय:</strong>
-                      <p>कामगार टाइम्स भवन, सिविल लाइंस, नागपुर - 440001</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <form className={styles.formCard} onSubmit={handleSubmit}>
-                <h3 className={styles.formTitle}>विज्ञापन पूछताछ फॉर्म</h3>
-
-                {successMessage && (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: "8px",
-                      padding: "12px",
-                      borderRadius: "6px",
-                      background: "rgba(34, 197, 94, 0.12)",
-                      border: "1px solid #22c55e",
-                      color: "#166534",
-                      fontSize: "0.9rem",
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    <CheckCircle2 size={18} color="#166534" style={{ flexShrink: 0, marginTop: "2px" }} />
-                    <p style={{ margin: 0 }}>{successMessage}</p>
-                  </div>
-                )}
-
-                {errorMessage && (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: "8px",
-                      padding: "12px",
-                      borderRadius: "6px",
-                      background: "rgba(239, 68, 68, 0.12)",
-                      border: "1px solid #ef4444",
-                      color: "#991b1b",
-                      fontSize: "0.9rem",
-                      marginBottom: "1rem",
-                    }}
-                  >
-                    <AlertCircle size={18} color="#991b1b" style={{ flexShrink: 0, marginTop: "2px" }} />
-                    <p style={{ margin: 0 }}>{errorMessage}</p>
-                  </div>
-                )}
-
-                <div className={styles.fieldGroup}>
-                  <label htmlFor="ad-name">नाम / कंपनी का नाम *</label>
-                  <input
-                    id="ad-name"
-                    type="text"
-                    placeholder="जैसे: राजेश शर्मा / सुयोग ट्रेडर्स"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className={styles.fieldGroup}>
-                  <label htmlFor="ad-email">ईमेल पता (Email) *</label>
-                  <input
-                    id="ad-email"
-                    type="email"
-                    placeholder="जैसे: contact@company.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className={styles.fieldGroup}>
-                  <label htmlFor="ad-phone">फ़ोन नंबर *</label>
-                  <input
-                    id="ad-phone"
-                    type="tel"
-                    placeholder="10 अंकों का मोबाइल नंबर"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className={styles.fieldGroup}>
-                  <label htmlFor="ad-package">पैकेज चुनें</label>
-                  <select
-                    id="ad-package"
-                    value={packageType}
-                    onChange={(e) => setPackageType(e.target.value)}
-                  >
-                    <option>हेडर बैनर विज्ञापन (₹5,000)</option>
-                    <option>ई-पेपर विज्ञापन (₹8,000)</option>
-                    <option>प्रायोजित समाचार (₹3,500)</option>
-                    <option>वीडियो विज्ञापन (₹10,000)</option>
-                    <option>अन्य कस्टमाइज़ विज्ञापन (Custom Ad)</option>
-                  </select>
-                </div>
-
-                <div className={styles.fieldGroup}>
-                  <label htmlFor="ad-msg">विवरण व संदेश</label>
-                  <textarea
-                    id="ad-msg"
-                    rows={4}
-                    placeholder="विज्ञापन की अवधि और अन्य विवरण..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className={styles.submitBtn}
-                  disabled={isSubmitting}
-                  style={{ opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? "not-allowed" : "pointer" }}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin" />
-                      <span>भेजा जा रहा है...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Send size={16} />
-                      <span>पूछताछ भेजें (Submit Inquiry)</span>
-                    </>
-                  )}
-                </button>
-              </form>
-            </div>
-          </section>
-        </div>
-      </main>
+      <InfoPage page={content} />
     </PageShell>
   );
 }
