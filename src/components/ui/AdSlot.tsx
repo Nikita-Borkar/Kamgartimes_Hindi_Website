@@ -42,8 +42,8 @@ export function AdSlot({
         const topAd = res?.ads?.[0];
         if (!topAd) {
           // Slot is configured but has no active campaign — render nothing
-          // rather than silently showing the local design placeholder.
-          setAdData(null);
+          // so the reserved creative remains visible.
+          setAdData(initialAd || null);
           return;
         }
 
