@@ -267,3 +267,15 @@
     display: none;
   }
 }
+
+
+/* Clearance when bottom notice ticker is active */
+:global(body.notice-ticker-on) .floatingDock {
+  bottom: calc(52px + 14px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 640px) {
+  :global(body.notice-ticker-on) .floatingDock {
+    bottom: calc(48px + 10px + env(safe-area-inset-bottom, 0px));
+  }
+}

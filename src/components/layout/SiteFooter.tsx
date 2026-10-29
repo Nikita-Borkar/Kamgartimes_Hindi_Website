@@ -35,7 +35,11 @@ const defaultSocials = [
   { id: "telegram", label: "टेलीग्राम", icon: TelegramIcon, fallback: "https://t.me" },
 ];
 
-export function SiteFooter() {
+interface SiteFooterProps {
+  withNoticeTicker?: boolean;
+}
+
+export function SiteFooter({ withNoticeTicker = false }: SiteFooterProps = {}) {
   const { siteName, tagline, logoUrl, getSocialUrl } = useSiteSettings();
   const [logoSrc, setLogoSrc] = useState<string>("/img/logo_withtext.jpeg");
 
@@ -124,7 +128,13 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className={styles.copy}>{footer.copyright}</div>
+      <div
+        className={`${styles.copy} ${withNoticeTicker ? styles.copyWithTicker : ""}`}
+      >
+        <div className={styles.copyInner}>
+          <p className={styles.copyText}>{footer.copyright}</p>
+        </div>
+      </div>
     </footer>
   );
 }
