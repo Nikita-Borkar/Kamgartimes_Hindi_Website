@@ -21,6 +21,14 @@ import { ArticleToc, type TocItem } from "./ArticleToc";
 import { Comments } from "./Comments";
 import styles from "./article.module.css";
 
+function renderPdfAttachments(content: string) {
+  return content.replace(
+    /<a\b[^>]*\bhref=(['"])(https:\/\/[^'"]+\.pdf(?:[?#][^'"]*)?)\1[^>]*>[\s\S]*?<\/a>/gi,
+    (_match, _quote, url) =>
+      `<iframe class="article-pdf-viewer" src="${url.replace(/&amp;/gi, "&").replace(/&/g, "&amp;")}" title="PDF दस्तावेज़" loading="lazy"></iframe>`,
+  );
+}
+
 /**
  * The reading page. Integrated with public articles APIs (view, share, reactions, comments)
  */
@@ -136,7 +144,7 @@ export function ArticlePage({
           {article.content ? (
             <div className={styles.prose}>
               <div
-                dangerouslySetInnerHTML={{ __html: article.content }}
+                dangerouslySetInnerHTML={{ __html: renderPdfAttachments(article.content) }}
                 style={{ fontSize: "1.125rem", lineHeight: 1.8 }}
               />
               <div style={{ margin: "24px 0" }}>

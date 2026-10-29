@@ -140,6 +140,26 @@
   max-width: 68ch;
 }
 
+.prose :global(iframe.ql-pdf-viewer),
+.prose :global(iframe.article-pdf-viewer) {
+  display: block;
+  width: 100%;
+  height: min(78vh, 900px);
+  min-height: 560px;
+  margin: var(--space-5) 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: #fff;
+}
+
+@media (max-width: 640px) {
+  .prose :global(iframe.ql-pdf-viewer),
+  .prose :global(iframe.article-pdf-viewer) {
+    height: 70vh;
+    min-height: 420px;
+  }
+}
+
 .lede {
   max-width: 68ch;
   margin-top: var(--space-8);
