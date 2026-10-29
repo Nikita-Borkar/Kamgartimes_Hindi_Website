@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { PageShell } from "@/components/layout/PageShell";
 import { CategoryPage } from "@/components/pages/CategoryPage";
 import { categories, site } from "@/data/site";
@@ -36,14 +37,21 @@ export async function generateMetadata({
 
 export default async function Category({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string | string[] }>;
 }) {
   const { slug } = await params;
+  const query = await searchParams;
+  const requestedPage = Array.isArray(query.page) ? query.page[0] : query.page;
+  const page = Math.max(1, Number.parseInt(requestedPage || "1", 10) || 1);
+  const pageSize = 12;
   const decodedSlug = decodeURIComponent(slug);
   let categoryLabel = categories.find((entry) => entry.slug === slug || entry.slug === decodedSlug)?.label;
   let apiCategoryId: string | undefined;
   let subcategories: Pick<ApiCategory, "_id" | "name" | "slug">[] = [];
+  let parentCategory: Pick<ApiCategory, "name" | "slug"> | undefined;
 
   // Resolve the category and its child sections from the public navigation tree.
   try {
@@ -66,6 +74,9 @@ export default async function Category({
             name,
             slug: categorySlug,
           }));
+        } else {
+          const parent = tree.find((item) => item._id === match.parent);
+          if (parent) parentCategory = { name: parent.name, slug: parent.slug };
         }
       }
     }
@@ -76,21 +87,29 @@ export default async function Category({
   }
 
   let articles: Article[] = [];
+  let totalArticles = 0;
+  let currentPage = page;
+  let totalPages = 0;
 
-  // 1. Fetch live articles from backend API
-  try {
-    const isMetaCategory = slug === "latest" || slug === "breaking" || slug === "trending";
-    const articleRes = isMetaCategory
-      ? await kamgarApi.getArticles({ limit: 20 })
-      : await kamgarApi.getArticles({
-          category: apiCategoryId || categoryLabel || decodedSlug,
-          limit: 20,
-        });
-    if (articleRes?.articles && articleRes.articles.length > 0) {
-      articles = articleRes.articles.map(adaptArticleListItem);
+  // Parent pages surface their child sections; child pages list all matching stories in pages.
+  if (subcategories.length === 0) {
+    try {
+      const isMetaCategory = slug === "latest" || slug === "breaking" || slug === "trending";
+      const articleRes = await kamgarApi.getArticles({
+        ...(!isMetaCategory && { category: apiCategoryId || categoryLabel || decodedSlug }),
+        page,
+        limit: pageSize,
+      });
+      articles = (articleRes?.articles || []).map(adaptArticleListItem);
+      totalArticles = articleRes?.total || 0;
+      currentPage = articleRes?.page || page;
+      totalPages = Math.ceil(totalArticles / pageSize);
+    } catch {
+      articles = [];
     }
-  } catch {
-    articles = [];
+  }
+  if (totalPages > 0 && page > totalPages) {
+    redirect(`/category/${encodeURIComponent(slug)}?page=${totalPages}`);
   }
 
   // Pure dynamic data: No dummy or fallback data. If no articles exist in DB, CategoryPage renders EmptyState.
@@ -100,6 +119,11 @@ export default async function Category({
         label={categoryLabel ?? decodedSlug ?? "समाचार"}
         subcategories={subcategories}
         articles={articles}
+        parentCategory={parentCategory}
+        basePath={`/category/${encodeURIComponent(slug)}`}
+        page={currentPage}
+        pageSize={pageSize}
+        totalArticles={totalArticles}
       />
     </PageShell>
   );

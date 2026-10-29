@@ -144,8 +144,8 @@ export function ArticlePage({
           {article.content ? (
             <div className={styles.prose}>
               <div
+                className={styles.contentHtml}
                 dangerouslySetInnerHTML={{ __html: renderPdfAttachments(article.content) }}
-                style={{ fontSize: "1.125rem", lineHeight: 1.8 }}
               />
               <div style={{ margin: "24px 0" }}>
                 <InArticleBoxAd ad={articleBoxAds[0]} />

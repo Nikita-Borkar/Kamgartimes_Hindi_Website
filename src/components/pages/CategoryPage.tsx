@@ -1,127 +1,158 @@
 import type { Article } from "@/data/types";
 import Link from "next/link";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { StoryCard } from "@/components/ui/StoryCard";
 import { AdCard } from "@/components/ui/AdCard";
-import { VerticalAd } from "@/components/ui/VerticalAd";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { NewsGridSkeleton } from "@/components/ui/NewsGridSkeleton";
-import { cardAds, verticalTowerAds, leaderboardAds } from "@/data/ads";
 import type { Category } from "@/types/api";
 import { PageHero } from "./PageHero";
+import { cardAds, leaderboardAds } from "@/data/ads";
 import styles from "./pages.module.css";
 
-/**
- * Section landing page for one category. Reads the articles tagged with the
- * category label and lays them out on the same paper grid as the front page.
- * Uses native blog-sized card ads in the grid and vertical tower ads in split sections.
- */
+type Section = Pick<Category, "_id" | "name" | "slug">;
+
+function CategoryPagination({
+  basePath,
+  page,
+  totalPages,
+}: {
+  basePath: string;
+  page: number;
+  totalPages: number;
+}) {
+  const visiblePages = new Set<number>([1, totalPages]);
+  for (let current = Math.max(1, page - 2); current <= Math.min(totalPages, page + 2); current += 1) {
+    visiblePages.add(current);
+  }
+  const pages = [...visiblePages].sort((a, b) => a - b);
+
+  return (
+    <nav className={styles.categoryPagination} aria-label="पृष्ठ नेविगेशन">
+      {page > 1 ? (
+        <Link className={styles.paginationEdge} href={`${basePath}?page=${page - 1}`} rel="prev">
+          <ArrowLeft size={15} aria-hidden="true" /> पिछला पृष्ठ
+        </Link>
+      ) : <span className={styles.paginationEdgeDisabled} aria-disabled="true">पिछला पृष्ठ</span>}
+
+      <div className={styles.paginationNumbers}>
+        {pages.map((number, index) => (
+          <span className={styles.paginationItem} key={number}>
+            {index > 0 && number - pages[index - 1] > 1 && <span className={styles.paginationEllipsis}>…</span>}
+            <Link
+              className={styles.paginationNumber}
+              href={`${basePath}?page=${number}`}
+              aria-current={number === page ? "page" : undefined}
+              aria-label={`पृष्ठ ${number}`}
+            >
+              {number}
+            </Link>
+          </span>
+        ))}
+      </div>
+
+      {page < totalPages ? (
+        <Link className={styles.paginationEdge} href={`${basePath}?page=${page + 1}`} rel="next">
+          अगला पृष्ठ <ArrowRight size={15} aria-hidden="true" />
+        </Link>
+      ) : <span className={styles.paginationEdgeDisabled} aria-disabled="true">अगला पृष्ठ</span>}
+    </nav>
+  );
+}
+
 export function CategoryPage({
   label,
   subcategories = [],
   articles,
-  isLoading = false,
+  parentCategory,
+  basePath,
+  page = 1,
+  pageSize = 12,
+  totalArticles = articles.length,
 }: {
   label: string;
-  subcategories?: Pick<Category, "_id" | "name" | "slug">[];
+  subcategories?: Section[];
   articles: Article[];
-  isLoading?: boolean;
+  parentCategory?: Pick<Category, "name" | "slug">;
+  basePath: string;
+  page?: number;
+  pageSize?: number;
+  totalArticles?: number;
 }) {
-  const leadBatch = articles.slice(0, 5);
-  const splitBatch = articles.slice(5, 9);
-  const tailBatch = articles.slice(9);
+  const isParentCategory = subcategories.length > 0;
+  const totalPages = Math.ceil(totalArticles / pageSize);
+  const firstArticle = totalArticles === 0 ? 0 : (page - 1) * pageSize + 1;
+  const lastArticle = Math.min(page * pageSize, totalArticles);
 
   return (
     <main id="main" className={styles.main}>
-      <PageHero eyebrow="श्रेणी" title={label} />
+      <PageHero
+        eyebrow={parentCategory ? `${parentCategory.name} / ${label}` : "श्रेणी"}
+        title={label}
+        lede={isParentCategory ? "इस श्रेणी की उपश्रेणियाँ चुनें और संबंधित खबरें पढ़ें।" : undefined}
+      />
 
-      {subcategories.length > 0 && (
-        <nav className={styles.categorySections} aria-label={`${label} की उपश्रेणियां`}>
-          <span className={styles.categorySectionsLabel}>इस श्रेणी में</span>
-          <div className={styles.categorySectionLinks}>
-            {subcategories.map((subcategory) => (
-              <Link
-                key={subcategory._id}
-                className={styles.categorySectionLink}
-                href={`/category/${encodeURIComponent(subcategory.slug)}`}
-              >
-                {subcategory.name}
-              </Link>
-            ))}
+      {isParentCategory ? (
+        <section className={styles.subcategorySection} aria-labelledby="subcategory-heading">
+          <div className={styles.categorySectionHeading}>
+            <div>
+              <p className={styles.categorySectionEyebrow}>इस श्रेणी में</p>
+              <h2 id="subcategory-heading" className={styles.categorySectionTitle}>उपश्रेणियाँ</h2>
+            </div>
+            <span className={styles.categoryCount}>{subcategories.length} विभाग</span>
           </div>
-        </nav>
-      )}
-
-      {isLoading ? (
-        <NewsGridSkeleton count={6} />
+          <ul className={styles.subcategoryList}>
+            {subcategories.map((subcategory, index) => (
+              <li key={subcategory._id}>
+                <Link
+                  className={styles.subcategoryLink}
+                  href={`/category/${encodeURIComponent(subcategory.slug)}`}
+                >
+                  <span className={styles.subcategoryIndex}>{String(index + 1).padStart(2, "0")}</span>
+                  <span className={styles.subcategoryName}>{subcategory.name}</span>
+                  <ArrowRight className={styles.subcategoryArrow} size={17} aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       ) : articles.length === 0 ? (
         <EmptyState
           title={`'${label}' श्रेणी में अभी कोई समाचार उपलब्ध नहीं है`}
-          description="एडमिन पैनल से इस श्रेणी में अभी तक कोई लेख प्रकाशित नहीं हुआ है। नए अपडेट और ताज़ा खबरों के लिए कृपया थोड़ी देर बाद देखें।"
-          actionLabel="मुख्य पृष्ठ पर जाएं"
+          description="इस श्रेणी में नए लेख प्रकाशित होने पर वे यहाँ दिखाई देंगे।"
+          actionLabel="मुख्य पृष्ठ पर जाएँ"
           actionHref="/"
           secondaryLabel="ताज़ा खबरें देखें"
-          secondaryHref="/category/ताज़ा-खबरें"
+          secondaryHref="/category/latest"
         />
       ) : (
-        <>
-          {/* Main news grid with integrated card-sized sponsored story */}
+        <section className={styles.categoryStories} aria-labelledby="category-stories-heading">
+          <div className={styles.categorySectionHeading}>
+            <div>
+              <p className={styles.categorySectionEyebrow}>ताज़ा अपडेट</p>
+              <h2 id="category-stories-heading" className={styles.categorySectionTitle}>{label} की खबरें</h2>
+            </div>
+            <span className={styles.categoryCount} aria-live="polite">
+              {firstArticle}–{lastArticle} / {totalArticles}
+            </span>
+          </div>
+
           <div className={`${styles.categoryGrid} reveal`}>
-            {leadBatch.slice(0, 2).map((article) => (
-              <StoryCard
-                key={article.id}
-                article={article}
-                sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, 320px"
-              />
-            ))}
-
-            {/* In-grid blog/card-sized ad in slot #3 */}
-            <AdCard ad={cardAds[0]} />
-
-            {leadBatch.slice(2).map((article) => (
-              <StoryCard
-                key={article.id}
-                article={article}
-                sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, 320px"
-              />
+            {articles.map((article, index) => (
+              <div className={styles.categoryStoryItem} key={article.id}>
+                <StoryCard article={article} sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, 320px" />
+                {index === 4 && page === 1 && <AdCard ad={cardAds[0]} />}
+              </div>
             ))}
           </div>
 
-          {/* Split editorial section with tall vertical tower ad */}
-          {splitBatch.length > 0 && (
-            <div className={`${styles.categorySplitLayout} reveal`}>
-              <div className={styles.categorySplitStories}>
-                {splitBatch.map((article) => (
-                  <StoryCard
-                    key={article.id}
-                    article={article}
-                    sizes="(max-width: 560px) 100vw, 320px"
-                  />
-                ))}
-              </div>
-              <VerticalAd ad={verticalTowerAds[0]} />
-            </div>
+          {totalPages > 1 && (
+            <CategoryPagination basePath={basePath} page={page} totalPages={totalPages} />
           )}
-
-          {/* Remaining stories if any */}
-          {tailBatch.length > 0 && (
-            <div className={`${styles.categoryGrid} reveal`} style={{ marginTop: "var(--space-10)" }}>
-              {tailBatch.map((article, idx) => (
-                <div key={article.id} style={{ display: "contents" }}>
-                  <StoryCard
-                    article={article}
-                    sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, 320px"
-                  />
-                  {idx === 2 && <AdCard ad={cardAds[1]} />}
-                </div>
-              ))}
-            </div>
-          )}
-
           <div className={styles.categoryAdBottom}>
             <AdSlot ad={leaderboardAds[2]} />
           </div>
-        </>
+        </section>
       )}
     </main>
   );
