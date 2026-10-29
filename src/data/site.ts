@@ -204,6 +204,15 @@ export const notice = {
   text: "",
 } as const;
 
+/* The utility pages and their related page links share this source. */
+export const companyLinks = [
+  { label: "About Us", href: "/about" },
+  { label: "Reporter Recruitment 2026-27", href: "/join-us" },
+  { label: "Contact Us", href: "/contact" },
+  { label: "Disclaimer", href: "/disclaimer" },
+  { label: "Privacy Policy", href: "/privacy" },
+] as const;
+
 export const footer = {
   sections: [
     {

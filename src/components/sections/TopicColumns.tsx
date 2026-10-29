@@ -164,7 +164,7 @@ export function TopicColumns() {
                     <FileText className={styles.noDataIcon} size={28} />
                     <h4 className={styles.noDataTitle}>समाचार उपलब्ध नहीं हैं</h4>
                     <p className={styles.noDataDesc}>
-                      एडमिन पैनल से &apos;{desk.title}&apos; श्रेणी में समाचार प्रकाशित होने के बाद यहाँ दिखेंगे।
+                      शीघ्र ही &apos;{desk.title}&apos; से जुड़े ताज़ा समाचार यहाँ उपलब्ध होंगे।
                     </p>
                   </div>
                 )}

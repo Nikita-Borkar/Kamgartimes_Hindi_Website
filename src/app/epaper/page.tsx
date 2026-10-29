@@ -83,7 +83,7 @@ export default function EPaperPage() {
               <p className={styles.dateStr}>
                 {currentEdition?.editionDate
                   ? formatHindiDate(currentEdition.editionDate)
-                  : "रविवार, ४ अक्टूबर २०२६ · मुख्य नागपुर संस्करण"}
+                  : `${formatHindiDate(new Date())} · मुख्य संस्करण`}
                 {currentEdition?.city?.name ? ` · ${currentEdition.city.name}` : ""}
               </p>
             </div>

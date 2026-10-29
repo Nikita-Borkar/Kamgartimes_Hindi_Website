@@ -18,8 +18,8 @@ export type EpaperEdition = {
 export const epaperEditions: EpaperEdition[] = [
   {
     id: "7",
-    label: "रविवार, ४ अक्टूबर २०२६",
-    date: "रविवार · ४ अक्टूबर २०२६",
+    label: "आज का डिजिटल ई-पेपर",
+    date: "कामगार टाइम्स ई-पेपर",
     file: "/pdf/7.pdf",
     size: "४.० MB",
     blurb: "आज का संपूर्ण संस्करण एक ही डिजिटल PDF में उपलब्ध.",

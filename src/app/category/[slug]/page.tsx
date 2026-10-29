@@ -8,7 +8,7 @@ import { adaptArticleListItem } from "@/lib/apiAdapters";
 import type { Article } from "@/data/types";
 import type { Category as ApiCategory } from "@/types/api";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30;
 
 export async function generateMetadata({
   params,

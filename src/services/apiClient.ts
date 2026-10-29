@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import {
   Category,
   ArticleListItem,
@@ -134,9 +135,14 @@ async function refreshAccessToken(): Promise<boolean> {
 
 export async function request<T>(
   endpoint: string,
-  options: RequestInit & { requiresAuth?: boolean; _retry?: boolean; timeoutMs?: number } = {}
+  options: RequestInit & {
+    requiresAuth?: boolean;
+    _retry?: boolean;
+    timeoutMs?: number;
+    next?: { revalidate?: number | false; tags?: string[] };
+  } = {}
 ): Promise<T> {
-  const { requiresAuth = false, _retry = false, headers = {}, timeoutMs = 12000, ...rest } = options;
+  const { requiresAuth = false, _retry = false, headers = {}, timeoutMs = 12000, next, ...rest } = options;
 
   const requestHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -153,11 +159,15 @@ export async function request<T>(
 
   let response: Response;
   try {
-    response = await fetch(`${getApiBase()}${endpoint}`, {
+    const fetchOptions: any = {
       ...rest,
       signal: rest.signal || controller.signal,
       headers: requestHeaders,
-    });
+    };
+    if (next) {
+      fetchOptions.next = next;
+    }
+    response = await fetch(`${getApiBase()}${endpoint}`, fetchOptions);
   } catch {
     throw new ApiError(
       'Unable to connect to Kamgar Times server. Please check your internet connection.',
@@ -194,8 +204,12 @@ export async function request<T>(
 
 // Low-level HTTP helper
 export const api = {
-  get: <T>(url: string, requiresAuth = false) =>
-    request<T>(url, { method: 'GET', requiresAuth }),
+  get: <T>(
+    url: string,
+    requiresAuth = false,
+    options?: { next?: { revalidate?: number | false; tags?: string[] } }
+  ) =>
+    request<T>(url, { method: 'GET', requiresAuth, ...options }),
   post: <T>(url: string, body?: any, requiresAuth = false) =>
     request<T>(url, {
       method: 'POST',
@@ -255,11 +269,17 @@ export const kamgarApi = {
     if (params?.limit) query.set('limit', String(params.limit));
     const qs = query.toString();
     return api.get<{ articles: ArticleListItem[]; total: number; page: number; limit: number }>(
-      `/public/articles${qs ? `?${qs}` : ''}`
+      `/public/articles${qs ? `?${qs}` : ''}`,
+      false,
+      { next: { revalidate: 30 } }
     );
   },
 
-  getArticleBySlug: (slug: string) => api.get<ArticleDetail>(`/public/articles/${slug}`),
+  getArticleBySlug: cache((slug: string) =>
+    api.get<ArticleDetail>(`/public/articles/${slug}`, false, {
+      next: { revalidate: 30 },
+    })
+  ),
 
   recordArticleView: (idOrSlug: string) =>
     api.post<{ views: number }>(`/public/articles/${idOrSlug}/view`),
@@ -289,8 +309,11 @@ export const kamgarApi = {
     ),
 
   // 4.4 Categories
-  getCategories: (isActive = true) =>
-    api.get<{ categories: Category[]; total: number }>(`/categories?isActive=${isActive}`),
+  getCategories: cache((isActive = true) =>
+    api.get<{ categories: Category[]; total: number }>(`/categories?isActive=${isActive}`, false, {
+      next: { revalidate: 30 },
+    })
+  ),
 
   getCategoryTree: async (): Promise<Category[]> => {
     const response = await api.get<
@@ -376,7 +399,9 @@ export const kamgarApi = {
     api.post<QotdAnswerResult>('/public/question-of-the-day/check', body),
 
   // 4.10 Site Settings
-  getSiteSettings: () => api.get<SiteSettings>('/public/site-setting'),
+  getSiteSettings: cache(() =>
+    api.get<SiteSettings>('/public/site-setting', false, { next: { revalidate: 30 } })
+  ),
 
   // 4.11 Static Pages
   getStaticPages: (params?: { showInFooter?: boolean }) => {

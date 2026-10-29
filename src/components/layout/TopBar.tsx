@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { User, LogOut } from "lucide-react";
-import { site } from "@/data/site";
 import { ThemeToggle } from "./ThemeToggle";
 import {
   getSafeSocialUrl,
@@ -17,15 +16,19 @@ import type { UserProfile } from "@/types/api";
 import styles from "./layout.module.css";
 
 function formatHindiDate(date: Date = new Date()): string {
+  // Ensure consistent IST date on server and client
+  const istDateString = date.toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+  const istDate = new Date(istDateString);
+
   const days = ["रविवार", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
   const months = [
     "जनवरी", "फ़रवरी", "मार्च", "अप्रैल", "मई", "जून",
     "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"
   ];
-  const dayName = days[date.getDay()];
-  const dayNum = date.getDate();
-  const monthName = months[date.getMonth()];
-  const year = date.getFullYear();
+  const dayName = days[istDate.getDay()];
+  const dayNum = istDate.getDate();
+  const monthName = months[istDate.getMonth()];
+  const year = istDate.getFullYear();
 
   return `${dayName}, ${dayNum} ${monthName} ${year}`;
 }
@@ -33,7 +36,7 @@ function formatHindiDate(date: Date = new Date()): string {
 export function TopBar() {
   const { siteName, tagline, logoUrl, socialLinks } = useSiteSettings();
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
-  const [liveDate, setLiveDate] = useState<string>(`${site.edition} · ${site.editionTime}`);
+  const [liveDate, setLiveDate] = useState<string>(() => formatHindiDate(new Date()));
   const [logoSrc, setLogoSrc] = useState<string>("/img/logo_withtext.jpeg");
   const [hasLogoError, setHasLogoError] = useState(false);
 
@@ -47,9 +50,13 @@ export function TopBar() {
     }
   }, [logoUrl]);
 
-  // Dynamic live date in Hindi
+  // Dynamic live date in Hindi: updates on mount and every minute
   useEffect(() => {
     setLiveDate(formatHindiDate(new Date()));
+    const timer = setInterval(() => {
+      setLiveDate(formatHindiDate(new Date()));
+    }, 60000);
+    return () => clearInterval(timer);
   }, []);
 
   // Check user auth
@@ -83,11 +90,8 @@ export function TopBar() {
     <div className={`${styles.shell} ${styles.topBar}`}>
       {/* Left: Dynamic Live Hindi Edition / Date */}
       <div className={styles.editionArea}>
-        <p className={styles.edition} title={tagline}>
-          <span className={styles.editionDateText}>{liveDate}</span>
-          {tagline ? (
-            <span className={styles.editionTaglineText}> · {tagline}</span>
-          ) : null}
+        <p className={styles.edition}>
+          <span className={styles.editionDateText} suppressHydrationWarning>{liveDate}</span>
         </p>
       </div>
 
@@ -156,7 +160,7 @@ export function TopBar() {
               type="button"
               onClick={handleLogout}
               className={styles.loginDotHeader}
-              title="लॉग आउट करें"
+              title="Logout"
               style={{ background: "none", border: "none", cursor: "pointer" }}
             >
               <LogOut size={16} strokeWidth={2} aria-hidden="true" />
@@ -166,8 +170,8 @@ export function TopBar() {
           <Link
             className={styles.loginDotHeader}
             href="/login"
-            aria-label="लॉग इन"
-            title="लॉग इन करें"
+            aria-label="Login"
+            title="Login"
           >
             <User size={18} strokeWidth={2} aria-hidden="true" />
           </Link>

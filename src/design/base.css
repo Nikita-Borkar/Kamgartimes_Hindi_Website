@@ -14,8 +14,7 @@
 html {
   scroll-padding-top: var(--safe-top);
   -webkit-text-size-adjust: 100%;
-  overflow-x: hidden;
-  max-width: 100vw;
+  overflow-x: clip;
 }
 
 body {
@@ -26,8 +25,7 @@ body {
   padding-bottom: var(--safe-bottom);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
-  max-width: 100vw;
+  overflow-x: clip;
 }
 
 img,
@@ -96,5 +94,37 @@ ol {
 
 .skipLink:focus-visible {
   transform: translateY(0);
+}
+
+/* ==========================================================================
+   Google Translate UI Overrides
+   Hides the default top frame & tooltips so the page chrome stays clean
+   ========================================================================== */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+}
+
+body {
+  top: 0px !important;
+  position: static !important;
+}
+
+#goog-gt-tt,
+.goog-te-balloon-frame {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
+}
+
+body.notice-ticker-on {
+  padding-bottom: 46px;
 }
 

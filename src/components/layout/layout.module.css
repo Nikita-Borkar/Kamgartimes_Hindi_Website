@@ -10,22 +10,35 @@
   padding-right: var(--shell-pad);
 }
 
-/* ---------- Sticky Header Container --------------------------------------- */
-.stickyHeaderGroup {
+/* ---------- Sticky Navbar Container --------------------------------------- */
+.stickyNavHeader {
   position: sticky;
   top: 0;
   z-index: 1000;
   width: 100%;
   background: var(--bg, #ffffff);
+  border-top: 1px solid var(--border, #e2e8f0);
+  border-bottom: 2.5px solid #b70000;
   transition:
-    box-shadow 0.24s ease,
+    box-shadow 0.22s ease,
     background-color 0.2s ease;
 }
 
-.stickyHeaderGroup[data-scrolled="true"] {
+.stickyNavHeader[data-scrolled="true"] {
   box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.08),
-    0 1px 4px rgba(0, 0, 0, 0.04);
+    0 4px 18px rgba(0, 0, 0, 0.12),
+    0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .stickyNavHeader {
+  background: var(--bg, #0f172a);
+  border-top-color: #1e293b;
+}
+
+[data-theme="dark"] .stickyNavHeader[data-scrolled="true"] {
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.5),
+    0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .stickyHeaderGroup[data-scrolled="true"] .topBar {
@@ -447,9 +460,8 @@
 
 /* ---------- Nav ---------------------------------------------------------- */
 .nav {
-  background: var(--bg, #ffffff);
-  border-top: 1px solid var(--border, #e2e8f0);
-  border-bottom: 2.5px solid #b70000;
+  background: transparent;
+  border: none;
   position: relative;
   z-index: 10;
   width: 100%;
@@ -547,9 +559,55 @@ a.navLinkActive {
 }
 
 .navLinkWithSub {
+  padding: 0 !important;
+  gap: 0 !important;
+  cursor: default;
+  display: inline-flex;
+  align-items: center;
+}
+
+.navLinkAnchor {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 6px 3px 6px 7.5px;
+  color: inherit;
+  text-decoration: none;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  white-space: nowrap;
   cursor: pointer;
+  border-radius: 6px 0 0 6px;
+  box-sizing: border-box;
+}
+
+.navLinkAnchor:hover {
+  text-decoration: none;
+}
+
+.navCaretBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  padding: 0 7px 0 2px;
   background: transparent;
   border: none;
+  outline: none;
+  color: inherit;
+  cursor: pointer;
+  border-radius: 0 6px 6px 0;
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  transition: opacity 0.15s ease;
+}
+
+.navCaretBtn:hover {
+  opacity: 0.8;
 }
 
 .navSubToggle {
@@ -1033,7 +1091,6 @@ a.navLinkActive {
   transform: rotate(180deg);
 }
 
-/* Direct link for items WITHOUT subcategories (e.g. ई-पेपर) */
 .panelDirectLink {
   width: auto;
   flex: 1;
@@ -1053,6 +1110,28 @@ a.navLinkActive {
 .panelDirectLink:hover {
   color: var(--brand);
   background: var(--surface);
+}
+
+.panelAccordionCaretBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  transition: color 0.18s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.panelAccordionCaretBtn:hover {
+  color: #b70000;
+}
+
+[data-theme="dark"] .panelAccordionCaretBtn:hover {
+  color: #ef4444;
 }
 
 /* Sub-list accordion container: clean, modern 1-column list */
@@ -1370,6 +1449,7 @@ a.navLinkActive {
 }
 
 /* ---------- Bottom notice ticker ----------------------------------------- */
+
 .noticeTicker {
   position: fixed;
   bottom: 0;

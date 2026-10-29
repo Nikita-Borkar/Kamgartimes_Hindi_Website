@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, Menu, Search, X } from "lucide-react";
+import { ChevronDown, Menu, Search, X, User, Mic } from "lucide-react";
 import type { NavItem, NavLink } from "@/data/site";
 import { kamgarApi } from "@/services/apiClient";
 import type { Category } from "@/types/api";
@@ -28,12 +28,12 @@ function Caret({ open }: { open?: boolean }) {
 function NavEntry({ item }: { item: NavItem }) {
   const [open, setOpen] = useState(false);
   const [coords, setCoords] = useState<{ top: number; left: number } | null>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const itemRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLUListElement>(null);
 
   const updatePosition = useCallback(() => {
-    if (!buttonRef.current) return;
-    const rect = buttonRef.current.getBoundingClientRect();
+    if (!itemRef.current) return;
+    const rect = itemRef.current.getBoundingClientRect();
     const menuWidth = 240;
     const left = Math.max(8, Math.min(rect.left, window.innerWidth - menuWidth - 8));
     setCoords({
@@ -57,8 +57,8 @@ function NavEntry({ item }: { item: NavItem }) {
     const handleClickOutside = (e: MouseEvent | TouchEvent) => {
       const target = e.target as Node;
       if (
-        buttonRef.current &&
-        !buttonRef.current.contains(target) &&
+        itemRef.current &&
+        !itemRef.current.contains(target) &&
         menuRef.current &&
         !menuRef.current.contains(target)
       ) {
@@ -101,6 +101,7 @@ function NavEntry({ item }: { item: NavItem }) {
 
   return (
     <div
+      ref={itemRef}
       className={styles.navItem}
       onMouseEnter={() => {
         if (typeof window !== "undefined" && window.innerWidth > 768) {
@@ -114,20 +115,32 @@ function NavEntry({ item }: { item: NavItem }) {
         }
       }}
     >
-      <Link className={styles.navLink} href={item.href}>
-        <span>{item.label}</span>
-      </Link>
-      <button
-        ref={buttonRef}
-        type="button"
-        className={`${styles.navLink} ${styles.navLinkWithSub} ${styles.navSubToggle}${open ? ` ${styles.navLinkActive}` : ""}`}
-        onClick={handleToggle}
-        aria-expanded={open}
-        aria-label={`${item.label} उपश्रेणियां ${open ? "बंद करें" : "खोलें"}`}
-        suppressHydrationWarning
+      <div
+        className={`${styles.navLink} ${styles.navLinkWithSub}${open ? ` ${styles.navLinkActive}` : ""}`}
       >
-        <Caret open={open} />
-      </button>
+        <Link
+          className={styles.navLinkAnchor}
+          href={item.href}
+          onClick={() => setOpen(false)}
+        >
+          <span>{item.label}</span>
+        </Link>
+        <button
+          type="button"
+          className={styles.navCaretBtn}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            handleToggle();
+          }}
+          aria-expanded={open}
+          aria-label={`${item.label} उप-श्रेणियां`}
+          title={`${item.label} उप-श्रेणियां`}
+          suppressHydrationWarning
+        >
+          <Caret open={open} />
+        </button>
+      </div>
 
       {open && coords && (
         <ul
@@ -184,10 +197,40 @@ function OverflowPanel({
 
   return (
     <div className={styles.panelInnerWrapper}>
-      <Link href="/search" className={styles.drawerSearchLink} onClick={onNavigate} aria-label="खोजें">
-        <Search size={17} strokeWidth={2.2} aria-hidden="true" />
-        <span>खोजें (Search)</span>
-      </Link>
+      {/* Mobile Top Header: Dedicated Red Reporter button + User Login & Search */}
+      <div className={styles.drawerTopCard}>
+        <Link
+          href="/join-us"
+          className={styles.drawerJoinBtn}
+          onClick={onNavigate}
+          aria-label={`${siteName} पत्रकार / प्रतिनिधी नियुक्ती अर्ज २०२६-२०२७`}
+          title={`${siteName} पत्रकार / प्रतिनिधी नियुक्ती अर्ज`}
+        >
+          <Mic size={17} strokeWidth={2.4} aria-hidden="true" />
+          <span>पत्रकार बनें (Join as Reporter)</span>
+        </Link>
+
+        <div className={styles.drawerToolsRow}>
+          <Link
+            href="/login"
+            className={styles.drawerToolBtn}
+            onClick={onNavigate}
+            aria-label="Login"
+          >
+            <User size={16} strokeWidth={2.2} />
+            <span>Login / Profile</span>
+          </Link>
+          <Link
+            href="/search"
+            className={styles.drawerToolBtn}
+            onClick={onNavigate}
+            aria-label="खोजें"
+          >
+            <Search size={16} strokeWidth={2.2} />
+            <span>खोजें (Search)</span>
+          </Link>
+        </div>
+      </div>
 
       <div className={styles.drawerMenuHeading}>{heading || "सभी श्रेणियां (Categories)"}</div>
 
@@ -209,7 +252,7 @@ function OverflowPanel({
                   </Link>
                   <button
                     type="button"
-                    className={styles.panelAccordionBtn}
+                    className={styles.panelAccordionCaretBtn}
                     aria-expanded={isOpen}
                     aria-label={`${item.label} उप-श्रेणी ${isOpen ? "बंद करें" : "खोलें"}`}
                     onClick={() => toggleGroup(item.label)}
@@ -544,14 +587,20 @@ export function MainNav() {
           <ul className={styles.navMeasureList}>
             {navItemsList.map((item, idx) => (
               <li key={`measure-${item.href}-${item.label}-${idx}`} className={styles.navMeasureItem}>
-                <span className={styles.navLink}>
-                  <span>{item.label}</span>
-                </span>
-                {item.children?.length ? (
-                  <span className={`${styles.navLink} ${styles.navLinkWithSub} ${styles.navSubToggle}`}>
-                    <Caret />
+                <span
+                  className={`${styles.navLink}${
+                    item.children?.length ? ` ${styles.navLinkWithSub}` : ""
+                  }`}
+                >
+                  <span className={item.children?.length ? styles.navLinkAnchor : undefined}>
+                    <span>{item.label}</span>
                   </span>
-                ) : null}
+                  {item.children?.length ? (
+                    <span className={styles.navCaretBtn}>
+                      <Caret />
+                    </span>
+                  ) : null}
+                </span>
               </li>
             ))}
           </ul>
