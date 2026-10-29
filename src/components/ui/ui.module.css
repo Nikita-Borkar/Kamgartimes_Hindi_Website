@@ -432,7 +432,7 @@
 
 /* 552px hero billboard. */
 .adBillboard {
-  height: 552px;
+  height: clamp(240px, 41.5vw, 552px);
   border-radius: var(--r-md);
 }
 
@@ -447,7 +447,8 @@
 
 /* 420px tall slot: rail beside the lead grid, and the feature-section tower. */
 .adTower {
-  min-height: 420px;
+  height: clamp(280px, 31.5vw, 420px);
+  min-height: 0;
 }
 
 /* 200px slot inside the trending rail. */
@@ -478,6 +479,12 @@
   max-width: 880px;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   letter-spacing: 0.2px;
+}
+
+@media (max-width: 900px) {
+  .adBillboard {
+    height: clamp(180px, 54vw, 320px);
+  }
 }
 
 @media (max-width: 600px) {
