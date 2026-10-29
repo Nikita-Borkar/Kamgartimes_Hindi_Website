@@ -596,7 +596,7 @@ Used by frontend ad banners to fetch active campaigns assigned to a specific slo
   | :--- | :--- | :--- |
   | `hero_leaderboard` | 970 × 250 px | Top banner directly under main header |
   | `article_top` | 728 × 90 px | Above the article title / headline |
-  | `article_mid_content` | 300 × 250 px | Embedded inside paragraph content |
+  | `in_article_middle` | 300 × 450 px | Article page ad rail |
   | `sidebar_square` | 300 × 250 px | Right-hand side sticky sidebar |
   | `footer_sticky` | 320 × 50 px / 728 × 90 px | Mobile / Desktop bottom sticky banner |
 

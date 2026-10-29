@@ -7,6 +7,7 @@ import type { Article } from "@/data/types";
 import { buildArticleBody } from "@/data/articleContent";
 import { categoryHref } from "@/lib/links";
 import { Media } from "@/components/ui/Media";
+import { AdSlot } from "@/components/ui/AdSlot";
 import { StoryCard } from "@/components/ui/StoryCard";
 import { kamgarApi } from "@/services/apiClient";
 
@@ -229,12 +230,7 @@ export function ArticlePage({
           <div className={styles.railSticky}>
             <ArticleToc items={tocItems} />
             <div className={styles.railAd}>
-              <Media
-                src="/img/artical-inside-ads.png"
-                alt="à¤µà¤¿à¤œà¥à¤žà¤¾à¤ªà¤¨"
-                sizes="320px"
-                className={styles.railAdImage}
-              />
+              <AdSlot slotKey="in_article_middle" ad={{ id: "article-inside", label: "Ad", image: "/img/artical-inside-ads.png", variant: "articleInside" }} />
             </div>
           </div>
         </aside>

@@ -6,7 +6,8 @@ export type AdVariant =
   | "rail"
   | "billboard"
   | "tower"
-  | "content";
+  | "content"
+  | "articleInside";
 
 export type Ad = AdSlot & { variant: AdVariant };
 

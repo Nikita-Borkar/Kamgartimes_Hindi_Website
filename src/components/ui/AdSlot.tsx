@@ -12,6 +12,7 @@ const variantClass: Record<string, string> = {
   rail: styles.adRail,
   leaderboard: styles.adLeaderboard,
   content: styles.adContent,
+  articleInside: styles.adArticleInside,
 };
 
 type DisplayAd = Ad & { campaignId?: string; slotId?: string; target?: string };
