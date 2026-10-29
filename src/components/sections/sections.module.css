@@ -1564,3 +1564,17 @@
   gap: 8px;
   margin: 8px 0;
 }
+
+.pollVotedBadge {
+  margin-top: var(--space-4);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--r-sm);
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #059669;
+  font-size: var(--fs-meta);
+  font-weight: var(--fw-semi);
+}

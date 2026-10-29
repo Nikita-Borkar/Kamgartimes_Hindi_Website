@@ -10,7 +10,6 @@ import {
   MapPin,
   Wind,
   CheckCircle,
-  HelpCircle,
 } from "lucide-react";
 import { weatherPollAds } from "@/data/ads";
 import { AdSlot } from "@/components/ui/AdSlot";
@@ -21,7 +20,6 @@ import {
   LiveWeatherData,
   KNOWN_CITIES,
 } from "@/services/weatherService";
-import type { QotdQuestion, QotdAnswerResult, PublicPoll } from "@/types/api";
 import styles from "./sections.module.css";
 
 // Helper to return appropriate weather icon based on WMO code
@@ -44,26 +42,27 @@ function WeatherGlyph({ code, size = 20 }: { code: number; size?: number }) {
 interface PollOptionState {
   id: string;
   label: string;
-  votes: number;
-  percent: number;
 }
 
 export function WeatherPoll() {
   // Live Weather States
   const [mumbaiWeather, setMumbaiWeather] = useState<LiveWeatherData | null>(null);
   const [localWeather, setLocalWeather] = useState<LiveWeatherData | null>(null);
-  const [weatherLoading, setWeatherLoading] = useState(true);
 
-  // Poll / QOTD States
-  const [activePoll, setActivePoll] = useState<PublicPoll | null>(null);
-  const [qotd, setQotd] = useState<QotdQuestion | null>(null);
-  const [pollTitle, setPollTitle] = useState<string>("कामगार टाइम्स दैनिक जनमत सर्वेक्षण");
-  const [options, setOptions] = useState<PollOptionState[]>([]);
+  // Poll States: Question & Options only
+  const [pollTitle, setPollTitle] = useState<string>(
+    "क्या आपको लगता है कि जनहित नीतियों का सीधा लाभ कामगारों तक पहुँच रहा है?"
+  );
+  const [options, setOptions] = useState<PollOptionState[]>([
+    { id: "opt-1", label: "हाँ, पूरी तरह से" },
+    { id: "opt-2", label: "नहीं, अभी और सुधार की आवश्यकता है" },
+    { id: "opt-3", label: "कह नहीं सकते" },
+  ]);
   const [selectedOptId, setSelectedOptId] = useState<string>("");
   const [hasVoted, setHasVoted] = useState<boolean>(false);
-  const [totalVotes, setTotalVotes] = useState<number>(1420);
-  const [qotdResult, setQotdResult] = useState<QotdAnswerResult | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [pollId, setPollId] = useState<string>("");
+  const [isPollType, setIsPollType] = useState<boolean>(true);
 
   // 1. Fetch Live Weather for Mumbai & Local City (Nagpur/Geolocation)
   useEffect(() => {
@@ -79,16 +78,12 @@ export function WeatherPoll() {
         if (isMounted) {
           setMumbaiWeather(mum);
           setLocalWeather(nag);
-          setWeatherLoading(false);
         }
-      } catch (err) {
-        if (isMounted) setWeatherLoading(false);
-      }
+      } catch (err) {}
     }
 
     loadWeather();
 
-    // Check if browser allows geolocation for local weather
     if (typeof window !== "undefined" && "geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
@@ -111,25 +106,22 @@ export function WeatherPoll() {
     };
   }, []);
 
-  // 2. Fetch Live Poll from /public/polls/active, falling back to Question of the Day
+  // 2. Fetch Active Poll / Question from API
   useEffect(() => {
     kamgarApi
       .getActivePoll()
       .then((poll) => {
         if (poll && poll.question && Array.isArray(poll.options) && poll.options.length > 0) {
-          setActivePoll(poll);
+          setPollId(poll._id);
+          setIsPollType(true);
           setPollTitle(poll.question);
-          setTotalVotes(poll.totalVotes || 0);
+          setOptions(
+            poll.options.map((opt) => ({
+              id: opt._id,
+              label: opt.text,
+            }))
+          );
 
-          const mappedOptions: PollOptionState[] = poll.options.map((opt) => ({
-            id: opt._id,
-            label: opt.text,
-            votes: opt.votes || 0,
-            percent: opt.percentage || 0,
-          }));
-          setOptions(mappedOptions);
-
-          // Check if previously voted in localStorage
           if (typeof window !== "undefined" && poll._id) {
             const saved = localStorage.getItem(`kt_voted_poll_${poll._id}`);
             if (saved) {
@@ -143,7 +135,6 @@ export function WeatherPoll() {
           return;
         }
 
-        // Fallback: If no active poll, query Question of the Day (QOTD)
         fetchQotdFallback();
       })
       .catch(() => {
@@ -154,33 +145,25 @@ export function WeatherPoll() {
       kamgarApi
         .getTodayQuestion()
         .then((data) => {
-          if (data && data.question) {
-            setQotd(data);
+          if (data && data.question && Array.isArray(data.options) && data.options.length > 0) {
+            setPollId(data._id);
+            setIsPollType(false);
             setPollTitle(data.question);
-            if (Array.isArray(data.options) && data.options.length > 0) {
-              const mappedOptions: PollOptionState[] = data.options.map((opt, i) => {
-                const weights = [45, 32, 23, 15];
-                const pct = weights[i % weights.length];
-                const v = Math.round((1420 * pct) / 100);
-                return {
-                  id: `opt-${i}`,
-                  label: opt,
-                  votes: v,
-                  percent: pct,
-                };
-              });
-              setOptions(mappedOptions);
+            setOptions(
+              data.options.map((opt, i) => ({
+                id: `opt-${i}`,
+                label: opt,
+              }))
+            );
 
-              if (typeof window !== "undefined" && data._id) {
-                const savedVote = localStorage.getItem(`kt_voted_qotd_${data._id}`);
-                if (savedVote) {
-                  try {
-                    const parsed = JSON.parse(savedVote);
-                    setSelectedOptId(parsed.selectedOptId);
-                    setHasVoted(true);
-                    if (parsed.result) setQotdResult(parsed.result);
-                  } catch {}
-                }
+            if (typeof window !== "undefined" && data._id) {
+              const savedVote = localStorage.getItem(`kt_voted_qotd_${data._id}`);
+              if (savedVote) {
+                try {
+                  const parsed = JSON.parse(savedVote);
+                  setSelectedOptId(parsed.selectedOptId);
+                  setHasVoted(true);
+                } catch {}
               }
             }
           }
@@ -189,94 +172,47 @@ export function WeatherPoll() {
     }
   }, []);
 
-  // 3. Handle Live Voting & Answer Verification
+  // 3. Handle Voting
   const handleVote = async () => {
     if (!selectedOptId || hasVoted || isSubmitting) return;
 
     setIsSubmitting(true);
 
-    if (activePoll) {
-      try {
-        const updated = await kamgarApi.votePoll(activePoll._id, selectedOptId);
-        if (updated && Array.isArray(updated.options)) {
-          setActivePoll(updated);
-          setTotalVotes(updated.totalVotes);
-          setOptions(
-            updated.options.map((opt) => ({
-              id: opt._id,
-              label: opt.text,
-              votes: opt.votes,
-              percent: opt.percentage,
-            }))
+    try {
+      if (isPollType && pollId) {
+        await kamgarApi.votePoll(pollId, selectedOptId);
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            `kt_voted_poll_${pollId}`,
+            JSON.stringify({ selectedOptId })
           );
         }
-      } catch (err) {
-        // Optimistic update if already recorded or offline
-        const newTotal = totalVotes + 1;
-        setOptions((prev) =>
-          prev.map((opt) => {
-            const v = opt.id === selectedOptId ? opt.votes + 1 : opt.votes;
-            return {
-              ...opt,
-              votes: v,
-              percent: Math.round((v / newTotal) * 100),
-            };
-          })
-        );
-        setTotalVotes(newTotal);
-      }
-
-      setHasVoted(true);
-      setIsSubmitting(false);
-      if (typeof window !== "undefined") {
-        localStorage.setItem(
-          `kt_voted_poll_${activePoll._id}`,
-          JSON.stringify({ selectedOptId })
-        );
-      }
-      return;
-    }
-
-    // Fallback: QOTD check
-    const chosenOption = options.find((o) => o.id === selectedOptId);
-    const chosenLabel = chosenOption?.label || selectedOptId;
-    let checkRes: QotdAnswerResult | null = null;
-
-    if (qotd) {
-      try {
-        checkRes = await kamgarApi.checkAnswer({
-          answer: chosenLabel,
-          category: qotd.category,
-          questionId: qotd._id,
+      } else if (!isPollType && pollId) {
+        const chosenIndex = options.findIndex((o) => o.id === selectedOptId);
+        const chosenOpt = options.find((o) => o.id === selectedOptId);
+        await kamgarApi.voteQuestion({
+          questionId: pollId,
+          optionIndex: chosenIndex >= 0 ? chosenIndex : 0,
+          optionLabel: chosenOpt?.label || selectedOptId,
         });
-        setQotdResult(checkRes);
-      } catch {}
-    }
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            `kt_voted_qotd_${pollId}`,
+            JSON.stringify({ selectedOptId })
+          );
+        }
+      } else {
+        if (typeof window !== "undefined") {
+          localStorage.setItem(
+            "kt_voted_poll_default",
+            JSON.stringify({ selectedOptId })
+          );
+        }
+      }
+    } catch {}
 
-    const newTotal = totalVotes + 1;
-    const updated = options.map((opt) => {
-      const v = opt.id === selectedOptId ? opt.votes + 1 : opt.votes;
-      return {
-        ...opt,
-        votes: v,
-        percent: Math.round((v / newTotal) * 100),
-      };
-    });
-
-    setOptions(updated);
-    setTotalVotes(newTotal);
     setHasVoted(true);
     setIsSubmitting(false);
-
-    if (typeof window !== "undefined" && qotd?._id) {
-      localStorage.setItem(
-        `kt_voted_qotd_${qotd._id}`,
-        JSON.stringify({
-          selectedOptId,
-          result: checkRes,
-        })
-      );
-    }
   };
 
   return (
@@ -373,128 +309,49 @@ export function WeatherPoll() {
         </div>
       </div>
 
-      {/* -------------------- Question of the Day / Poll Column -------------------- */}
+      {/* -------------------- Question of the Day / Poll Column (Question & Options only) -------------------- */}
       <div className={styles.pollColumn}>
-        <SectionHeader title="आज का सवाल" action="पुराने सर्वेक्षण" href="/polls" />
+        <SectionHeader title="आज का सवाल" action={null} />
         <div className={styles.pollContent}>
           <div className={styles.pollQuestion}>
-            <h3>
-              {pollTitle || "एडमिन पैनल द्वारा प्रकाशित आज का सवाल लोड हो रहा है..."}
-            </h3>
-            <p>
-              {activePoll
-                ? `लाइव जनमत सर्वेक्षण • कुल मत: ${totalVotes}`
-                : qotd?.category
-                ? `श्रेणी: ${qotd.category}`
-                : "दैनिक जनमत सर्वेक्षण • कामगार टाइम्स"}
-            </p>
-            <div className={styles.pollMeta}>
-              {hasVoted ? "आपका मत सफलतापूर्वक दर्ज हो चुका है" : "अपना विकल्प चुनें और वोट दें"}
-            </div>
+            <h3>{pollTitle}</h3>
+            {hasVoted && (
+              <div className={styles.pollVotedBadge}>
+                <CheckCircle size={14} aria-hidden="true" />
+                <span>आपका मत दर्ज हो चुका है</span>
+              </div>
+            )}
           </div>
 
           <div>
-            {!hasVoted ? (
-              <div>
-                <ol className={styles.pollResults} aria-label="सर्वेक्षण के विकल्प">
-                  {options.map((option) => (
-                    <li className={styles.pollOption} key={option.id}>
-                      <label className={styles.pollRadioLabel}>
-                        <input
-                          type="radio"
-                          name="homePollRadio"
-                          value={option.id}
-                          checked={selectedOptId === option.id}
-                          onChange={() => setSelectedOptId(option.id)}
-                          className={styles.pollRadioInput}
-                        />
-                        <span>{option.label}</span>
-                      </label>
-                    </li>
-                  ))}
-                </ol>
-                <button
-                  type="button"
-                  onClick={handleVote}
-                  disabled={!selectedOptId || isSubmitting}
-                  className={styles.pollVoteBtn}
-                >
-                  {isSubmitting ? "मत दर्ज हो रहा है..." : "वोट दें"}
-                </button>
-              </div>
-            ) : (
-              <div>
-                <ol className={styles.pollResults} aria-label="सर्वेक्षण के परिणाम">
-                  {options.map((option, index) => (
-                    <li className={styles.pollOption} key={option.id}>
-                      <div className={styles.pollOptionLabel}>
-                        <span>
-                          {option.label}{" "}
-                          {selectedOptId === option.id && (
-                            <span style={{ color: "var(--brand)", fontSize: "12px", fontWeight: "bold" }}>
-                              (आपका वोट)
-                            </span>
-                          )}
-                        </span>
-                        <span className={styles.pollPercent}>
-                          {option.percent}%
-                        </span>
-                      </div>
-                      <div className={styles.pollTrack} aria-hidden="true">
-                        <span
-                          className={styles.pollFill}
-                          style={{ width: `${option.percent}%` }}
-                        />
-                      </div>
-                      {index === 0 ? (
-                        <span className="srOnly">सर्वाधिक वोट</span>
-                      ) : null}
-                    </li>
-                  ))}
-                </ol>
+            <ol className={styles.pollResults} aria-label="सर्वेक्षण के विकल्प">
+              {options.map((option) => (
+                <li className={styles.pollOption} key={option.id}>
+                  <label className={styles.pollRadioLabel}>
+                    <input
+                      type="radio"
+                      name="homePollRadio"
+                      value={option.id}
+                      checked={selectedOptId === option.id}
+                      onChange={() => !hasVoted && setSelectedOptId(option.id)}
+                      disabled={hasVoted}
+                      className={styles.pollRadioInput}
+                    />
+                    <span>{option.label}</span>
+                  </label>
+                </li>
+              ))}
+            </ol>
 
-                <p className={styles.pollVotes}>
-                  कुल {totalVotes.toLocaleString("hi-IN")} वोट दर्ज
-                  <span style={{ color: "#10b981", marginLeft: "10px", fontWeight: "bold" }}>
-                    <CheckCircle size={14} style={{ display: "inline", verticalAlign: "middle" }} /> धन्यवाद!
-                  </span>
-                </p>
-
-                {/* Instant verification badge & explanation from admin panel */}
-                {qotdResult && (
-                  <div
-                    style={{
-                      marginTop: "14px",
-                      padding: "12px 14px",
-                      borderRadius: "8px",
-                      background: qotdResult.correct
-                        ? "rgba(16, 185, 129, 0.12)"
-                        : "rgba(239, 68, 68, 0.12)",
-                      border: `1px solid ${qotdResult.correct ? "#10b981" : "#ef4444"}`,
-                    }}
-                  >
-                    <strong
-                      style={{
-                        color: qotdResult.correct ? "#059669" : "#dc2626",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "6px",
-                        fontSize: "14px",
-                      }}
-                    >
-                      {qotdResult.correct ? (
-                        <>
-                          <CheckCircle size={16} /> सही उत्तर!
-                        </>
-                      ) : (
-                        <>
-                          <HelpCircle size={16} /> सही उत्तर: {qotdResult.correctAnswer}
-                        </>
-                      )}
-                    </strong>
-                  </div>
-                )}
-              </div>
+            {!hasVoted && (
+              <button
+                type="button"
+                onClick={handleVote}
+                disabled={!selectedOptId || isSubmitting}
+                className={styles.pollVoteBtn}
+              >
+                {isSubmitting ? "मत दर्ज हो रहा है..." : "वोट दें"}
+              </button>
             )}
           </div>
         </div>
