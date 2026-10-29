@@ -6,13 +6,8 @@ import { Calendar, Clock, ListChecks, Tag, User } from "lucide-react";
 import type { Article } from "@/data/types";
 import { buildArticleBody } from "@/data/articleContent";
 import { categoryHref } from "@/lib/links";
-import { AdSlot } from "@/components/ui/AdSlot";
 import { Media } from "@/components/ui/Media";
 import { StoryCard } from "@/components/ui/StoryCard";
-import { NewsShareBar } from "@/components/ui/NewsShareBar";
-import { VerticalAd } from "@/components/ui/VerticalAd";
-import { InArticleBoxAd } from "@/components/ui/InArticleBoxAd";
-import { leaderboardAds, verticalTowerAds, articleBoxAds } from "@/data/ads";
 import { kamgarApi } from "@/services/apiClient";
 
 import ui from "@/components/ui/ui.module.css";
@@ -120,11 +115,6 @@ export function ArticlePage({
               articleId={article.id}
             />
 
-            <NewsShareBar
-              title={article.headline}
-              excerpt={body.intro[0]}
-              articleId={article.id}
-            />
           </header>
 
 
@@ -147,9 +137,6 @@ export function ArticlePage({
                 className={styles.contentHtml}
                 dangerouslySetInnerHTML={{ __html: renderPdfAttachments(article.content) }}
               />
-              <div style={{ margin: "24px 0" }}>
-                <InArticleBoxAd ad={articleBoxAds[0]} />
-              </div>
             </div>
           ) : (
             <>
@@ -204,9 +191,6 @@ export function ArticlePage({
                     </div>
                   </section>
 
-                  {idx === 1 && (
-                    <InArticleBoxAd ad={articleBoxAds[0]} />
-                  )}
                 </div>
               ))}
             </>
@@ -245,15 +229,17 @@ export function ArticlePage({
           <div className={styles.railSticky}>
             <ArticleToc items={tocItems} />
             <div className={styles.railAd}>
-              <VerticalAd ad={verticalTowerAds[1]} />
+              <Media
+                src="/img/img00.svg"
+                alt="à¤µà¤¿à¤œà¥à¤žà¤¾à¤ªà¤¨"
+                sizes="320px"
+                className={styles.railAdImage}
+              />
             </div>
           </div>
         </aside>
       </div>
 
-      <div className={styles.articleBottomAd}>
-        <AdSlot ad={leaderboardAds[2]} />
-      </div>
 
       {related.length > 0 ? (
         <section className={styles.related} aria-label="संबंधित समाचार">

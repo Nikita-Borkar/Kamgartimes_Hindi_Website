@@ -31,26 +31,17 @@ export function PlayerShell({
   return (
     <div className={styles.player}>
       {started && finalEmbedUrl ? (
-        <div style={{ position: "relative", width: "100%", height: "100%", minHeight: 380 }}>
+        <div className={styles.playerFrame}>
           <iframe
             src={finalEmbedUrl.includes("autoplay") ? finalEmbedUrl : `${finalEmbedUrl}?autoplay=1`}
             title={title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              border: 0,
-            }}
           />
           <button
             type="button"
-            className={styles.playerNoteClose}
+            className={styles.playerClose}
             onClick={() => setStarted(false)}
-            style={{ position: "absolute", top: 10, right: 10, zIndex: 10, background: "rgba(0,0,0,0.7)" }}
           >
             <X size={16} /> बंद करें
           </button>

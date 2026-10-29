@@ -520,6 +520,13 @@
   flex-direction: column;
 }
 
+.railAdImage {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+
 /* ---------- In-article sponsored ad -------------------------------------- */
 .inArticleAd {
   margin: var(--space-8) 0;

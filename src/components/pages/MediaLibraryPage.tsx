@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { Play, VideoOff, ImageOff, Loader2 } from "lucide-react";
 import type { GalleryItem, VideoItem } from "@/data/types";
-import { galleryHref, videoHref } from "@/lib/links";
+import { galleryHref } from "@/lib/links";
 import { Media } from "@/components/ui/Media";
+import { VideoPopup } from "@/components/ui/VideoPopup";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { leaderboardAds } from "@/data/ads";
 import { kamgarApi } from "@/services/apiClient";
@@ -21,9 +22,9 @@ function PlayGlyph() {
   );
 }
 
-function VideoCard({ item, portrait = false }: { item: VideoItem; portrait?: boolean }) {
+function VideoCard({ item, portrait = false, onSelect }: { item: VideoItem; portrait?: boolean; onSelect: (item: VideoItem) => void }) {
   return (
-    <Link className={styles.card} href={videoHref(item.id)}>
+    <button className={`${styles.card} ${styles.videoCardButton}`} type="button" onClick={() => onSelect(item)} aria-label={item.title}>
       <span
         className={`${styles.thumb}${portrait ? ` ${styles.thumbPortrait}` : ""}`}
       >
@@ -41,7 +42,7 @@ function VideoCard({ item, portrait = false }: { item: VideoItem; portrait?: boo
       </span>
       <h3 className={styles.cardTitle}>{item.title}</h3>
       <span className={styles.cardMeta}>{item.meta}</span>
-    </Link>
+    </button>
   );
 }
 
@@ -50,12 +51,17 @@ export function VideoLibrary() {
   const [featureVideo, setFeatureVideo] = useState<VideoItem | null>(null);
   const [longVideos, setLongVideos] = useState<VideoItem[]>([]);
   const [shortsList, setShortsList] = useState<VideoItem[]>([]);
+  const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [videoTotal, setVideoTotal] = useState(0);
+  const [videoPage, setVideoPage] = useState(1);
+  const closePopup = useCallback(() => setSelectedVideo(null), []);
 
   useEffect(() => {
     let active = true;
     Promise.allSettled([
-      kamgarApi.getMediaVideos({ videoType: "VIDEO", limit: 30 }),
+      kamgarApi.getMediaVideos({ videoType: "VIDEO", page: 1, limit: 30 }),
       kamgarApi.getMediaVideos({ videoType: "SHORT", limit: 8 }),
     ])
       .then(([longsRes, shortsRes]) => {
@@ -65,9 +71,11 @@ export function VideoLibrary() {
           const adapted = longsRes.value.videos.map(adaptMediaVideo);
           setFeatureVideo(adapted[0] || null);
           setLongVideos(adapted.slice(1));
+          setVideoTotal(longsRes.value.total);
         } else {
           setFeatureVideo(null);
           setLongVideos([]);
+          setVideoTotal(0);
         }
 
         if (shortsRes.status === "fulfilled" && shortsRes.value?.videos?.length) {
@@ -84,6 +92,21 @@ export function VideoLibrary() {
       active = false;
     };
   }, []);
+
+  const loadMoreVideos = async () => {
+    if (loadingMore) return;
+    setLoadingMore(true);
+    try {
+      const nextPage = videoPage + 1;
+      const res = await kamgarApi.getMediaVideos({ videoType: "VIDEO", page: nextPage, limit: 30 });
+      setLongVideos((current) => [...current, ...res.videos.map(adaptMediaVideo)]);
+      setVideoPage(nextPage);
+    } catch {
+      // Keep the current list available if a later page cannot be fetched.
+    } finally {
+      setLoadingMore(false);
+    }
+  };
 
   const hasAnyVideos = featureVideo !== null || longVideos.length > 0;
 
@@ -114,9 +137,10 @@ export function VideoLibrary() {
 
       {!loading && featureVideo && (
         <article className={styles.feature}>
-          <Link
-            className={styles.featureMedia}
-            href={videoHref(featureVideo.id)}
+          <button
+            className={`${styles.featureMedia} ${styles.videoCardButton}`}
+            type="button"
+            onClick={() => setSelectedVideo(featureVideo)}
             aria-label={featureVideo.title}
           >
             <Media
@@ -126,16 +150,17 @@ export function VideoLibrary() {
             />
             <PlayGlyph />
             <span className={styles.duration}>{featureVideo.duration}</span>
-          </Link>
+          </button>
           <div className={styles.featureBody}>
             <span className={styles.chip}>{featureVideo.meta}</span>
             <h2 className={styles.featureTitle}>
-              <Link
-                href={videoHref(featureVideo.id)}
-                style={{ color: "inherit", textDecoration: "none" }}
+              <button
+                className={styles.featureTitleButton}
+                type="button"
+                onClick={() => setSelectedVideo(featureVideo)}
               >
                 {featureVideo.title}
-              </Link>
+              </button>
             </h2>
             <p className={styles.featureExcerpt}>{featureVideo.title}</p>
           </div>
@@ -145,9 +170,15 @@ export function VideoLibrary() {
       {!loading && longVideos.length > 0 && (
         <div className={styles.grid}>
           {longVideos.map((item) => (
-            <VideoCard key={item.id} item={item} />
+            <VideoCard key={item.id} item={item} onSelect={setSelectedVideo} />
           ))}
         </div>
+      )}
+
+      {!loading && featureVideo && longVideos.length + 1 < videoTotal && (
+        <button className={styles.loadMore} type="button" onClick={loadMoreVideos} disabled={loadingMore}>
+          {loadingMore ? "लोड हो रहा है…" : "और वीडियो देखें"}
+        </button>
       )}
 
       {/* Shorts teaser section */}
@@ -162,7 +193,7 @@ export function VideoLibrary() {
 
           <div className={styles.shortGrid}>
             {shortsList.map((item) => (
-              <VideoCard key={item.id} item={item} portrait />
+              <VideoCard key={item.id} item={item} portrait onSelect={setSelectedVideo} />
             ))}
           </div>
         </>
@@ -171,6 +202,7 @@ export function VideoLibrary() {
       <div className={styles.adSection}>
         <AdSlot ad={leaderboardAds[4]} slotKey="hero_leaderboard" />
       </div>
+      {selectedVideo && <VideoPopup video={selectedVideo} onClose={closePopup} />}
     </main>
   );
 }
@@ -178,25 +210,48 @@ export function VideoLibrary() {
 /** /shorts — the vertical short-video desk (Exclusively API Driven) */
 export function ShortsLibrary() {
   const [shortsList, setShortsList] = useState<VideoItem[]>([]);
+  const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [shortsTotal, setShortsTotal] = useState(0);
+  const [shortsPage, setShortsPage] = useState(1);
+  const closePopup = useCallback(() => setSelectedVideo(null), []);
 
   useEffect(() => {
     kamgarApi
-      .getMediaVideos({ videoType: "SHORT", limit: 40 })
+      .getMediaVideos({ videoType: "SHORT", page: 1, limit: 40 })
       .then((res) => {
         if (res?.videos && res.videos.length > 0) {
           setShortsList(res.videos.map(adaptMediaVideo));
+          setShortsTotal(res.total);
         } else {
           setShortsList([]);
+          setShortsTotal(0);
         }
       })
       .catch(() => {
         setShortsList([]);
+        setShortsTotal(0);
       })
       .finally(() => {
         setLoading(false);
       });
   }, []);
+
+  const loadMoreShorts = async () => {
+    if (loadingMore) return;
+    setLoadingMore(true);
+    try {
+      const nextPage = shortsPage + 1;
+      const res = await kamgarApi.getMediaVideos({ videoType: "SHORT", page: nextPage, limit: 40 });
+      setShortsList((current) => [...current, ...res.videos.map(adaptMediaVideo)]);
+      setShortsPage(nextPage);
+    } catch {
+      // Keep the current list available if a later page cannot be fetched.
+    } finally {
+      setLoadingMore(false);
+    }
+  };
 
   return (
     <main id="main" className={styles.main}>
@@ -226,14 +281,21 @@ export function ShortsLibrary() {
       {!loading && shortsList.length > 0 && (
         <div className={styles.shortGrid}>
           {shortsList.map((item) => (
-            <VideoCard key={item.id} item={item} portrait />
+            <VideoCard key={item.id} item={item} portrait onSelect={setSelectedVideo} />
           ))}
         </div>
+      )}
+
+      {!loading && shortsList.length < shortsTotal && (
+        <button className={styles.loadMore} type="button" onClick={loadMoreShorts} disabled={loadingMore}>
+          {loadingMore ? "लोड हो रहा है…" : "और शॉर्ट्स देखें"}
+        </button>
       )}
 
       <div className={styles.adSection}>
         <AdSlot ad={leaderboardAds[3]} slotKey="hero_leaderboard" />
       </div>
+      {selectedVideo && <VideoPopup video={selectedVideo} onClose={closePopup} />}
     </main>
   );
 }

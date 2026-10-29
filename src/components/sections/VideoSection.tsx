@@ -1,15 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { Media } from "@/components/ui/Media";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { stagger } from "@/components/motion/stagger";
-import { videoHref } from "@/lib/links";
 import { Play, VideoOff, Loader2 } from "lucide-react";
 import { kamgarApi } from "@/services/apiClient";
+import { VideoPopup } from "@/components/ui/VideoPopup";
 import ui from "@/components/ui/ui.module.css";
 import styles from "./sections.module.css";
 import type { VideoItem } from "@/data/types";
+import type { MediaVideo } from "@/types/api";
 
 function PlayGlyph() {
   return (
@@ -39,15 +41,18 @@ function extractYoutubeId(input?: string): string {
 function VideoCard({
   item,
   short = false,
+  onSelect,
 }: {
   item: VideoItem;
   short?: boolean;
+  onSelect: (item: VideoItem) => void;
 }) {
   return (
-    <a
+    <button
+      type="button"
       className={short ? styles.videoShortCard : styles.videoSmall}
-      href={videoHref(item.id)}
       aria-label={item.title}
+      onClick={() => onSelect(item)}
     >
       <span
         className={`${styles.thumb} ${short ? styles.thumbShort : styles.thumbLong}`}
@@ -63,7 +68,7 @@ function VideoCard({
       </span>
       <h4 className={`${styles.videoMainTitle} ${ui.titleS}`}>{item.title}</h4>
       <div className={ui.meta}>{item.meta}</div>
-    </a>
+    </button>
   );
 }
 
@@ -74,7 +79,9 @@ export function VideoSection() {
   const [feature, setFeature] = useState<VideoItem | null>(null);
   const [longVideos, setLongVideos] = useState<VideoItem[]>([]);
   const [shorts, setShorts] = useState<VideoItem[]>([]);
+  const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const [loading, setLoading] = useState(true);
+  const closePopup = useCallback(() => setSelectedVideo(null), []);
 
   useEffect(() => {
     kamgarApi
@@ -96,7 +103,7 @@ export function VideoSection() {
               !v.category?.name?.includes("शॉर्ट्स")
           );
 
-          const mapToVideoItem = (v: any, defaultDuration: string): VideoItem => {
+          const mapToVideoItem = (v: MediaVideo, defaultDuration: string): VideoItem => {
             const yId = v.youtubeVideoID || extractYoutubeId(v.youtubeUrl);
             const thumb =
               v.thumbnailUrl ||
@@ -109,6 +116,8 @@ export function VideoSection() {
               duration: v.videoType === "SHORT" ? "शॉर्ट्स" : defaultDuration,
               meta: v.category?.name || "विशेष वीडियो",
               excerpt: v.title,
+              embedUrl: v.embedUrl,
+              youtubeUrl: v.youtubeUrl,
             };
           };
 
@@ -176,10 +185,11 @@ export function VideoSection() {
 
             {feature ? (
               <div className={styles.videoLongGrid}>
-                <a
+                <button
+                  type="button"
                   className={styles.videoMain}
-                  href={videoHref(feature.id)}
                   aria-label={feature.title}
+                  onClick={() => setSelectedVideo(feature)}
                 >
                   <span className={`${styles.thumb} ${styles.thumbMain}`}>
                     <Media
@@ -196,10 +206,10 @@ export function VideoSection() {
                     {feature.title}
                   </h4>
                   <p className={ui.excerpt}>{feature.excerpt}</p>
-                </a>
+                </button>
                 {longVideos.map((item, i) => (
                   <div key={item.id} style={stagger(i)}>
-                    <VideoCard item={item} />
+                    <VideoCard item={item} onSelect={setSelectedVideo} />
                   </div>
                 ))}
               </div>
@@ -218,14 +228,16 @@ export function VideoSection() {
           <section className={styles.videoGroup} aria-label="शॉर्ट वीडियो">
             <div className={styles.videoGroupHead}>
               <h3>शॉर्ट्स</h3>
-              <span>एक मिनट में प्रमुख घटनाक्रम</span>
+              <Link className={styles.videoGroupAction} href="/shorts">
+                सभी शॉर्ट्स देखें <span aria-hidden="true">→</span>
+              </Link>
             </div>
 
             {shorts.length > 0 ? (
               <div className={styles.videoShortGrid}>
                 {shorts.map((item, i) => (
                   <div key={item.id} style={stagger(i)}>
-                    <VideoCard item={item} short />
+                    <VideoCard item={item} short onSelect={setSelectedVideo} />
                   </div>
                 ))}
               </div>
@@ -241,6 +253,7 @@ export function VideoSection() {
           </section>
         </div>
       )}
+      {selectedVideo && <VideoPopup video={selectedVideo} onClose={closePopup} />}
     </section>
   );
 }

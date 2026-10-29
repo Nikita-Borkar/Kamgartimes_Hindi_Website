@@ -40,6 +40,7 @@ export function ArticleActions({
   const [shares, setShares] = useState(initialShareCount);
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [shareError, setShareError] = useState("");
   const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -89,35 +90,52 @@ export function ArticleActions({
     }
   };
 
-  const url = typeof window === "undefined" ? "" : window.location.href;
-  const shareText = encodeURIComponent(title);
+  const getUrl = () => typeof window === "undefined" ? "" : window.location.href;
+  const recordShare = async () => {
+    if (!articleId) return;
+    try {
+      const result = await kamgarApi.recordArticleShare(articleId);
+      if (typeof result?.shares === "number") setShares(result.shares);
+      else setShares((count) => count + 1);
+    } catch {
+      // Sharing should still work when analytics is unavailable.
+    }
+  };
 
   async function copyLink() {
-    if (articleId) {
-      kamgarApi.recordArticleShare(articleId).catch(() => {});
-    }
+    setShareError("");
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(getUrl());
       setCopied(true);
-      setShares((s) => s + 1);
+      await recordShare();
       window.setTimeout(() => setCopied(false), 2000);
-    } catch {}
-    setOpen(false);
+      setOpen(false);
+    } catch {
+      setShareError("लिंक कॉपी नहीं हो सका। ब्राउज़र की अनुमति जाँचें।");
+    }
   }
 
   async function onShare() {
-    if (articleId) {
-      kamgarApi.recordArticleShare(articleId).catch(() => {});
-    }
+    setShareError("");
     if (typeof navigator !== "undefined" && navigator.share) {
       try {
-        await navigator.share({ title, url });
-        setShares((s) => s + 1);
+        await navigator.share({ title, url: getUrl() });
+        await recordShare();
         return;
-      } catch {}
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") return;
+        setShareError("शेयर नहीं हो सका। नीचे दिए विकल्प आज़माएँ।");
+      }
     }
     setOpen((value) => !value);
   }
+
+  function onSocialShare() {
+    void recordShare();
+  }
+
+  const url = getUrl();
+  const shareText = encodeURIComponent(title);
 
   return (
     <div className={styles.actions} role="group" aria-label="समाचार पर प्रतिक्रिया">
@@ -170,9 +188,7 @@ export function ArticleActions({
               href={`https://wa.me/?text=${shareText}%20${encodeURIComponent(url)}`}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => {
-                if (articleId) kamgarApi.recordArticleShare(articleId).catch(() => {});
-              }}
+              onClick={onSocialShare}
             >
               <WhatsappIcon size={16} />
               व्हाट्सएप
@@ -183,9 +199,7 @@ export function ArticleActions({
               href={`https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(url)}`}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => {
-                if (articleId) kamgarApi.recordArticleShare(articleId).catch(() => {});
-              }}
+              onClick={onSocialShare}
             >
               <TwitterXIcon size={14} />
               एक्स (ट्विटर)
@@ -196,9 +210,7 @@ export function ArticleActions({
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => {
-                if (articleId) kamgarApi.recordArticleShare(articleId).catch(() => {});
-              }}
+              onClick={onSocialShare}
             >
               <FacebookIcon size={16} />
               फेसबुक
@@ -221,6 +233,7 @@ export function ArticleActions({
           <Check size={14} strokeWidth={2} aria-hidden="true" /> लिंक कॉपी हो गई
         </span>
       ) : null}
+      {shareError ? <span className={styles.shareNote} role="status">{shareError}</span> : null}
     </div>
   );
 }

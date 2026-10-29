@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Play, VideoOff, Loader2 } from "lucide-react";
 import { Media } from "@/components/ui/Media";
-import { videoHref } from "@/lib/links";
+import { VideoPopup } from "@/components/ui/VideoPopup";
 import { kamgarApi } from "@/services/apiClient";
 import { adaptMediaVideo } from "@/lib/apiAdapters";
 import type { VideoItem } from "@/data/types";
@@ -12,7 +12,9 @@ import styles from "./sections.module.css";
 export function VideoDiscovery() {
   const [recommended, setRecommended] = useState<VideoItem[]>([]);
   const [trending, setTrending] = useState<VideoItem[]>([]);
+  const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
   const [loading, setLoading] = useState(true);
+  const closePopup = useCallback(() => setSelectedVideo(null), []);
 
   useEffect(() => {
     kamgarApi
@@ -77,7 +79,7 @@ export function VideoDiscovery() {
               <h3 className={styles.videoSubhead}>चुनिंदा वीडियो</h3>
               <div className={styles.recommendedGrid}>
                 {recommended.map((video) => (
-                  <a className={styles.discoveryCard} href={videoHref(video.id)} key={video.id}>
+                  <button className={`${styles.discoveryCard} ${styles.discoveryCardButton}`} type="button" onClick={() => setSelectedVideo(video)} key={video.id}>
                     <span className={styles.discoveryThumb}>
                       <Media
                         src={video.image}
@@ -94,7 +96,7 @@ export function VideoDiscovery() {
                     </span>
                     <h4 className={styles.discoveryTitle}>{video.title}</h4>
                     <span className={styles.discoveryMeta}>{video.meta}</span>
-                  </a>
+                  </button>
                 ))}
               </div>
             </div>
@@ -106,7 +108,7 @@ export function VideoDiscovery() {
               <ol className={styles.trendingVideoList}>
                 {trending.map((video, index) => (
                   <li key={video.id}>
-                    <a className={styles.trendingVideo} href={videoHref(video.id)}>
+                    <button className={`${styles.trendingVideo} ${styles.discoveryCardButton}`} type="button" onClick={() => setSelectedVideo(video)}>
                       <span className={styles.trendingRank}>{index + 1}</span>
                       <span className={styles.trendingThumb}>
                         <Media
@@ -123,7 +125,7 @@ export function VideoDiscovery() {
                         <strong>{video.title}</strong>
                         <span>{video.meta}</span>
                       </span>
-                    </a>
+                    </button>
                   </li>
                 ))}
               </ol>
@@ -131,6 +133,7 @@ export function VideoDiscovery() {
           )}
         </div>
       )}
+      {selectedVideo && <VideoPopup video={selectedVideo} onClose={closePopup} />}
     </section>
   );
 }
