@@ -69,7 +69,7 @@ export default function Home() {
         <AdSlot ad={leaderboardAds[3]} slotKey="home_between_4" />
       </main>
 
-      <SiteFooter withNoticeTicker />
+      <SiteFooter />
     </>
   );
 }

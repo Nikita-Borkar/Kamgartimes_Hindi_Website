@@ -1850,12 +1850,6 @@ a.footerContact:hover {
   letter-spacing: 0.01em;
 }
 
-/* Extra bottom clearance when notice ticker is active so copyright text is completely visible */
-.copyWithTicker,
-:global(body.notice-ticker-on) .copy {
-  padding-bottom: calc(var(--space-4) + 52px + env(safe-area-inset-bottom, 0px)) !important;
-}
-
 /* ---------- Back to top --------------------------------------------------- */
 .toTop {
   position: fixed;

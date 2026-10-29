@@ -49,11 +49,7 @@ function footerCategoryHref(category: FooterCategory): string {
   return `/category/${encodeURIComponent(category.slug)}`;
 }
 
-interface SiteFooterProps {
-  withNoticeTicker?: boolean;
-}
-
-export function SiteFooter({ withNoticeTicker = false }: SiteFooterProps = {}) {
+export function SiteFooter() {
   const {
     siteName,
     tagline,
@@ -249,7 +245,7 @@ export function SiteFooter({ withNoticeTicker = false }: SiteFooterProps = {}) {
       </div>
 
       <div
-        className={`${styles.copy} ${withNoticeTicker ? styles.copyWithTicker : ""}`}
+        className={styles.copy}
       >
         <div className={styles.copyInner}>
           <p className={styles.copyText}>
