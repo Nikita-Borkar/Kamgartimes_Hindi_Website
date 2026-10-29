@@ -2,7 +2,8 @@ export const site = {
   name: "कामगार टाइम्स",
   /** The single glyph inside the crimson brand square. */
   mark: "क",
-  tagline: "राजनीति, अर्थव्यवस्था, श्रम अधिकार, खेल और संस्कृति पर निष्पक्ष व स्वतंत्र पत्रकारिता.",
+  tagline:
+    "राजनीति, अर्थव्यवस्था, श्रम अधिकार, खेल और संस्कृति पर निष्पक्ष व स्वतंत्र पत्रकारिता.",
   /** Top bar, left of the wordmark. */
   edition: "रविवार, ४ अक्टूबर २०२६",
   editionTime: "सुबह १०:३०",
@@ -69,16 +70,12 @@ export const navItems: NavItem[] = [
   {
     label: "संपादकीय",
     href: "/category/संपादकीय",
-    children: [
-      { label: "विचार", href: "/category/vichar" },
-    ],
+    children: [{ label: "विचार", href: "/category/vichar" }],
   },
   {
     label: "विशेष रिपोर्ट",
     href: "/category/विशेष-रिपोर्ट",
-    children: [
-      { label: "खास रिपोर्ट", href: "/category/खाs" },
-    ],
+    children: [{ label: "खास रिपोर्ट", href: "/category/खाs" }],
   },
   {
     label: "सरकारी नौकरी",
@@ -117,9 +114,7 @@ export const navItems: NavItem[] = [
   {
     label: "व्यापार",
     href: "/category/व्यापार",
-    children: [
-      { label: "शेयर बाज़ार", href: "/category/शेयर-बाज़ार" },
-    ],
+    children: [{ label: "शेयर बाज़ार", href: "/category/शेयर-बाज़ार" }],
   },
   {
     label: "ब्रह्मांड",
@@ -225,7 +220,7 @@ export const breakingNews = [
 /* Rolling notice shown in the bar pinned to the bottom of the homepage. */
 export const notice = {
   label: "सूचना",
-  text: "कामगार टाइम्स महाराष्ट्र राज्य पत्रकार / प्रतिनिधी नियुक्ती अर्ज 2026-2027 सुरू (ऑनलाइन अर्ज भरें) • विज्ञापन देने के लिए संपर्क करें: 8055502228",
+  text: "",
 } as const;
 
 /* The four internal utility pages. Single source for the footer "कंपनी"

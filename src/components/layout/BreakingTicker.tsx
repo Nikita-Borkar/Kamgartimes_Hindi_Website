@@ -24,7 +24,7 @@ export function BreakingTicker() {
         if (Array.isArray(notices) && notices.length > 0) {
           setTickerItems(
             notices.map((n) => ({
-              label: n.title || "ब्रेकिंग",
+              label: "ब्रेकिंग",
               text: n.message,
               href: n.linkUrl || "#",
             }))

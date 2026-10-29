@@ -22,7 +22,7 @@ export function NoticeTicker() {
         if (Array.isArray(notices) && notices.length > 0) {
           const top = notices[0];
           setNoticeData({
-            label: top.title || notice.label,
+            label: notice.label,
             text: top.message || notice.text,
             link: top.linkUrl || "/join-us",
           });

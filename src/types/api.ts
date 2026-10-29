@@ -147,11 +147,10 @@ export interface GalleryItem {
 // ==================== Ticker & Notices ====================
 export interface NoticeTickerItem {
   _id: string;
-  title: string;
   message: string;
   linkUrl?: string;
-  linkText?: string;
-  priority: number;
+  kind?: "NOTICE" | "BREAKING";
+  createdAt?: string;
 }
 
 // ==================== Question of the Day ====================
