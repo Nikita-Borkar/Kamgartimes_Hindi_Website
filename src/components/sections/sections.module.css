@@ -93,7 +93,6 @@
   gap: var(--space-6);
   min-width: 0;
   position: relative;
-  padding-bottom: 120px;
 }
 
 .weatherBody {
@@ -288,10 +287,7 @@
 }
 
 .pollAd {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  min-width: 0;
 }
 
 .pollContent {
@@ -299,7 +295,7 @@
   grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
   gap: var(--space-8);
   align-items: start;
-  min-height: 320px;
+  flex: 1;
 }
 
 .pollQuestion h3 {

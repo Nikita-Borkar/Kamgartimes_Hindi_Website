@@ -230,7 +230,7 @@ export function ArticlePage({
             <ArticleToc items={tocItems} />
             <div className={styles.railAd}>
               <Media
-                src="/img/img00.svg"
+                src="/img/artical-inside-ads.png"
                 alt="à¤µà¤¿à¤œà¥à¤žà¤¾à¤ªà¤¨"
                 sizes="320px"
                 className={styles.railAdImage}

@@ -10,14 +10,17 @@ export type AdVariant =
 
 export type Ad = AdSlot & { variant: AdVariant };
 
-const creative = "/img/img00.svg";
+const heroCreative = "/img/hero-ads.png";
+const sectionCreative = "/img/section-ads.png";
+const gridCreative = "/img/gird-ads.png";
+const trendingCreative = "/img/trending-ads.png";
 
 export const heroAds: Ad[] = [
   {
     id: "hero-1",
     label: "विज्ञापन",
     headline: "दीपावली महोत्सव · खरीदारी पर ५०% तक विशेष छूट",
-    image: creative,
+    image: heroCreative,
     href: "#",
     variant: "billboard",
   },
@@ -25,7 +28,7 @@ export const heroAds: Ad[] = [
     id: "hero-2",
     label: "विज्ञापन",
     headline: "नवीनतम स्वास्थ्य बीमा योजना · विश्वस्तरीय सुरक्षा कवच",
-    image: creative,
+    image: heroCreative,
     href: "#",
     variant: "billboard",
   },
@@ -33,7 +36,7 @@ export const heroAds: Ad[] = [
     id: "hero-3",
     label: "विज्ञापन",
     headline: "रविवार विशेष शिक्षा विशेषांक · स्कूल व कॉलेजों के लिए उपयोगी",
-    image: creative,
+    image: heroCreative,
     href: "#",
     variant: "billboard",
   },
@@ -41,7 +44,7 @@ export const heroAds: Ad[] = [
     id: "hero-4",
     label: "विज्ञापन",
     headline: "त्योहारी सीज़न के नए कलेक्शन में से चुनें अपनी पसंद",
-    image: creative,
+    image: heroCreative,
     href: "#",
     variant: "billboard",
   },
@@ -50,7 +53,7 @@ export const heroAds: Ad[] = [
 export const railAd: Ad = {
   id: "rail-1",
   label: "विज्ञापन",
-  image: creative,
+  image: trendingCreative,
   href: "#",
   variant: "rail",
 };
@@ -60,7 +63,7 @@ export const leaderboardAds: Ad[] = [
     id: "lb-1",
     label: "विज्ञापन",
     headline: "कामगार टाइम्स पर अपना विज्ञापन दें · लाखों पाठकों तक सीधी पहुँच",
-    image: creative,
+    image: sectionCreative,
     href: "/advertise",
     variant: "leaderboard",
   },
@@ -68,7 +71,7 @@ export const leaderboardAds: Ad[] = [
     id: "lb-2",
     label: "विज्ञापन",
     headline: "व्यापार और सेवाओं के प्रचार के लिए कामगार टाइम्स · विशेष पैकेज उपलब्ध",
-    image: creative,
+    image: sectionCreative,
     href: "/advertise",
     variant: "leaderboard",
   },
@@ -76,7 +79,7 @@ export const leaderboardAds: Ad[] = [
     id: "lb-3",
     label: "विज्ञापन",
     headline: "विश्वसनीय व निष्पक्ष हिन्दी पत्रकारिता का सशक्त डिजिटल मंच",
-    image: creative,
+    image: sectionCreative,
     href: "/advertise",
     variant: "leaderboard",
   },
@@ -84,7 +87,7 @@ export const leaderboardAds: Ad[] = [
     id: "lb-4",
     label: "विज्ञापन",
     headline: "ई-पेपर और वेबसाइट पर विज्ञापन देने हेतु संपर्क करें: 8055502228",
-    image: creative,
+    image: sectionCreative,
     href: "/advertise",
     variant: "leaderboard",
   },
@@ -92,7 +95,7 @@ export const leaderboardAds: Ad[] = [
     id: "lb-5",
     label: "विज्ञापन",
     headline: "कामगार टाइम्स न्यूज़ नेटवर्क · विदर्भ और देश का अग्रणी डिजिटल मंच",
-    image: creative,
+    image: sectionCreative,
     href: "/advertise",
     variant: "leaderboard",
   },
@@ -102,7 +105,7 @@ export const leaderboardAds: Ad[] = [
 export const leadRailAd: Ad = {
   id: "lead-rail-1",
   label: "विज्ञापन",
-  image: creative,
+  image: gridCreative,
   href: "#",
   variant: "tower",
 };
@@ -110,7 +113,7 @@ export const leadRailAd: Ad = {
 export const towerAd: Ad = {
   id: "tower-1",
   label: "विज्ञापन",
-  image: creative,
+  image: trendingCreative,
   href: "#",
   variant: "tower",
 };
@@ -119,14 +122,14 @@ export const weatherPollAds: Ad[] = [
   {
     id: "weather-poll-1",
     label: "विज्ञापन",
-    image: creative,
+    image: "/img/weather-ads.png",
     href: "#",
     variant: "content",
   },
   {
     id: "weather-poll-2",
     label: "विज्ञापन",
-    image: creative,
+    image: "/img/poll-below-ads.png",
     href: "#",
     variant: "content",
   },
