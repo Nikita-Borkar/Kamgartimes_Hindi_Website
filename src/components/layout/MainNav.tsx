@@ -2,11 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, Menu, Search, X, User, Mic } from "lucide-react";
-import { navItems, type NavItem, type NavLink } from "@/data/site";
+import { ChevronDown, Menu, Search, X } from "lucide-react";
+import type { NavItem, NavLink } from "@/data/site";
 import { kamgarApi } from "@/services/apiClient";
 import type { Category } from "@/types/api";
-import { ThemeToggle } from "./ThemeToggle";
 import {
   getSafeSocialUrl,
   SocialPlatformIcon,
@@ -115,15 +114,18 @@ function NavEntry({ item }: { item: NavItem }) {
         }
       }}
     >
+      <Link className={styles.navLink} href={item.href}>
+        <span>{item.label}</span>
+      </Link>
       <button
         ref={buttonRef}
         type="button"
-        className={`${styles.navLink} ${styles.navLinkWithSub}${open ? ` ${styles.navLinkActive}` : ""}`}
+        className={`${styles.navLink} ${styles.navLinkWithSub} ${styles.navSubToggle}${open ? ` ${styles.navLinkActive}` : ""}`}
         onClick={handleToggle}
         aria-expanded={open}
+        aria-label={`${item.label} उपश्रेणियां ${open ? "बंद करें" : "खोलें"}`}
         suppressHydrationWarning
       >
-        <span>{item.label}</span>
         <Caret open={open} />
       </button>
 
@@ -182,40 +184,10 @@ function OverflowPanel({
 
   return (
     <div className={styles.panelInnerWrapper}>
-      {/* Mobile Top Header: Dedicated Red Reporter button + User Login & Search */}
-      <div className={styles.drawerTopCard}>
-        <Link
-          href="/join-us"
-          className={styles.drawerJoinBtn}
-          onClick={onNavigate}
-          aria-label={`${siteName} पत्रकार / प्रतिनिधी नियुक्ती अर्ज २०२६-२०२७`}
-          title={`${siteName} पत्रकार / प्रतिनिधी नियुक्ती अर्ज`}
-        >
-          <Mic size={17} strokeWidth={2.4} aria-hidden="true" />
-          <span>पत्रकार बनें (Join as Reporter)</span>
-        </Link>
-
-        <div className={styles.drawerToolsRow}>
-          <Link
-            href="/login"
-            className={styles.drawerToolBtn}
-            onClick={onNavigate}
-            aria-label="लॉग इन करें"
-          >
-            <User size={16} strokeWidth={2.2} />
-            <span>लॉग इन / प्रोफ़ाइल</span>
-          </Link>
-          <Link
-            href="/search"
-            className={styles.drawerToolBtn}
-            onClick={onNavigate}
-            aria-label="खोजें"
-          >
-            <Search size={16} strokeWidth={2.2} />
-            <span>खोजें (Search)</span>
-          </Link>
-        </div>
-      </div>
+      <Link href="/search" className={styles.drawerSearchLink} onClick={onNavigate} aria-label="खोजें">
+        <Search size={17} strokeWidth={2.2} aria-hidden="true" />
+        <span>खोजें (Search)</span>
+      </Link>
 
       <div className={styles.drawerMenuHeading}>{heading || "सभी श्रेणियां (Categories)"}</div>
 
@@ -228,6 +200,13 @@ function OverflowPanel({
             <li key={item.label} className={styles.panelItem}>
               {hasDropdown ? (
                 <div className={styles.panelRow}>
+                  <Link
+                    className={styles.panelDirectLink}
+                    href={item.href}
+                    onClick={onNavigate}
+                  >
+                    <span className={styles.panelLabelText}>{item.label}</span>
+                  </Link>
                   <button
                     type="button"
                     className={styles.panelAccordionBtn}
@@ -235,7 +214,6 @@ function OverflowPanel({
                     aria-label={`${item.label} उप-श्रेणी ${isOpen ? "बंद करें" : "खोलें"}`}
                     onClick={() => toggleGroup(item.label)}
                   >
-                    <span className={styles.panelLabelText}>{item.label}</span>
                     <ChevronDown
                       size={18}
                       strokeWidth={2.4}
@@ -302,9 +280,7 @@ function OverflowPanel({
         <Link href="/donate" className={styles.drawerQuickBtnSecondary} onClick={onNavigate}>
           सहयोग करें (Donate)
         </Link>
-        <Link href="/send-news" className={styles.drawerQuickBtnSecondary} onClick={onNavigate}>
-          खबर भेजें (Send News)
-        </Link>
+
       </div>
 
       <div className={styles.drawerSocialsSection}>
@@ -336,10 +312,6 @@ function OverflowPanel({
 }
 
 function buildNavItemsFromCategoryTree(tree: Category[]): NavItem[] {
-  if (!tree || !Array.isArray(tree) || tree.length === 0) {
-    return navItems;
-  }
-
   const items: NavItem[] = [
     {
       label: "होम",
@@ -347,58 +319,14 @@ function buildNavItemsFromCategoryTree(tree: Category[]): NavItem[] {
     },
   ];
 
-  // Exact header order matching user specification & reference layout
-  const NAVBAR_ORDER: Record<string, number> = {
-    "होम": 1,
-    "कामगार टाइम्स": 2,
-    "लोकल न्यूज़": 3,
-    "ताज़ा खबरें": 4,
-    "ताज़ा ख़बरें": 4,
-    "अपराध": 5,
-    "संपादकीय": 6,
-    "विशेष रिपोर्ट": 7,
-    "सरकारी नौकरी": 8,
-    "मनोरंजन": 9,
-    "राजनीति": 10,
-    "खेल": 11,
-    "व्यापार": 12,
-    "ब्रह्मांड": 13,
-    "ई-पेपर": 14,
-    "तकनीक": 20,
-    "शिक्षा": 21,
-    "स्वास्थ्य": 22,
-    "विशेष लेख": 23,
-    "फोटो गैलरी": 24,
-    "वीडियो": 25,
-  };
-
-  let epaperItem: NavItem | null = null;
-
-  for (const cat of tree) {
+  for (const cat of [...tree].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))) {
     if (!cat.name) continue;
     const trimmedName = cat.name.trim();
 
     // Skip "होम" if someone added it in categories to avoid duplicate home links
     if (trimmedName === "होम" || cat.slug === "home") continue;
 
-    // Separate "ई-पेपर" to ensure it stays pinned at position 14
-    if (
-      trimmedName === "ई-पेपर" ||
-      cat.slug === "ई-पेपर" ||
-      cat.slug === "e-paper" ||
-      cat.slug === "epaper"
-    ) {
-      epaperItem = {
-        label: "ई-पेपर",
-        href: "/e-paper",
-      };
-      continue;
-    }
-
-    const topHref =
-      cat.slug === "kamgar-times"
-        ? "/category/kamgar-times"
-        : `/category/${cat.slug || cat._id}`;
+    const topHref = `/category/${cat.slug || cat._id}`;
 
     // Backend can return subcategories under `subcategories` or `children`
     const rawSubcats =
@@ -431,9 +359,7 @@ function buildNavItemsFromCategoryTree(tree: Category[]): NavItem[] {
           child.slug === "join-us" ||
           child.slug === "पत्रकार-प्रतिनिधि-नियुक्ति"
         ) {
-          childHref = "/join-us";
-        } else if (cat.slug === "लोकल-न्यूज़" || trimmedName === "लोकल न्यूज़") {
-          childHref = `/city/${child.slug || child.name}`;
+          continue;
         }
 
         children.push({
@@ -450,23 +376,11 @@ function buildNavItemsFromCategoryTree(tree: Category[]): NavItem[] {
     });
   }
 
-  // Always append "ई-पेपर"
-  if (epaperItem) {
-    items.push(epaperItem);
-  } else if (!items.some((i) => i.label === "ई-पेपर")) {
-    items.push({ label: "ई-पेपर", href: "/e-paper" });
-  }
-
-  // Sort canonical order
-  items.sort(
-    (a, b) => (NAVBAR_ORDER[a.label] ?? 100) - (NAVBAR_ORDER[b.label] ?? 100)
-  );
-
   return items;
 }
 
 export function MainNav() {
-  const [navItemsList, setNavItemsList] = useState<NavItem[]>(navItems);
+  const [navItemsList, setNavItemsList] = useState<NavItem[]>([]);
   const [visibleCount, setVisibleCount] = useState(14);
   const [panelOpen, setPanelOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
@@ -481,13 +395,10 @@ export function MainNav() {
         const tree = Array.isArray(res)
           ? res
           : (res as any)?.data || (res as any)?.categories || [];
-        if (Array.isArray(tree) && tree.length > 0) {
-          const dynamicItems = buildNavItemsFromCategoryTree(tree);
-          setNavItemsList(dynamicItems);
-        }
+        if (Array.isArray(tree)) setNavItemsList(buildNavItemsFromCategoryTree(tree));
       })
       .catch((err) => {
-        console.warn("Failed to fetch dynamic category tree, using fallback:", err);
+        console.warn("Failed to fetch public category tree:", err);
       });
   }, []);
 
@@ -593,7 +504,6 @@ export function MainNav() {
         </div>
 
         <div className={styles.navRightActions} ref={actionsRef}>
-          {/* Hamburger icon placed BEFORE search so users can view remaining categories */}
           <button
             type="button"
             className={styles.navBurger}
@@ -609,13 +519,6 @@ export function MainNav() {
             )}
           </button>
 
-          <Link className={styles.searchBtn} href="/search" aria-label="खोजें" title="खोजें">
-            <Search size={16} strokeWidth={2.2} aria-hidden="true" />
-          </Link>
-
-          <div className={styles.navThemeToggle}>
-            <ThemeToggle />
-          </div>
         </div>
       </div>
 
@@ -641,14 +544,14 @@ export function MainNav() {
           <ul className={styles.navMeasureList}>
             {navItemsList.map((item, idx) => (
               <li key={`measure-${item.href}-${item.label}-${idx}`} className={styles.navMeasureItem}>
-                <span
-                  className={`${styles.navLink}${
-                    item.children?.length ? ` ${styles.navLinkWithSub}` : ""
-                  }`}
-                >
+                <span className={styles.navLink}>
                   <span>{item.label}</span>
-                  {item.children?.length ? <Caret /> : null}
                 </span>
+                {item.children?.length ? (
+                  <span className={`${styles.navLink} ${styles.navLinkWithSub} ${styles.navSubToggle}`}>
+                    <Caret />
+                  </span>
+                ) : null}
               </li>
             ))}
           </ul>
@@ -656,3 +559,4 @@ export function MainNav() {
     </nav>
   );
 }
+

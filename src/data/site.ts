@@ -40,7 +40,6 @@ export const navItems: NavItem[] = [
       { label: "युनियन न्यूज", href: "/category/युनियन-न्यूज" },
       { label: "वेतन व भत्ते", href: "/category/वेतन-व-भत्ते" },
       { label: "श्रम कानून व नियम", href: "/category/श्रम-कानून-व-नियम" },
-      { label: "पत्रकार / प्रतिनिधि नियुक्ति", href: "/join-us" },
     ],
   },
   {
