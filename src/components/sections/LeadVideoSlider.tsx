@@ -14,6 +14,7 @@ export interface YouTubeVideoItem {
   views: string;
   timeAgo: string;
   thumbnail: string;
+  isShort: boolean;
 }
 
 function extractYoutubeId(input?: string): string {
@@ -69,7 +70,14 @@ export function LeadVideoSlider() {
           );
 
           // If specific category not found, take any published videos
-          const chosen = ytVideos.length > 0 ? ytVideos : res.videos;
+          const chosen = (ytVideos.length > 0 ? ytVideos : res.videos)
+            .slice()
+            .sort(
+              (a, b) =>
+                new Date(b.createdAt || 0).getTime() -
+                new Date(a.createdAt || 0).getTime()
+            )
+            .slice(0, 3);
 
           const mapped: YouTubeVideoItem[] = chosen
             .map((v) => {
@@ -83,6 +91,7 @@ export function LeadVideoSlider() {
                 duration: v.videoType === "SHORT" ? "शॉर्ट्स" : "विशेष कवरेज",
                 views: "विशेष रिपोर्ट",
                 timeAgo: formatTimeAgo(v.createdAt),
+                isShort: v.videoType === "SHORT",
                 thumbnail:
                   v.thumbnailUrl ||
                   `https://img.youtube.com/vi/${yId}/hqdefault.jpg`,
@@ -222,7 +231,7 @@ export function LeadVideoSlider() {
               </div>
             ) : (
               <div
-                className={styles.videoCoverStage}
+                className={`${styles.videoCoverStage} ${activeVideo.isShort ? styles.videoCoverStageShort : ""}`}
                 style={{ backgroundImage: `url(${activeVideo.thumbnail})` }}
                 onClick={() => setIsPlaying(true)}
               >
@@ -266,11 +275,11 @@ export function LeadVideoSlider() {
                 return (
                   <div
                     key={item.id}
-                    className={styles.playlistItemCard}
+                    className={`${styles.playlistItemCard} ${item.isShort ? styles.playlistItemCardShort : ""}`}
                     onClick={() => handleSelectVideo(idx)}
                   >
                     <div
-                      className={styles.playlistThumb}
+                      className={`${styles.playlistThumb} ${item.isShort ? styles.playlistThumbShort : ""}`}
                       style={{ backgroundImage: `url(${item.thumbnail})` }}
                     >
                       <span className={styles.playlistPlayMini}>
