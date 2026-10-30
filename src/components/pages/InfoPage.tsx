@@ -3,8 +3,8 @@ import { PageHero } from "./PageHero";
 import styles from "./pages.module.css";
 
 /**
- * One renderer for the four utility pages. The page supplies copy through
- * data/pages.ts; this component only owns the editorial layout: breadcrumb,
+ * Shared renderer for utility pages. Dynamic pages supply copy from the public
+ * static-pages API; this component owns the editorial layout: breadcrumb,
  * banner, serif lede, body column, optional quick-facts rail, contact grid and
  * the cross-link band. Reveal hooks come from motion.css so the pages share the
  * front page's stagger.

@@ -114,7 +114,7 @@ export type InfoSignature = {
 };
 
 export type InfoPageData = {
-  /** Route slug, e.g. "about" maps to /about. */
+  /** Backend-owned page slug used by the dynamic /[slug] route. */
   slug: string;
   /** Short label used in the breadcrumb trail. */
   eyebrow: string;
