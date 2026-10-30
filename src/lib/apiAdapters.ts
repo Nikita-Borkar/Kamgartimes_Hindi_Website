@@ -98,6 +98,6 @@ export function adaptGalleryItem(item: API_GalleryItem): UI_GalleryItem {
     id: item._id,
     headline: item.title,
     category: "फोटो गैलरी",
-    image: item.imageUrl || item.mediaUrl || item.thumbnailUrl || "/img/img03.png",
+    image: item.imageUrl || item.mediaUrl || item.thumbnailUrl || "",
   };
 }

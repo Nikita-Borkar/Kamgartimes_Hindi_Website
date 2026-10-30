@@ -521,15 +521,6 @@ const commentPool: Omit<ArticleComment, "id">[] = [
   },
 ];
 
-const galleryCaptions = [
-  "दृश्य पहला: घटनास्थल का प्रारंभिक दृश्य और प्रशासनिक हलचल",
-  "दृश्य दूसरा: स्थानीय नागरिकों और प्रत्यक्षदर्शियों की प्रतिक्रिया",
-  "दृश्य तीसरा: पृष्ठभूमि, तथ्य और ज़मीनी स्थिति का जायज़ा",
-  "दृश्य चौथा: राहत कार्य और सुरक्षा प्रबंधों की तैयारी",
-  "दृश्य पांचवां: बदलाव और सुधार के पहले सकारात्मक संकेत",
-  "दृश्य छठा: आगे की रणनीति और भविष्य की कार्ययोजना",
-];
-
 /** Small deterministic hash so stats and picks are stable per id. */
 function hash(input: string): number {
   let value = 0;
@@ -665,27 +656,15 @@ export function buildVideoBody(video: VideoItem): VideoBodyShape {
   };
 }
 
-/** Six-photo story for any gallery item, drawn from the shared image pool. */
+/** Build a gallery from its uploaded photos, using the cover only as a fallback. */
 export function buildGalleryPhotos(item: GalleryItem): GalleryPhoto[] {
-  const pool = [
-    item.image,
-    "/img/img25.png",
-    "/img/img26.png",
-    "/img/img24.png",
-    "/img/img10.png",
-    "/img/img28.png",
-  ];
-  const seen = new Set<string>();
-  const unique = pool.filter((src) => {
-    if (seen.has(src)) return false;
-    seen.add(src);
-    return true;
-  });
-  while (unique.length < 6) unique.push(item.image);
+  const images = [...(item.galleryImages ?? []), item.image].filter(
+    (image, index, all) => Boolean(image) && all.indexOf(image) === index,
+  );
 
-  return unique.slice(0, 6).map((image, index) => ({
+  return images.map((image, index) => ({
     id: `${item.id}-p${index + 1}`,
     image,
-    caption: `${galleryCaptions[index % galleryCaptions.length]}`,
+    caption: item.galleryCaptions?.[index] ?? "",
   }));
 }

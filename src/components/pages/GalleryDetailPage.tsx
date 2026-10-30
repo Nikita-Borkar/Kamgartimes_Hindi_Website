@@ -4,6 +4,7 @@ import type { GalleryItem } from "@/data/types";
 import { buildGalleryPhotos } from "@/data/articleContent";
 import { galleryHref } from "@/lib/links";
 import { Media } from "@/components/ui/Media";
+import { GalleryPhotoGrid } from "./GalleryPhotoGrid";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { leaderboardAds } from "@/data/ads";
 import { ArticleActions } from "./ArticleActions";
@@ -51,25 +52,11 @@ export function GalleryDetailPage({
         title={item.headline}
       />
 
-      <div className={styles.photos}>
-        {photos.map((photo, index) => (
-          <figure key={photo.id} className={styles.photo}>
-            <Media
-              src={photo.image}
-              alt=""
-              sizes="(max-width: 900px) 100vw, 900px"
-              priority={index === 0}
-              className={styles.photoMedia}
-            />
-            <figcaption className={styles.photoCaption}>
-              <span className={styles.photoIndex} aria-hidden="true">
-                {index + 1} / {photos.length}
-              </span>
-              {photo.caption}
-            </figcaption>
-          </figure>
-        ))}
-      </div>
+      {photos.length > 0 ? (
+        <GalleryPhotoGrid photos={photos} title={item.headline} />
+      ) : (
+        <p className={styles.noGalleryPhotos}>इस गैलरी में अभी तस्वीरें उपलब्ध नहीं हैं।</p>
+      )}
 
       <div className={styles.tags}>
         <span className={styles.cardMeta} style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>

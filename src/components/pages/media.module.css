@@ -580,6 +580,17 @@
   margin: 0;
 }
 
+.photoTrigger {
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--r-md);
+  background: var(--image);
+  cursor: zoom-in;
+}
+
 .photoMedia {
   width: 100%;
   height: auto;
@@ -587,6 +598,94 @@
   object-fit: cover;
   border-radius: var(--r-md);
   background: var(--image);
+}
+
+.noGalleryPhotos {
+  margin-top: var(--space-8);
+  padding: var(--space-8);
+  border: var(--rule);
+  color: var(--muted);
+  text-align: center;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  padding: 64px clamp(56px, 8vw, 112px) 24px;
+  background: rgba(8, 8, 8, 0.96);
+  color: #fff;
+}
+
+.lightboxImageFrame {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightboxMedia {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100vh - 128px);
+  object-fit: contain;
+}
+
+.lightboxClose,
+.lightboxNav {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: rgba(20, 20, 20, 0.72);
+  color: #fff;
+  cursor: pointer;
+}
+
+.lightboxClose {
+  top: 16px;
+  right: 18px;
+  width: 44px;
+  height: 44px;
+}
+
+.lightboxNav {
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  transform: translateY(-50%);
+}
+
+.lightboxPrevious {
+  left: 20px;
+}
+
+.lightboxNext {
+  right: 20px;
+}
+
+.lightboxClose:hover,
+.lightboxNav:hover {
+  background: var(--brand);
+}
+
+.lightboxCaption {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin: var(--space-3) 0 0;
+  color: rgba(255, 255, 255, 0.86);
+  font: var(--fw-medium) var(--fs-meta) / var(--lh-meta) var(--font-sans);
+}
+
+.lightboxCaption span {
+  flex: none;
+  font-variant-numeric: tabular-nums;
 }
 
 .photoCaption {
@@ -706,6 +805,30 @@
 
   .subheadLink {
     font-size: var(--fs-eyebrow);
+  }
+
+  .lightbox {
+    padding: 56px 42px 20px;
+  }
+
+  .lightboxClose {
+    top: 8px;
+    right: 8px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .lightboxPrevious {
+    left: 4px;
+  }
+
+  .lightboxNext {
+    right: 4px;
+  }
+
+  .lightboxNav {
+    width: 36px;
+    height: 36px;
   }
 }
 

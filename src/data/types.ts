@@ -43,6 +43,7 @@ export type GalleryItem = {
   headline: string;
   paragraphs?: string[];
   galleryImages?: string[];
+  galleryCaptions?: string[];
 };
 
 /* ---------- Reading page (article body, engagement, comments) ------------- */

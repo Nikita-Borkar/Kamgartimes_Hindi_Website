@@ -43,11 +43,12 @@ export default async function GalleryItemPage({
     if (pubGallery && pubGallery.title) {
       item = {
         id: pubGallery.slug || pubGallery._id,
-        image: pubGallery.coverImage || (pubGallery.images?.[0]?.imageUrl ?? "/img/img02.png"),
+        image: pubGallery.coverImage || pubGallery.images?.[0]?.imageUrl || "",
         headline: pubGallery.title,
         category: pubGallery.category?.name || "फोटो गैलरी",
         paragraphs: pubGallery.description ? [pubGallery.description] : [],
-        galleryImages: pubGallery.images?.map((img) => img.imageUrl) || [],
+        galleryImages: pubGallery.images?.map((img) => img.imageUrl).filter(Boolean) || [],
+        galleryCaptions: pubGallery.images?.map((img) => img.caption || "") || [],
       };
     }
   } catch {}
