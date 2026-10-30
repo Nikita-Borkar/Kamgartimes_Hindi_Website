@@ -230,7 +230,7 @@ export function ArticlePage({
           <div className={styles.railSticky}>
             <ArticleToc items={tocItems} />
             <div className={styles.railAd}>
-              <AdSlot slotKey="in_article_middle" ad={{ id: "article-inside", label: "Ad", image: "/img/artical-inside-ads.png", variant: "articleInside" }} />
+              <AdSlot slotKey="in_article_middle" ad={{ id: "article-inside", label: "Ad", image: "/img/artical-inside-ads.png", href: "#", variant: "articleInside" }} />
             </div>
           </div>
         </aside>

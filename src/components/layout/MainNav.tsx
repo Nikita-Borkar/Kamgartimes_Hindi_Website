@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, Menu, Search, X, User, Mic } from "lucide-react";
+import { ChevronDown, Menu, Search, X } from "lucide-react";
 import type { NavItem, NavLink } from "@/data/site";
 import { kamgarApi } from "@/services/apiClient";
 import type { Category } from "@/types/api";
@@ -197,40 +197,15 @@ function OverflowPanel({
 
   return (
     <div className={styles.panelInnerWrapper}>
-      {/* Mobile Top Header: Dedicated Red Reporter button + User Login & Search */}
-      <div className={styles.drawerTopCard}>
-        <Link
-          href="/join-us"
-          className={styles.drawerJoinBtn}
-          onClick={onNavigate}
-          aria-label={`${siteName} पत्रकार / प्रतिनिधी नियुक्ती अर्ज २०२६-२०२७`}
-          title={`${siteName} पत्रकार / प्रतिनिधी नियुक्ती अर्ज`}
-        >
-          <Mic size={17} strokeWidth={2.4} aria-hidden="true" />
-          <span>पत्रकार बनें (Join as Reporter)</span>
-        </Link>
-
-        <div className={styles.drawerToolsRow}>
-          <Link
-            href="/login"
-            className={styles.drawerToolBtn}
-            onClick={onNavigate}
-            aria-label="Login"
-          >
-            <User size={16} strokeWidth={2.2} />
-            <span>Login / Profile</span>
-          </Link>
-          <Link
-            href="/search"
-            className={styles.drawerToolBtn}
-            onClick={onNavigate}
-            aria-label="खोजें"
-          >
-            <Search size={16} strokeWidth={2.2} />
-            <span>खोजें (Search)</span>
-          </Link>
-        </div>
-      </div>
+      <Link
+        href="/search"
+        className={styles.drawerSearchLink}
+        onClick={onNavigate}
+        aria-label="खोजें"
+      >
+        <Search size={16} strokeWidth={2.2} aria-hidden="true" />
+        <span>खोजें (Search)</span>
+      </Link>
 
       <div className={styles.drawerMenuHeading}>{heading || "सभी श्रेणियां (Categories)"}</div>
 

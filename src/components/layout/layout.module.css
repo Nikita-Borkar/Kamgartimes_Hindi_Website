@@ -2029,9 +2029,8 @@ a.footerContact:hover {
     padding: 0 10px;
     font-size: 11.5px;
   }
-  /* On mobile phones, hide the red button and action icons from under the logo!
-     The red 'पत्रकार बनें' button and user profile are prominently placed at the top of the mobile drawer!
-     ThemeToggle is located in the sticky navigation bar next to search and hamburger! */
+  /* Keep the compact mobile header focused; ThemeToggle stays in the sticky
+     navigation beside search and the hamburger. */
   .topBar .actions {
     display: none !important;
   }

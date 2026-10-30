@@ -125,6 +125,8 @@ body {
 }
 
 body.notice-ticker-on {
-  padding-bottom: 46px;
+  /* Match the fixed ticker's full height so no page background peeks through
+     between the footer and the ticker at the bottom of the viewport. */
+  padding-bottom: calc(42px + env(safe-area-inset-bottom, 0px));
 }
 
