@@ -3,6 +3,25 @@ import { categories } from "@/data/site";
 /* Single source for every route the card vocabulary links to, so a change to
    the URL scheme is one edit here instead of a hunt across components. */
 
+/**
+ * Returns the site's base origin.
+ * Priority: NEXT_PUBLIC_SITE_URL env var → window.location.origin (client) → kamgartimes.com (SSR fallback)
+ * Change NEXT_PUBLIC_SITE_URL in .env.local (or Netlify env settings) to move domains.
+ */
+export const siteOrigin = (): string => {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+  }
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+  return "https://kamgartimes.com";
+};
+
+/** Returns an absolute article URL (for share links, OG tags, etc.) */
+export const absoluteArticleUrl = (id: string): string =>
+  `${siteOrigin()}${articleHref(id)}`;
+
 export const articleHref = (id: string) => {
   if (
     id.includes("-") &&
