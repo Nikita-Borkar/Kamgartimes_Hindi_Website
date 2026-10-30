@@ -1,5 +1,16 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Google Analytics
+
+GA4 is wired into the root layout but disabled until a valid Measurement ID is set.
+Copy `.env.example` to `.env.local` and put the ID from the GA4 web data stream
+in `NEXT_PUBLIC_GA_MEASUREMENT_ID` (format: `G-ABC1234567`). Set the same variable in the production hosting
+environment, then redeploy. The tag loads only when the value starts with `G-`.
+
+In GA4, keep enhanced measurement page views enabled so client-side route changes
+in this Next.js app are recorded. Link the GA4 web stream to the verified Search
+Console property to view search queries alongside visitor engagement.
+
 ## Getting Started
 
 First, run the development server:

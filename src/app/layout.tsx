@@ -13,6 +13,7 @@ import { FloatingWidgets } from "@/components/layout/FloatingWidgets";
 import { SiteMaintenanceNotice } from "@/components/layout/SiteMaintenanceNotice";
 import { NoticeTicker } from "@/components/layout/NoticeTicker";
 import { SiteSettingsProvider } from "@/context/SiteSettingsContext";
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics";
 import { kamgarApi } from "@/services/apiClient";
 import "@/design/tokens.css";
 import "@/design/base.css";
@@ -140,6 +141,7 @@ export default function RootLayout({
           {children}
           <FloatingWidgets />
           <NoticeTicker />
+          <GoogleAnalytics />
         </SiteSettingsProvider>
       </body>
     </html>
