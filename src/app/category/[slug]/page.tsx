@@ -7,6 +7,11 @@ import { kamgarApi } from "@/services/apiClient";
 import { adaptArticleListItem } from "@/lib/apiAdapters";
 import type { Article } from "@/data/types";
 import type { Category as ApiCategory } from "@/types/api";
+import {
+  categoryRouteHref,
+  localizedCategorySlug,
+  sourceCategorySlug,
+} from "@/lib/links";
 
 export const revalidate = 30;
 
@@ -17,13 +22,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const decodedSlug = decodeURIComponent(slug);
-  let categoryLabel = categories.find((entry) => entry.slug === slug || entry.slug === decodedSlug)?.label;
+  const lookupSlug = sourceCategorySlug(decodedSlug);
+  let categoryLabel = categories.find((entry) => entry.slug === slug || entry.slug === lookupSlug)?.label;
 
   if (!categoryLabel) {
     try {
       const tree = await kamgarApi.getCategoryTree();
       const match = tree.flatMap((parent) => [parent, ...(parent.subcategories ?? [])]).find(
-        (c) => c.slug === slug || c.slug === decodedSlug || c._id === slug || c.name === decodedSlug
+        (c) => c.slug === slug || c.slug === decodedSlug || c.slug === lookupSlug || c._id === slug || c.name === decodedSlug
       );
       if (match) categoryLabel = match.name;
     } catch {}
@@ -48,7 +54,14 @@ export default async function Category({
   const page = Math.max(1, Number.parseInt(requestedPage || "1", 10) || 1);
   const pageSize = 12;
   const decodedSlug = decodeURIComponent(slug);
-  let categoryLabel = categories.find((entry) => entry.slug === slug || entry.slug === decodedSlug)?.label;
+  const lookupSlug = sourceCategorySlug(decodedSlug);
+  const canonicalSlug = localizedCategorySlug(lookupSlug);
+  if (decodedSlug !== canonicalSlug) {
+    const pageQuery = requestedPage ? `?page=${encodeURIComponent(requestedPage)}` : "";
+    redirect(`${categoryRouteHref(lookupSlug)}${pageQuery}`);
+  }
+
+  let categoryLabel = categories.find((entry) => entry.slug === slug || entry.slug === lookupSlug)?.label;
   let apiCategoryId: string | undefined;
   let subcategories: Pick<ApiCategory, "_id" | "name" | "slug">[] = [];
   let parentCategory: Pick<ApiCategory, "name" | "slug"> | undefined;
@@ -61,6 +74,7 @@ export default async function Category({
         (c) =>
           c.slug === slug ||
           c.slug === decodedSlug ||
+          c.slug === lookupSlug ||
           c._id === slug ||
           c.name === categoryLabel ||
           c.name === decodedSlug

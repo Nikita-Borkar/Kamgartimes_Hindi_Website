@@ -219,7 +219,7 @@ export function WeatherPoll() {
     <section className={styles.weatherPoll} aria-label="लाइव मौसम और आज का सवाल">
       {/* -------------------- Weather Column -------------------- */}
       <div className={styles.weatherColumn}>
-        <SectionHeader title="मौसम" action="विस्तृत पूर्वानुमान" href="/weather" />
+        <SectionHeader title="मौसम" action="विस्तृत पूर्वानुमान" href="/मौसम" />
         <div className={styles.weatherBody}>
           <article className={styles.weatherCurrent}>
             <div className={styles.weatherLocation}>

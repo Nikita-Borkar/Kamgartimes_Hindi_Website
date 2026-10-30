@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronDown, Menu, Search, X } from "lucide-react";
-import type { NavItem, NavLink } from "@/data/site";
+import { defaultCategoryNavItems, type NavItem, type NavLink } from "@/data/site";
 import { kamgarApi } from "@/services/apiClient";
 import type { Category } from "@/types/api";
 import {
@@ -12,6 +12,7 @@ import {
   socialPlatformLabel,
 } from "@/components/ui/SocialIcons";
 import { useSiteSettings } from "@/context/SiteSettingsContext";
+import { categoryRouteHref } from "@/lib/links";
 import styles from "./layout.module.css";
 
 function Caret({ open }: { open?: boolean }) {
@@ -344,7 +345,7 @@ function buildNavItemsFromCategoryTree(tree: Category[]): NavItem[] {
     // Skip "होम" if someone added it in categories to avoid duplicate home links
     if (trimmedName === "होम" || cat.slug === "home") continue;
 
-    const topHref = `/category/${cat.slug || cat._id}`;
+    const topHref = categoryRouteHref(cat.slug || cat._id);
 
     // Backend can return subcategories under `subcategories` or `children`
     const rawSubcats =
@@ -370,7 +371,7 @@ function buildNavItemsFromCategoryTree(tree: Category[]): NavItem[] {
             ? "खास रिपोर्ट"
             : childName;
 
-        let childHref = `/category/${child.slug || child._id}`;
+        let childHref = categoryRouteHref(child.slug || child._id);
 
         if (
           childName.includes("पत्रकार") ||
@@ -397,8 +398,40 @@ function buildNavItemsFromCategoryTree(tree: Category[]): NavItem[] {
   return items;
 }
 
+function mergeDefaultCategoryNavItems(apiItems: NavItem[]): NavItem[] {
+  const normalizeLabel = (label: string) =>
+    label.toLocaleLowerCase().replace(/[\s_-]/g, "");
+  const home = defaultCategoryNavItems.find((item) => item.href === "/");
+  const defaults = defaultCategoryNavItems.filter((item) => item.href !== "/");
+  const matchedDefaults = new Set<string>();
+
+  // Keep the admin's ordering in the primary nav. Known categories get their
+  // stable Hindi route; unmatched admin categories keep their own slug route.
+  const adminItems = apiItems
+    .filter((item) => item.href !== "/")
+    .map((apiItem) => {
+      const match = defaults.find(
+        (defaultItem) =>
+          defaultItem.href === apiItem.href ||
+          normalizeLabel(defaultItem.label) === normalizeLabel(apiItem.label),
+      );
+      if (!match) return apiItem;
+
+      matchedDefaults.add(match.href);
+      return apiItem.children?.length
+        ? { ...match, children: apiItem.children }
+        : match;
+    });
+
+  const missingDefaults = defaults.filter(
+    (item) => !matchedDefaults.has(item.href),
+  );
+
+  return [...(home ? [home] : []), ...adminItems, ...missingDefaults];
+}
+
 export function MainNav() {
-  const [navItemsList, setNavItemsList] = useState<NavItem[]>([]);
+  const [navItemsList, setNavItemsList] = useState<NavItem[]>(defaultCategoryNavItems);
   const [visibleCount, setVisibleCount] = useState(14);
   const [panelOpen, setPanelOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
@@ -413,14 +446,18 @@ export function MainNav() {
         const tree = Array.isArray(res)
           ? res
           : (res as any)?.data || (res as any)?.categories || [];
-        if (Array.isArray(tree)) setNavItemsList(buildNavItemsFromCategoryTree(tree));
+        if (Array.isArray(tree)) {
+          setNavItemsList(
+            mergeDefaultCategoryNavItems(buildNavItemsFromCategoryTree(tree)),
+          );
+        }
       })
       .catch((err) => {
         console.warn("Failed to fetch public category tree:", err);
       });
   }, []);
 
-  /* Fit as many links as the bar can hold up to 14 (ई-पेपर); the rest are in overflow panel. */
+  /* Fit as many links as the bar can hold; only the remainder goes in the overflow panel. */
   const measure = useCallback(() => {
     const container = containerRef.current;
     const actions = actionsRef.current;
@@ -452,10 +489,7 @@ export function MainNav() {
     };
 
     const available = content - actionsW - gap;
-    let count = fit(available);
-
-    // Primary items up to ई-पेपर are 14. Remaining items live in the overflow panel
-    count = Math.min(count, 14);
+    const count = fit(available);
     setVisibleCount((prev) => (prev === count ? prev : count));
   }, []);
 
@@ -484,19 +518,7 @@ export function MainNav() {
   }, [measure, navItemsList]);
 
   const overflow = visibleCount < navItemsList.length;
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleCheck = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    const t = window.setTimeout(handleCheck, 0);
-    window.addEventListener("resize", handleCheck);
-    return () => {
-      window.clearTimeout(t);
-      window.removeEventListener("resize", handleCheck);
-    };
-  }, []);
+  const overflowItems = navItemsList.slice(visibleCount);
 
   useEffect(() => {
     if (!panelOpen) return;
@@ -542,15 +564,11 @@ export function MainNav() {
 
       <div className={styles.navPanel} data-open={panelOpen}>
         <OverflowPanel
-          items={
-            isMobile || navItemsList.slice(visibleCount).length === 0
-              ? navItemsList
-              : navItemsList.slice(visibleCount)
-          }
+          items={overflowItems}
           heading={
-            isMobile || navItemsList.slice(visibleCount).length === 0
-              ? "सभी श्रेणियां (All Categories)"
-              : "अन्य श्रेणियां (Other Categories)"
+            overflowItems.length
+              ? "अन्य श्रेणियां (Other Categories)"
+              : "त्वरित लिंक (Quick Links)"
           }
           onNavigate={() => setPanelOpen(false)}
         />

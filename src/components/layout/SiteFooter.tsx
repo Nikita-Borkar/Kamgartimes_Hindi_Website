@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/SocialIcons";
 import { useSiteSettings } from "@/context/SiteSettingsContext";
 import { kamgarApi } from "@/services/apiClient";
-import { categoryHref } from "@/lib/links";
+import { categoryHref, categoryRouteHref } from "@/lib/links";
 import styles from "./layout.module.css";
 import type { Category, StaticPageMenuItem } from "@/types/api";
 
@@ -46,7 +46,7 @@ function footerCategoryHref(category: FooterCategory): string {
   if (slug === "e-paper" || slug === "epaper") return "/e-paper";
   if (slug === "videos") return "/videos";
   if (slug === "shorts") return "/shorts";
-  return `/category/${encodeURIComponent(category.slug)}`;
+  return categoryRouteHref(category.slug);
 }
 
 export function SiteFooter() {

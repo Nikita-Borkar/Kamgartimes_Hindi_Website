@@ -24,24 +24,58 @@ export const videoHref = (id: string) => `/video/${id}`;
 export const galleryHref = (id: string) => `/gallery/${id}`;
 export const epaperHref = (id?: string) => (id ? `/e-paper?edition=${id}` : "/e-paper");
 
+const HINDI_CATEGORY_SLUGS: Record<string, string> = {
+  latest: "ताज़ा-खबरें",
+  opinion: "विचार",
+  health: "स्वास्थ्य",
+  education: "शिक्षा",
+  entertainment: "मनोरंजन",
+  technology: "तकनीक",
+  economy: "व्यापार",
+  sport: "खेल",
+  sports: "खेल",
+  politics: "राजनीति",
+  editorial: "संपादकीय",
+};
+
+const ENGLISH_CATEGORY_SLUGS = Object.fromEntries(
+  Object.entries(HINDI_CATEGORY_SLUGS).map(([english, hindi]) => [hindi, english]),
+);
+
+export function localizedCategorySlug(slug: string): string {
+  return HINDI_CATEGORY_SLUGS[slug.toLowerCase()] ?? slug;
+}
+
+export function sourceCategorySlug(slug: string): string {
+  return ENGLISH_CATEGORY_SLUGS[slug] ?? slug;
+}
+
+export function categoryRouteHref(slug: string): string {
+  if (slug.toLowerCase() === "weather" || slug === "मौसम") return "/मौसम";
+  if (slug.toLowerCase() === "videos" || slug === "वीडियो") return "/videos";
+  if (slug.toLowerCase() === "shorts" || slug === "शॉर्ट्स") return "/shorts";
+  if (slug.toLowerCase() === "gallery" || slug === "गैलरी") return "/gallery";
+  return `/category/${encodeURIComponent(localizedCategorySlug(slug))}`;
+}
+
 const SECTION_TITLE_MAP: Record<string, string> = {
-  "ताज़ा ख़बरें": "/category/latest",
-  "ताज़ा खबरें": "/category/latest",
-  "लेटेस्ट न्यूज़": "/category/latest",
-  "ताज़ा अपडेट्स": "/category/latest",
+  "ताज़ा ख़बरें": "/category/ताज़ा-खबरें",
+  "ताज़ा खबरें": "/category/ताज़ा-खबरें",
+  "लेटेस्ट न्यूज़": "/category/ताज़ा-खबरें",
+  "ताज़ा अपडेट्स": "/category/ताज़ा-खबरें",
   "ट्रेंडिंग": "/category/trending",
   "ट्रेंडिंग न्यूज़": "/category/trending",
-  "संपादक की पसंद": "/category/editorial",
-  "संपादकीय": "/category/editorial",
+  "संपादक की पसंद": "/category/संपादकीय",
+  "संपादकीय": "/category/संपादकीय",
   "विशेष रूप से चुनिंदा": "/category/featured",
-  "विशेष लेख और विचार": "/category/opinion",
-  "विचार": "/category/opinion",
+  "विशेष लेख और विचार": "/category/विचार",
+  "विचार": "/category/विचार",
   "विशेष": "/category/featured",
   "विशेष रिपोर्ट": "/category/featured",
   "खास रिपोर्ट": "/category/featured",
-  "मौसम": "/weather",
-  "मौसम पूर्वानुमान": "/weather",
-  "विस्तृत पूर्वानुमान": "/weather",
+  "मौसम": "/मौसम",
+  "मौसम पूर्वानुमान": "/मौसम",
+  "विस्तृत पूर्वानुमान": "/मौसम",
   "फोटो गैलरी": "/gallery",
   "गैलरी": "/gallery",
   "वीडियो": "/videos",
@@ -49,7 +83,7 @@ const SECTION_TITLE_MAP: Record<string, string> = {
   "ई-पेपर": "/e-paper",
   "लोकल न्यूज़": "/city",
   "कामगार टाइम्स": "/category/labor",
-  "व्यापार": "/category/economy",
+  "व्यापार": "/category/व्यापार",
 };
 
 /** Resolves a section label (e.g. "क्रीडा", "ताज़ा ख़बरें", "ट्रेंडिंग") to its proper route. */
@@ -60,6 +94,6 @@ export function categoryHref(label: string): string {
     return SECTION_TITLE_MAP[trimmed];
   }
   const match = categories.find((category) => category.label === trimmed);
-  return `/category/${match?.slug ?? "latest"}`;
+  return categoryRouteHref(match?.slug ?? "latest");
 }
 

@@ -5,6 +5,7 @@ import { StoryCard } from "@/components/ui/StoryCard";
 import { AdCard } from "@/components/ui/AdCard";
 import { AdSlot } from "@/components/ui/AdSlot";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { categoryRouteHref } from "@/lib/links";
 import type { Category } from "@/types/api";
 import { PageHero } from "./PageHero";
 import { cardAds, leaderboardAds } from "@/data/ads";
@@ -106,7 +107,7 @@ export function CategoryPage({
               <li key={subcategory._id}>
                 <Link
                   className={styles.subcategoryLink}
-                  href={`/category/${encodeURIComponent(subcategory.slug)}`}
+                  href={categoryRouteHref(subcategory.slug)}
                 >
                   <span className={styles.subcategoryIndex}>{String(index + 1).padStart(2, "0")}</span>
                   <span className={styles.subcategoryName}>{subcategory.name}</span>

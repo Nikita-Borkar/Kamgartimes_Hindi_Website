@@ -127,6 +127,25 @@ export const navItems: NavItem[] = [
   { label: "ई-पेपर", href: "/e-paper" },
 ];
 
+/** Stable Hindi navigation used before the category API loads and as defaults. */
+export const defaultCategoryNavItems: NavItem[] = [
+  { label: "होम", href: "/" },
+  { label: "ताज़ा-खबरें", href: "/category/ताज़ा-खबरें" },
+  { label: "राजनीति", href: "/category/राजनीति" },
+  { label: "मौसम", href: "/मौसम" },
+  { label: "व्यापार", href: "/category/व्यापार" },
+  { label: "खेल", href: "/category/खेल" },
+  { label: "मनोरंजन", href: "/category/मनोरंजन" },
+  { label: "तकनीक", href: "/category/तकनीक" },
+  { label: "स्वास्थ्य", href: "/category/स्वास्थ्य" },
+  { label: "शिक्षा", href: "/category/शिक्षा" },
+  { label: "विचार", href: "/category/विचार" },
+  { label: "संपादकीय", href: "/category/संपादकीय" },
+  { label: "वीडियो", href: "/videos" },
+  { label: "शॉर्ट्स", href: "/shorts" },
+  { label: "गैलरी", href: "/gallery" },
+];
+
 /* Section slugs → Hindi label articles are tagged with. Drives both the
    /category/[slug] routes and generateStaticParams for them. */
 export const categories: { slug: string; label: string }[] = [

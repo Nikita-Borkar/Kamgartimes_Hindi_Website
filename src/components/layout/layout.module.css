@@ -2091,12 +2091,7 @@ a.footerContact:hover {
     margin: 0 auto;
   }
 
-  /* Keep the category strip uncluttered on mobile. The hamburger contains
-     every parent category and its subcategories. */
-  .navList {
-    display: none;
-  }
-
+  /* Keep fitting categories visible; the hamburger holds only the overflow. */
   .navLink {
     padding: 6px 8px;
     font-size: 13px;
