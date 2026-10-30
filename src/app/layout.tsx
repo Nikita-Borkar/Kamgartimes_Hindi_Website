@@ -53,7 +53,12 @@ export async function generateMetadata(): Promise<Metadata> {
       },
       twitter: { card: "summary_large_image" },
       icons: {
-        icon: settings.logoUrl?.trim() || "/img/logo.png",
+        // Always use the icon-only logo for favicon (not the wordmark/logo-with-text)
+        icon: [
+          { url: "/img/logo.png", type: "image/png" },
+        ],
+        apple: "/img/logo.png",
+        shortcut: "/img/logo.png",
       },
     };
   } catch (error) {
@@ -69,7 +74,12 @@ export async function generateMetadata(): Promise<Metadata> {
       },
       twitter: { card: "summary_large_image" },
       icons: {
-        icon: "/img/logo.png",
+        // Always use the icon-only logo for favicon (not the wordmark/logo-with-text)
+        icon: [
+          { url: "/img/logo.png", type: "image/png" },
+        ],
+        apple: "/img/logo.png",
+        shortcut: "/img/logo.png",
       },
     };
   }
