@@ -83,6 +83,17 @@
   text-wrap: pretty;
 }
 
+.notificationStatus {
+  margin: 10px 0 0;
+  color: #b42318;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.notificationStatus[data-success="true"] {
+  color: #15803d;
+}
+
 .promptActions {
   display: flex;
   align-items: center;
@@ -125,6 +136,11 @@
   background: #c6181e;
   box-shadow: 0 4px 14px rgba(227, 30, 37, 0.48);
   transform: translateY(-1px);
+}
+
+.subscribeBtn:disabled {
+  cursor: wait;
+  opacity: 0.72;
 }
 
 .subscribeBtn:active {

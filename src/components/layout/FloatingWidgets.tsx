@@ -23,6 +23,33 @@ function WhatsAppIcon({ size = 28 }: { size?: number }) {
 
 export function FloatingWidgets() {
   const [showTop, setShowTop] = useState(false);
+  const [hasPushSubscription, setHasPushSubscription] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    const syncSubscription = async () => {
+      try {
+        const registration = await navigator.serviceWorker?.getRegistration("/");
+        const subscription = await registration?.pushManager.getSubscription();
+        if (active) setHasPushSubscription(Boolean(subscription));
+      } catch {
+        if (active) setHasPushSubscription(false);
+      }
+    };
+    const handleSubscriptionChange = (event: Event) => {
+      const detail = (event as CustomEvent<{ subscribed: boolean }>).detail;
+      setHasPushSubscription(Boolean(detail?.subscribed));
+    };
+
+    void syncSubscription();
+    window.addEventListener("push-subscription-changed", handleSubscriptionChange);
+    window.addEventListener("focus", syncSubscription);
+    return () => {
+      active = false;
+      window.removeEventListener("push-subscription-changed", handleSubscriptionChange);
+      window.removeEventListener("focus", syncSubscription);
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -77,7 +104,7 @@ export function FloatingWidgets() {
       </div>
 
       {/* Red Bell Button (Matching User Image 2) */}
-      <div className={styles.btnWrap}>
+      {!hasPushSubscription && <div className={styles.btnWrap}>
         <button
           type="button"
           onClick={handleOpenBell}
@@ -91,7 +118,7 @@ export function FloatingWidgets() {
           </div>
         </button>
         <span className={styles.tooltip}>सूचनाएं (Notifications)</span>
-      </div>
+      </div>}
     </aside>
   );
 }
