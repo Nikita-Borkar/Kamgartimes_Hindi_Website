@@ -5,6 +5,7 @@ import {
   Mukta,
 } from "next/font/google";
 import { site } from "@/data/site";
+import { SITE_URL } from "@/lib/seo";
 import { ScrollChrome } from "@/components/motion/ScrollChrome";
 import { NavigationProgressBar } from "@/components/motion/NavigationProgressBar";
 import { NotificationPrompt } from "@/components/layout/NotificationPrompt";
@@ -41,8 +42,15 @@ export async function generateMetadata(): Promise<Metadata> {
     const settings = await kamgarApi.getSiteSettings();
     const siteName = settings.siteName?.trim() || site.name;
     return {
-      title: `${siteName} – मुख्य पृष्ठ`,
+      metadataBase: new URL(SITE_URL),
+      title: `${siteName} – हिंदी समाचार`,
       description: settings.tagline?.trim() || site.description,
+      openGraph: {
+        type: "website",
+        locale: "hi_IN",
+        siteName,
+      },
+      twitter: { card: "summary_large_image" },
       icons: {
         icon: settings.logoUrl?.trim() || "/img/logo.png",
       },
@@ -50,8 +58,15 @@ export async function generateMetadata(): Promise<Metadata> {
   } catch (error) {
     console.warn("Failed to load public site settings for metadata:", error);
     return {
-      title: `${site.name} – मुख्य पृष्ठ`,
+      metadataBase: new URL(SITE_URL),
+      title: `${site.name} – हिंदी समाचार`,
       description: site.description,
+      openGraph: {
+        type: "website",
+        locale: "hi_IN",
+        siteName: site.name,
+      },
+      twitter: { card: "summary_large_image" },
       icons: {
         icon: "/img/logo.png",
       },
