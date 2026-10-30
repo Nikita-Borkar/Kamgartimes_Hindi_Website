@@ -71,46 +71,45 @@
 
 /* --------------------------------------------------------------------------
    Scroll reveal.
-   .reveal starts hidden; ScrollChrome adds .is-visible when the element
-   crosses the threshold. --reveal-delay is set inline per item for stagger.
+   Keep content visible by default so server HTML is usable before hydration.
+   Browsers with view timelines animate it as it enters the viewport.
    -------------------------------------------------------------------------- */
 .reveal {
-  opacity: 0;
-  transform: translate3d(0, var(--rise), 0);
-  transition:
-    opacity var(--dur-reveal) var(--ease-out),
-    transform var(--dur-reveal) var(--ease-out);
-  transition-delay: var(--reveal-delay, 0ms);
-  will-change: opacity, transform;
+  opacity: 1;
+  transform: none;
 }
 
-.reveal.is-visible {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-  will-change: auto;
+@keyframes scrollReveal {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--rise), 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: scrollReveal var(--dur-reveal) var(--ease-out) both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+  }
 }
 
 /* Heading rule and brand bar sweep in with the block they belong to. */
 .revealRule {
-  transform: scaleX(0);
+  transform: scaleX(1);
   transform-origin: left;
-  transition: transform var(--dur-slow) var(--ease-out);
-  transition-delay: var(--reveal-delay, 0ms);
 }
 
 .revealBar {
-  transform: scaleY(0);
+  transform: scaleY(1);
   transform-origin: bottom;
-  transition: transform var(--dur-slow) var(--ease-out);
-  transition-delay: var(--reveal-delay, 0ms);
 }
 
-.is-visible .revealRule,
-.is-visible .revealBar {
-  transform: scale(1);
-}
-
-/* Without JS the observer never runs, so nothing would ever appear. */
+/* These defaults also preserve content when JavaScript is unavailable. */
 .no-js .reveal,
 .no-js .revealRule,
 .no-js .revealBar {
@@ -133,6 +132,7 @@
   }
 
   .reveal {
+    animation: none;
     opacity: 1;
     transform: none;
   }
