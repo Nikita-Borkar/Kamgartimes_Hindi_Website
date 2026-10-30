@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { User, LogOut } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
+import { ThemeAwareSiteLogo } from "./ThemeAwareSiteLogo";
 import {
   getSafeSocialUrl,
   SocialPlatformIcon,
@@ -34,22 +34,9 @@ function formatHindiDate(date: Date = new Date()): string {
 }
 
 export function TopBar() {
-  const { siteName, tagline, logoUrl, socialLinks } = useSiteSettings();
+  const { siteName, tagline, socialLinks } = useSiteSettings();
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [liveDate, setLiveDate] = useState<string>(() => formatHindiDate(new Date()));
-  const [logoSrc, setLogoSrc] = useState<string>("/img/logo_withtext.jpeg");
-  const [hasLogoError, setHasLogoError] = useState(false);
-
-  // Sync logoSrc when logoUrl from site setting updates
-  useEffect(() => {
-    if (logoUrl && logoUrl !== "/img/logo_withtext.jpeg") {
-      setLogoSrc(logoUrl);
-      setHasLogoError(false);
-    } else {
-      setLogoSrc("/img/logo_withtext.jpeg");
-    }
-  }, [logoUrl]);
-
   // Dynamic live date in Hindi: updates on mount and every minute
   useEffect(() => {
     setLiveDate(formatHindiDate(new Date()));
@@ -79,13 +66,6 @@ export function TopBar() {
     window.location.reload();
   };
 
-  const handleLogoError = () => {
-    if (!hasLogoError) {
-      setHasLogoError(true);
-      setLogoSrc("/img/logo_withtext.jpeg");
-    }
-  };
-
   return (
     <div className={`${styles.shell} ${styles.topBar}`}>
       {/* Left: Dynamic Live Hindi Edition / Date */}
@@ -102,15 +82,11 @@ export function TopBar() {
         aria-label={`${siteName} - ${tagline}`}
         title={`${siteName} - ${tagline}`}
       >
-        <Image
-          src={logoSrc}
+        <ThemeAwareSiteLogo
           alt={`${siteName} - ${tagline}`}
           className={styles.headerLogoImg}
           width={240}
           height={60}
-          priority
-          unoptimized
-          onError={handleLogoError}
         />
       </Link>
 

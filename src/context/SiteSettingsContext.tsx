@@ -11,6 +11,8 @@ interface SiteSettingsContextValue {
   siteName: string;
   tagline: string;
   logoUrl: string;
+  logoLightUrl: string;
+  logoDarkUrl: string;
   socialLinks: SocialLink[];
   contactEmail: string;
   contactPhone: string;
@@ -35,6 +37,8 @@ const SiteSettingsContext = createContext<SiteSettingsContextValue>({
   siteName: site.name,
   tagline: site.tagline,
   logoUrl: "/img/logo_withtext.jpeg",
+  logoLightUrl: "/img/logo_withtext.jpeg",
+  logoDarkUrl: "/img/logo_withtext.jpeg",
   socialLinks: defaultSocialLinks,
   contactEmail: "",
   contactPhone: "",
@@ -72,6 +76,8 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
   const siteName = settings?.siteName?.trim() || site.name;
   const tagline = settings?.tagline?.trim() || site.tagline;
   const logoUrl = settings?.logoUrl?.trim() || "/img/logo_withtext.jpeg";
+  const logoLightUrl = settings?.logoLightUrl?.trim() || logoUrl;
+  const logoDarkUrl = settings?.logoDarkUrl?.trim() || logoLightUrl;
   const contactEmail = settings?.contactEmail?.trim() || "";
   const contactPhone = settings?.contactPhone?.trim() || "";
   const address = settings?.address?.trim() || "";
@@ -122,6 +128,8 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
       siteName,
       tagline,
       logoUrl,
+      logoLightUrl,
+      logoDarkUrl,
       socialLinks,
       contactEmail,
       contactPhone,
@@ -136,6 +144,8 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
       siteName,
       tagline,
       logoUrl,
+      logoLightUrl,
+      logoDarkUrl,
       socialLinks,
       contactEmail,
       contactPhone,

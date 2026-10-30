@@ -216,6 +216,8 @@ export interface SiteSettings {
   siteName: string;
   tagline: string;
   logoUrl?: string;
+  logoLightUrl?: string;
+  logoDarkUrl?: string;
   contactEmail: string;
   contactPhone: string;
   address: string;

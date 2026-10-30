@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Mail, MapPin, Phone } from "lucide-react";
+import { ThemeAwareSiteLogo } from "./ThemeAwareSiteLogo";
 import { footer, site } from "@/data/site";
 import {
   getSafeSocialUrl,
@@ -53,13 +53,11 @@ export function SiteFooter() {
   const {
     siteName,
     tagline,
-    logoUrl,
     socialLinks,
     contactEmail,
     contactPhone,
     address,
   } = useSiteSettings();
-  const [logoSrc, setLogoSrc] = useState<string>("/img/logo_withtext.jpeg");
   const [parentCategories, setParentCategories] =
     useState<FooterCategory[]>(fallbackCategories);
   const [companyPages, setCompanyPages] =
@@ -136,27 +134,16 @@ export function SiteFooter() {
     };
   }, []);
 
-  useEffect(() => {
-    if (logoUrl && logoUrl !== "/img/logo_withtext.jpeg") {
-      setLogoSrc(logoUrl);
-    } else {
-      setLogoSrc("/img/logo_withtext.jpeg");
-    }
-  }, [logoUrl]);
-
   return (
     <footer className={styles.footer}>
       <div className={`${styles.shell} ${styles.footerInner}`}>
         <div>
           <Link href="/" className={styles.footerLogoLink} aria-label={`${siteName} - ${tagline}`}>
-            <Image
-              src={logoSrc}
+            <ThemeAwareSiteLogo
               alt={`${siteName} - ${tagline}`}
               className={styles.footerLogoImg}
               width={220}
               height={55}
-              unoptimized
-              onError={() => setLogoSrc("/img/logo_withtext.jpeg")}
             />
           </Link>
           <p className={styles.footerBlurb}>{tagline}</p>
