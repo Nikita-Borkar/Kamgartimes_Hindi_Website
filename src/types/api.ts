@@ -75,7 +75,7 @@ export interface ArticleReactions {
 export interface ArticleComment {
   _id: string;
   body: string;
-  author: {
+  user: {
     _id?: string;
     name: string;
   };

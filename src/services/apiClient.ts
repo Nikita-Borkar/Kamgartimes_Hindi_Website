@@ -302,7 +302,7 @@ export const kamgarApi = {
     ),
 
   postArticleComment: (idOrSlug: string, body: { body: string; parent?: string | null }) =>
-    api.post<{ _id: string; body: string; author: string; createdAt: string }>(
+    api.post<{ _id: string; body: string; user: { _id: string; name: string }; createdAt: string }>(
       `/public/articles/${idOrSlug}/comments`,
       body,
       true

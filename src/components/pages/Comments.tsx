@@ -26,7 +26,7 @@ export function Comments({
           if (res?.comments && Array.isArray(res.comments)) {
             const mapped: ArticleComment[] = res.comments.map((c) => ({
               id: c._id,
-              name: c.author?.name || "पाठक",
+              name: c.user?.name || "पाठक",
               time: new Date(c.createdAt).toLocaleDateString("hi-IN"),
               text: c.body,
               likes: 0,
@@ -54,7 +54,7 @@ export function Comments({
         setList((current) => [
           {
             id: created._id,
-            name: created.author || "पाठक",
+            name: created.user?.name || "पाठक",
             time: "अभी",
             text: created.body,
             likes: 0,
