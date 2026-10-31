@@ -42,6 +42,7 @@ export function adaptArticleListItem(item: ArticleListItem): Article {
 
   return {
     id: item.slug || item._id,
+    apiId: item._id,
     category: item.category?.name || "समाचार",
     headline: item.title,
     excerpt: item.summary,
@@ -64,6 +65,7 @@ export function adaptArticleDetail(item: ArticleDetail): Article & {
   const base = adaptArticleListItem(item);
   return {
     ...base,
+    apiId: item._id,
     content: item.content,
     tags: item.tags,
     author: item.author ? { name: item.author.name, role: "संपादकीय टीम" } : undefined,

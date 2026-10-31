@@ -38,10 +38,10 @@ export function ArticlePage({
   const body = buildArticleBody(article);
 
   useEffect(() => {
-    if (article.id) {
-      kamgarApi.recordArticleView(article.id).catch(() => {});
+    if (article.apiId) {
+      kamgarApi.recordArticleView(article.apiId).catch(() => {});
     }
-  }, [article.id]);
+  }, [article.apiId]);
 
   const tocItems: TocItem[] = [
     { id: "key-points", label: "मुख्य बिंदु" },
@@ -113,7 +113,7 @@ export function ArticlePage({
               commentCount={body.stats.comments}
               shareCount={body.stats.shares}
               title={article.headline}
-              articleId={article.id}
+              articleId={article.apiId}
             />
 
           </header>
@@ -223,7 +223,7 @@ export function ArticlePage({
             </div>
           </div>
 
-          <Comments initial={body.comments} articleId={article.id} />
+          <Comments initial={body.comments} articleId={article.apiId} />
         </article>
 
         <aside className={styles.rail} aria-label="समाचार अनुभाग और विज्ञापन">

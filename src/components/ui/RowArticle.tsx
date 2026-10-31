@@ -57,6 +57,7 @@ export function RowArticle({
               url={targetUrl}
               excerpt={article.excerpt}
               compact
+              articleId={article.apiId}
             />
           ) : null}
         </div>

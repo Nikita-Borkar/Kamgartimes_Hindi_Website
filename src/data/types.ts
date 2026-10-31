@@ -1,5 +1,7 @@
 export type Article = {
   id: string;
+  /** MongoDB article ID used by API actions; `id` remains the public URL slug. */
+  apiId?: string;
   image: string;
   category: string;
   headline: string;

@@ -46,6 +46,7 @@ export function StoryCard({
           url={targetUrl}
           excerpt={article.excerpt}
           compact
+          articleId={article.apiId}
         />
       ) : null}
     </div>
