@@ -63,12 +63,15 @@ export function adaptArticleDetail(item: ArticleDetail): Article & {
   dislikes?: number;
 } {
   const base = adaptArticleListItem(item);
+  const publisher = (item as ArticleDetail & { publishedBy?: { name?: string } }).publishedBy;
   return {
     ...base,
     apiId: item._id,
     content: item.content,
     tags: item.tags,
-    author: item.author ? { name: item.author.name, role: "संपादकीय टीम" } : undefined,
+    author: item.author
+      ? { name: publisher?.name || item.author.name, role: "प्रकाशितकर्ता" }
+      : undefined,
     likes: item.likes,
     dislikes: item.dislikes,
   };
