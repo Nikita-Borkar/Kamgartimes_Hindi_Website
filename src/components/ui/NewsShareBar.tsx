@@ -51,6 +51,9 @@ export function NewsShareBar({
   const encodedTitle = encodeURIComponent(title);
   const encodedUrl = encodeURIComponent(shareUrl);
 
+  // WhatsApp bold format: *Title - Kamgar Times*\n\nURL
+  const whatsappText = encodeURIComponent(`*${title} - Kamgar Times*\n\n${shareUrl}`);
+
   const handleShare = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -60,8 +63,8 @@ export function NewsShareBar({
     if (navigator.share) {
       try {
         await navigator.share({
-          title,
-          text: excerpt || title,
+          title: `${title} - Kamgar Times`,
+          text: `*${title} - Kamgar Times*`,
           url: shareUrl,
         });
       } catch {
@@ -78,7 +81,8 @@ export function NewsShareBar({
     if (articleId) {
       kamgarApi.recordArticleShare(articleId).catch(() => {});
     }
-    navigator.clipboard.writeText(shareUrl);
+    const copyText = `*${title} - Kamgar Times*\n\n${shareUrl}`;
+    navigator.clipboard.writeText(copyText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -120,7 +124,7 @@ export function NewsShareBar({
       label: "व्हाट्सएप",
       color: "#25D366",
       bg: "#e7fce9",
-      href: `https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}`,
+      href: `https://api.whatsapp.com/send?text=${whatsappText}`,
     },
     {
       id: "facebook",
@@ -144,7 +148,7 @@ export function NewsShareBar({
       label: "टेलीग्राम",
       color: "#229ED9",
       bg: "#e4f5fc",
-      href: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
+      href: `https://t.me/share/url?url=${encodedUrl}&text=${encodeURIComponent(title + ' - Kamgar Times')}`,
     },
     {
       id: "share",

@@ -1,6 +1,6 @@
 import type { Article } from "@/data/types";
 import Link from "next/link";
-import { articleHref } from "@/lib/links";
+import { articleHref, absoluteArticleUrl } from "@/lib/links";
 import { Media } from "./Media";
 import { NewsShareBar } from "./NewsShareBar";
 import styles from "./ui.module.css";
@@ -43,7 +43,7 @@ export function StoryCard({
       {showShareBar ? (
         <NewsShareBar
           title={article.headline}
-          url={targetUrl}
+          url={absoluteArticleUrl(article.id)}
           excerpt={article.excerpt}
           compact
           articleId={article.apiId}
