@@ -142,7 +142,7 @@ export function SiteFooter() {
             <ThemeAwareSiteLogo
               alt={`${siteName} - ${tagline}`}
               className={styles.footerLogoImg}
-              width={220}
+              width={280}
               height={55}
             />
           </Link>

@@ -85,8 +85,8 @@ export function TopBar() {
         <ThemeAwareSiteLogo
           alt={`${siteName} - ${tagline}`}
           className={styles.headerLogoImg}
-          width={240}
-          height={60}
+          width={440}
+          height={64}
         />
       </Link>
 
