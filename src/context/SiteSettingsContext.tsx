@@ -38,11 +38,11 @@ const SiteSettingsContext = createContext<SiteSettingsContextValue>({
   settings: null,
   siteName: site.name,
   tagline: site.tagline,
-  logoUrl: "/img/logo_withtext.jpeg",
-  logoLightUrl: "/img/logo_withtext.jpeg",
-  logoDarkUrl: "/img/logo_withtext.jpeg",
-  textLogoLightUrl: "",
-  textLogoDarkUrl: "",
+  logoUrl: "/img/logo.png",
+  logoLightUrl: "/img/logo.png",
+  logoDarkUrl: "/img/logo.png",
+  textLogoLightUrl: "/img/light_theme_text.png",
+  textLogoDarkUrl: "/img/dark_theme_text.png",
   socialLinks: defaultSocialLinks,
   contactEmail: "",
   contactPhone: "",
@@ -79,11 +79,11 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
 
   const siteName = settings?.siteName?.trim() || site.name;
   const tagline = settings?.tagline?.trim() || site.tagline;
-  const logoUrl = settings?.logoUrl?.trim() || "/img/logo_withtext.jpeg";
+  const logoUrl = settings?.logoUrl?.trim() || "/img/logo.png";
   const logoLightUrl = settings?.logoLightUrl?.trim() || logoUrl;
   const logoDarkUrl = settings?.logoDarkUrl?.trim() || logoLightUrl;
-  const textLogoLightUrl = settings?.textLogoLightUrl?.trim() || (typeof window !== "undefined" ? localStorage.getItem("kamgar_text_logo_light") : "") || "";
-  const textLogoDarkUrl = settings?.textLogoDarkUrl?.trim() || (typeof window !== "undefined" ? localStorage.getItem("kamgar_text_logo_dark") : "") || textLogoLightUrl;
+  const textLogoLightUrl = settings?.textLogoLightUrl?.trim() || (typeof window !== "undefined" ? localStorage.getItem("kamgar_text_logo_light") : "") || "/img/light_theme_text.png";
+  const textLogoDarkUrl = settings?.textLogoDarkUrl?.trim() || (typeof window !== "undefined" ? localStorage.getItem("kamgar_text_logo_dark") : "") || (textLogoLightUrl ? "/img/dark_theme_text.png" : "");
   const contactEmail = settings?.contactEmail?.trim() || "";
   const contactPhone = settings?.contactPhone?.trim() || "";
   const address = settings?.address?.trim() || "";
