@@ -102,7 +102,7 @@ export function NotificationPrompt() {
       const registration = await navigator.serviceWorker.register("/sw.js");
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: decodeVapidKey(publicKey),
+        applicationServerKey: decodeVapidKey(publicKey) as unknown as BufferSource,
       });
       const response = await fetch(`${getApiBase()}/public/push/subscribe`, {
         method: "POST",

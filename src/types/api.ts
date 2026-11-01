@@ -218,6 +218,8 @@ export interface SiteSettings {
   logoUrl?: string;
   logoLightUrl?: string;
   logoDarkUrl?: string;
+  textLogoLightUrl?: string;
+  textLogoDarkUrl?: string;
   contactEmail: string;
   contactPhone: string;
   address: string;

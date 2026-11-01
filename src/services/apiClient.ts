@@ -35,7 +35,7 @@ export function getApiBase(): string {
   const envUrl = (
     process.env.NEXT_PUBLIC_API_URL ||
     process.env.VITE_API_URL ||
-    'http://localhost:5000/api/v1'
+    'https://kamgartimes-news-new-backend-1.onrender.com/api/v1'
   ).replace(/\/$/, '');
 
   // When running in the browser on another machine/device via LAN IP
@@ -68,7 +68,7 @@ export function getApiBase(): string {
 export const API_BASE = (
   process.env.NEXT_PUBLIC_API_URL ||
   process.env.VITE_API_URL ||
-  'http://localhost:5000/api/v1'
+  'https://kamgartimes-news-new-backend-1.onrender.com/api/v1'
 ).replace(/\/$/, '');
 
 export class ApiError extends Error {
@@ -142,7 +142,7 @@ export async function request<T>(
     next?: { revalidate?: number | false; tags?: string[] };
   } = {}
 ): Promise<T> {
-  const { requiresAuth = false, _retry = false, headers = {}, timeoutMs = 12000, next, ...rest } = options;
+  const { requiresAuth = false, _retry = false, headers = {}, timeoutMs = 30000, next, ...rest } = options;
 
   const requestHeaders: Record<string, string> = {
     'Content-Type': 'application/json',

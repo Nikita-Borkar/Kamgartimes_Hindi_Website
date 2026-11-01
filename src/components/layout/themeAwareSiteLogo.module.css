@@ -1,15 +1,31 @@
-.logo.lightLogo {
-  display: block;
+.brandRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  vertical-align: middle;
 }
 
-.logo.darkLogo {
+.brandRow.lightLogo {
+  display: inline-flex;
+}
+
+.brandRow.darkLogo {
   display: none;
 }
 
-:global(html[data-theme="dark"]) .logo.lightLogo {
+:global(html[data-theme="dark"]) .brandRow.lightLogo {
   display: none;
 }
 
-:global(html[data-theme="dark"]) .logo.darkLogo {
-  display: block;
+:global(html[data-theme="dark"]) .brandRow.darkLogo {
+  display: inline-flex;
+}
+
+.logo {
+  object-fit: contain;
+}
+
+.textLogo {
+  object-fit: contain;
+  max-height: 48px;
 }
