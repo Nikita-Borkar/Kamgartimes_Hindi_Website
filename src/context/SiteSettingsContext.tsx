@@ -13,6 +13,8 @@ interface SiteSettingsContextValue {
   logoUrl: string;
   logoLightUrl: string;
   logoDarkUrl: string;
+  textLogoLightUrl: string;
+  textLogoDarkUrl: string;
   socialLinks: SocialLink[];
   contactEmail: string;
   contactPhone: string;
@@ -39,6 +41,8 @@ const SiteSettingsContext = createContext<SiteSettingsContextValue>({
   logoUrl: "/img/logo_withtext.jpeg",
   logoLightUrl: "/img/logo_withtext.jpeg",
   logoDarkUrl: "/img/logo_withtext.jpeg",
+  textLogoLightUrl: "",
+  textLogoDarkUrl: "",
   socialLinks: defaultSocialLinks,
   contactEmail: "",
   contactPhone: "",
@@ -78,6 +82,8 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
   const logoUrl = settings?.logoUrl?.trim() || "/img/logo_withtext.jpeg";
   const logoLightUrl = settings?.logoLightUrl?.trim() || logoUrl;
   const logoDarkUrl = settings?.logoDarkUrl?.trim() || logoLightUrl;
+  const textLogoLightUrl = settings?.textLogoLightUrl?.trim() || (typeof window !== "undefined" ? localStorage.getItem("kamgar_text_logo_light") : "") || "";
+  const textLogoDarkUrl = settings?.textLogoDarkUrl?.trim() || (typeof window !== "undefined" ? localStorage.getItem("kamgar_text_logo_dark") : "") || textLogoLightUrl;
   const contactEmail = settings?.contactEmail?.trim() || "";
   const contactPhone = settings?.contactPhone?.trim() || "";
   const address = settings?.address?.trim() || "";
@@ -130,6 +136,8 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
       logoUrl,
       logoLightUrl,
       logoDarkUrl,
+      textLogoLightUrl,
+      textLogoDarkUrl,
       socialLinks,
       contactEmail,
       contactPhone,
@@ -146,6 +154,8 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
       logoUrl,
       logoLightUrl,
       logoDarkUrl,
+      textLogoLightUrl,
+      textLogoDarkUrl,
       socialLinks,
       contactEmail,
       contactPhone,
