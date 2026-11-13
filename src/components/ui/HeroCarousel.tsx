@@ -9,7 +9,13 @@ import styles from "./ui.module.css";
 
 const ROTATE_MS = 6000;
 
-type HeroSlide = Ad & { campaignId?: string; slotId?: string; target?: string };
+type HeroSlide = Ad & {
+  campaignId?: string;
+  slotId?: string;
+  target?: string;
+  mediaType?: "IMAGE" | "VIDEO";
+  videoUrl?: string;
+};
 
 /**
  * The top billboard rotates on its own. Three ways to take control, because
@@ -46,6 +52,8 @@ export function HeroCarousel() {
           label: "विज्ञापन",
           headline: ad.title || ad.imageAlt,
           image: ad.imageUrl,
+          videoUrl: ad.videoUrl,
+          mediaType: ad.mediaType || (ad.videoUrl ? "VIDEO" : "IMAGE"),
           href: ad.clickUrl,
           target: ad.target || "_blank",
           variant: "billboard" as AdVariant,

@@ -39,37 +39,34 @@ export function AdSlot({
   slotKey?: string;
   priority?: boolean;
 }) {
-  const [adsList, setAdsList] = useState<DisplayAd[]>(() => {
-    if (initialAd) {
-      return [{
-        id: initialAd.id,
-        label: initialAd.label || "विज्ञापन",
-        headline: initialAd.headline,
-        href: initialAd.href,
-        image: initialAd.image,
-        variant: initialAd.variant || "leaderboard",
-        target: "_blank",
-      }];
-    }
-    return [];
-  });
+  const createFromInitial = (ad?: Ad): DisplayAd[] => {
+    if (!ad) return [];
+    return [{
+      id: ad.id,
+      campaignId: ad.campaignId,
+      slotId: ad.slotId,
+      label: ad.label || "विज्ञापन",
+      headline: ad.headline,
+      href: ad.href,
+      image: ad.image,
+      videoUrl: ad.videoUrl,
+      mediaType: ad.mediaType || (ad.videoUrl ? "VIDEO" : "IMAGE"),
+      variant: ad.variant || "leaderboard",
+      target: ad.target || "_blank",
+    }];
+  };
 
+  const [adsList, setAdsList] = useState<DisplayAd[]>(() => createFromInitial(initialAd));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const impressedSetRef = useRef<Set<string>>(new Set());
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     if (!slotKey) {
       if (initialAd) {
-        setAdsList([{
-          id: initialAd.id,
-          label: initialAd.label || "विज्ञापन",
-          headline: initialAd.headline,
-          href: initialAd.href,
-          image: initialAd.image,
-          variant: initialAd.variant || "leaderboard",
-          target: "_blank",
-        }]);
+        setAdsList(createFromInitial(initialAd));
+        setCurrentIndex(0);
       }
       return;
     }
@@ -82,15 +79,7 @@ export function AdSlot({
         const fetched = res?.ads || [];
         if (fetched.length === 0) {
           if (initialAd) {
-            setAdsList([{
-              id: initialAd.id,
-              label: initialAd.label || "विज्ञापन",
-              headline: initialAd.headline,
-              href: initialAd.href,
-              image: initialAd.image,
-              variant: initialAd.variant || "leaderboard",
-              target: "_blank",
-            }]);
+            setAdsList(createFromInitial(initialAd));
           } else {
             setAdsList([]);
           }
@@ -116,15 +105,7 @@ export function AdSlot({
       })
       .catch(() => {
         if (active && initialAd) {
-          setAdsList([{
-            id: initialAd.id,
-            label: initialAd.label || "विज्ञापन",
-            headline: initialAd.headline,
-            href: initialAd.href,
-            image: initialAd.image,
-            variant: initialAd.variant || "leaderboard",
-            target: "_blank",
-          }]);
+          setAdsList(createFromInitial(initialAd));
         }
       });
 
@@ -171,7 +152,26 @@ export function AdSlot({
   if (adsList.length === 0) return null;
 
   const activeAd = adsList[currentIndex] || adsList[0];
-  const isVideo = activeAd.mediaType === "VIDEO" || Boolean(activeAd.videoUrl);
+  const isVideo =
+    activeAd?.mediaType === "VIDEO" ||
+    Boolean(activeAd?.videoUrl && activeAd.videoUrl.trim().length > 0) ||
+    Boolean(activeAd?.image && activeAd.image.match(/\.(mp4|webm|mov|ogg)(\?.*)?$/i));
+
+  const videoSrc =
+    activeAd?.videoUrl && activeAd.videoUrl.trim().length > 0
+      ? activeAd.videoUrl
+      : (activeAd?.image && activeAd.image.match(/\.(mp4|webm|mov|ogg)(\?.*)?$/i) ? activeAd.image : "");
+
+  useEffect(() => {
+    if (isVideo && videoRef.current) {
+      videoRef.current.defaultMuted = true;
+      videoRef.current.muted = true;
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {});
+      }
+    }
+  }, [isVideo, videoSrc, currentIndex]);
 
   const handleClick = async (e: React.MouseEvent) => {
     if (activeAd.campaignId) {
@@ -202,14 +202,17 @@ export function AdSlot({
         rel="noopener noreferrer"
         aria-label={`${activeAd.label || "विज्ञापन"}: ${activeAd.headline ?? ""}`}
       >
-        {isVideo ? (
+        {isVideo && videoSrc ? (
           <video
-            key={activeAd.videoUrl || activeAd.image}
-            src={activeAd.videoUrl || activeAd.image}
+            ref={videoRef}
+            key={videoSrc}
+            src={videoSrc}
+            poster={activeAd.image && !activeAd.image.match(/\.(mp4|webm|mov|ogg)(\?.*)?$/i) ? activeAd.image : undefined}
             autoPlay
             loop
             muted
             playsInline
+            preload="auto"
             className={styles.adMedia}
           />
         ) : (

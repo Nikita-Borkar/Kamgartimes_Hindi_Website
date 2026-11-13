@@ -35,6 +35,8 @@ export type AdSlot = {
   label: string;
   headline?: string;
   image: string;
+  videoUrl?: string;
+  mediaType?: "IMAGE" | "VIDEO";
   href: string;
 };
 

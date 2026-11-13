@@ -9,7 +9,12 @@ export type AdVariant =
   | "content"
   | "articleInside";
 
-export type Ad = AdSlot & { variant: AdVariant };
+export type Ad = AdSlot & {
+  variant: AdVariant;
+  campaignId?: string;
+  slotId?: string;
+  target?: string;
+};
 
 const heroCreative = "/img/hero-ads.png";
 const sectionCreative = "/img/section-ads.png";
