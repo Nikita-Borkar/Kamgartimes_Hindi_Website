@@ -219,7 +219,7 @@ export const socialLinks = [
 
 /* Rolling notice shown in the bar pinned to the bottom of the homepage. */
 export const notice = {
-  label: "सूचना",
+  label: "विज्ञापन",
   text: "",
 } as const;
 

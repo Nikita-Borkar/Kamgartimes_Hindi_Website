@@ -82,11 +82,11 @@ export function NoticeTicker() {
     return [...baseList, ...baseList];
   }, [notices]);
 
-  // Dynamic animation duration based on total text length for comfortable reading speed
+  // Dynamic animation duration based on total text length with increased, lively sliding speed
   const animationDuration = useMemo(() => {
-    if (notices.length === 0) return 30;
+    if (notices.length === 0) return 18;
     const totalChars = notices.reduce((acc, n) => acc + (n.message?.length || 0), 0);
-    return Math.max(25, Math.min(140, Math.round(totalChars * 0.35)));
+    return Math.max(14, Math.min(50, Math.round(totalChars * 0.16)));
   }, [notices]);
 
   if (!hasLoaded || notices.length === 0) {
@@ -97,10 +97,10 @@ export function NoticeTicker() {
     <div
       className={styles.noticeTicker}
       role="region"
-      aria-label={notice.label || "सूचना टिकर"}
+      aria-label="विज्ञापन टिकर"
     >
       <div className={styles.noticeBadge}>
-        <span>{notice.label || "सूचना"}</span>
+        <span>विज्ञापन</span>
       </div>
 
       <div
@@ -154,7 +154,7 @@ export function NoticeTicker() {
           className={styles.tickerCtrlBtn}
           onClick={() => setIsPaused(!isPaused)}
           title={isPaused ? "चलाएं" : "रोकें"}
-          aria-label={isPaused ? "सूचना टिकर चलाएं" : "सूचना टिकर रोकें"}
+          aria-label={isPaused ? "विज्ञापन टिकर चलाएं" : "विज्ञापन टिकर रोकें"}
           suppressHydrationWarning
         >
           {isPaused ? <Play size={13} /> : <Pause size={13} />}
