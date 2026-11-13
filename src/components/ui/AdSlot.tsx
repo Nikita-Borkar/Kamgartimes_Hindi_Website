@@ -38,10 +38,12 @@ export function AdSlot({
   ad: initialAd,
   slotKey,
   priority = false,
+  onEnded,
 }: {
   ad?: Ad;
   slotKey?: string;
   priority?: boolean;
+  onEnded?: () => void;
 }) {
   const createFromInitial = (ad?: Ad): DisplayAd[] => {
     if (!ad) return [];
@@ -66,6 +68,17 @@ export function AdSlot({
   const [isMuted, setIsMuted] = useState<boolean>(() => globalAdMuted);
   const impressedSetRef = useRef<Set<string>>(new Set());
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const activeAd = adsList[currentIndex] || adsList[0];
+  const isVideo =
+    activeAd?.mediaType === "VIDEO" ||
+    Boolean(activeAd?.videoUrl && activeAd.videoUrl.trim().length > 0) ||
+    Boolean(activeAd?.image && activeAd.image.match(/\.(mp4|webm|mov|ogg)(\?.*)?$/i));
+
+  const videoSrc =
+    activeAd?.videoUrl && activeAd.videoUrl.trim().length > 0
+      ? activeAd.videoUrl
+      : (activeAd?.image && activeAd.image.match(/\.(mp4|webm|mov|ogg)(\?.*)?$/i) ? activeAd.image : "");
 
   useEffect(() => {
     if (!slotKey) {
@@ -119,16 +132,19 @@ export function AdSlot({
     };
   }, [slotKey, initialAd]);
 
-  // Auto-slide when multiple ads are present
+  // Auto-slide when multiple ads are present:
+  // For images, rotate after 6 seconds.
+  // For videos, do NOT cut off early; let onEnded advance once the video completes!
   useEffect(() => {
     if (adsList.length <= 1 || isHovered) return;
+    if (isVideo) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % adsList.length);
-    }, 5000);
+    }, 6000);
 
     return () => clearInterval(interval);
-  }, [adsList.length, isHovered]);
+  }, [adsList.length, isHovered, isVideo]);
 
   // Record impression for active ad
   useEffect(() => {
@@ -154,18 +170,16 @@ export function AdSlot({
     setCurrentIndex((prev) => (prev + 1) % adsList.length);
   }, [adsList.length]);
 
-  if (adsList.length === 0) return null;
-
-  const activeAd = adsList[currentIndex] || adsList[0];
-  const isVideo =
-    activeAd?.mediaType === "VIDEO" ||
-    Boolean(activeAd?.videoUrl && activeAd.videoUrl.trim().length > 0) ||
-    Boolean(activeAd?.image && activeAd.image.match(/\.(mp4|webm|mov|ogg)(\?.*)?$/i));
-
-  const videoSrc =
-    activeAd?.videoUrl && activeAd.videoUrl.trim().length > 0
-      ? activeAd.videoUrl
-      : (activeAd?.image && activeAd.image.match(/\.(mp4|webm|mov|ogg)(\?.*)?$/i) ? activeAd.image : "");
+  const handleVideoEnded = useCallback(() => {
+    if (onEnded) {
+      onEnded();
+    } else if (adsList.length > 1) {
+      setCurrentIndex((prev) => (prev + 1) % adsList.length);
+    } else if (videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.play().catch(() => {});
+    }
+  }, [onEnded, adsList.length]);
 
   const toggleSound = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
@@ -197,19 +211,21 @@ export function AdSlot({
   }, [currentIndex, videoSrc]);
 
   const handleClick = async (e: React.MouseEvent) => {
-    if (activeAd.campaignId) {
+    if (activeAd?.campaignId) {
       e.preventDefault();
       try {
         const res = await kamgarApi.recordAdClick(activeAd.campaignId, activeAd.slotId);
-        const destination = res?.clickUrl || activeAd.href || "https://kamgartimes.in";
-        window.open(destination, res?.target || activeAd.target || "_blank");
+        const destination = res?.clickUrl || activeAd?.href || "https://kamgartimes.in";
+        window.open(destination, res?.target || activeAd?.target || "_blank");
       } catch {
-        window.open(activeAd.href || "https://kamgartimes.in", activeAd.target || "_blank");
+        window.open(activeAd?.href || "https://kamgartimes.in", activeAd?.target || "_blank");
       }
     }
   };
 
-  const cssClass = variantClass[activeAd.variant] || styles.adLeaderboard;
+  const cssClass = variantClass[activeAd?.variant || "leaderboard"] || styles.adLeaderboard;
+
+  if (adsList.length === 0) return null;
 
   return (
     <div
@@ -232,11 +248,12 @@ export function AdSlot({
             src={videoSrc}
             poster={activeAd.image && !activeAd.image.match(/\.(mp4|webm|mov|ogg)(\?.*)?$/i) ? activeAd.image : undefined}
             autoPlay
-            loop
+            loop={adsList.length <= 1 && !onEnded}
             muted={isMuted}
             playsInline
             preload="auto"
             className={styles.adMedia}
+            onEnded={handleVideoEnded}
             onCanPlay={(e) => {
               e.currentTarget.muted = isMuted;
               e.currentTarget.play().catch(() => {});

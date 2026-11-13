@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Pause, Play } from "lucide-react";
 import { heroAds, type Ad, type AdVariant } from "@/data/ads";
 import { AdSlot } from "./AdSlot";
@@ -80,18 +80,45 @@ export function HeroCarousel() {
     kamgarApi.recordAdImpression(ad.campaignId, ad.slotId).catch(() => {});
   }, [apiSlides, index, slides]);
 
+  const currentSlide = slides[index];
+  const isCurrentVideo =
+    currentSlide?.mediaType === "VIDEO" ||
+    Boolean(currentSlide?.videoUrl && currentSlide.videoUrl.trim().length > 0) ||
+    Boolean(currentSlide?.image && currentSlide.image.match(/\.(mp4|webm|mov|ogg)(\?.*)?$/i));
+
+  const handleNextSlide = useCallback(() => {
+    setIndex((prev) => (prev + 1) % count);
+  }, [count]);
+
+  const handleVideoEnded = useCallback(() => {
+    if (count > 1) {
+      handleNextSlide();
+    }
+  }, [count, handleNextSlide]);
+
   useEffect(() => {
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    if (reduced || paused || takenOver.current) return;
+    if (reduced || paused || count <= 1) return;
 
+    // For video ads, do NOT interrupt them with a 6-second timer!
+    // The video will call handleVideoEnded automatically once it plays to the end.
+    if (isCurrentVideo) {
+      // Safety fallback: if video is blocked or network drops for 60s, advance
+      const safetyId = window.setTimeout(() => {
+        handleNextSlide();
+      }, 60000);
+      return () => window.clearTimeout(safetyId);
+    }
+
+    // For static images, rotate every 6 seconds
     const id = window.setInterval(() => {
-      setIndex((i) => (i + 1) % count);
+      handleNextSlide();
     }, ROTATE_MS);
 
     return () => window.clearInterval(id);
-  }, [count, paused]);
+  }, [count, paused, isCurrentVideo, handleNextSlide]);
 
   // Focus pause. Tabbing into the carousel should not yank a new ad out from
   // under whoever is about to press a dot.
@@ -127,7 +154,7 @@ export function HeroCarousel() {
       onMouseLeave={() => setPaused(false)}
     >
       <div key={slides[index].id} className={styles.slideFade}>
-        <AdSlot ad={slides[index]} priority />
+        <AdSlot ad={slides[index]} priority onEnded={handleVideoEnded} />
       </div>
 
       <div className={styles.dots} role="group" aria-label="विज्ञापन स्लाइडर">
