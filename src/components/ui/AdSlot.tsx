@@ -277,19 +277,13 @@ export function AdSlot({
           type="button"
           className={styles.adSoundBtn}
           onClick={toggleSound}
-          aria-label={isMuted ? "आवाज़ चालू करें (Unmute)" : "आवाज़ बंद करें (Mute)"}
+          aria-label={isMuted ? "Unmute sound" : "Mute sound"}
           title={isMuted ? "आवाज़ चालू करें" : "आवाज़ बंद करें"}
         >
           {isMuted ? (
-            <>
-              <VolumeX size={14} />
-              <span>आवाज़ चालू करें</span>
-            </>
+            <VolumeX size={18} />
           ) : (
-            <>
-              <Volume2 size={14} />
-              <span>आवाज़ बंद करें</span>
-            </>
+            <Volume2 size={18} />
           )}
         </button>
       )}
