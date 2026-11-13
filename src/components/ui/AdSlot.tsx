@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import type { Ad } from "@/data/ads";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+import type { Ad, AdVariant } from "@/data/ads";
 import { kamgarApi } from "@/services/apiClient";
 import { Media } from "./Media";
 import styles from "./ui.module.css";
@@ -15,7 +16,19 @@ const variantClass: Record<string, string> = {
   articleInside: styles.adArticleInside,
 };
 
-type DisplayAd = Ad & { campaignId?: string; slotId?: string; target?: string };
+type DisplayAd = {
+  id: string;
+  campaignId?: string;
+  slotId?: string;
+  label?: string;
+  headline?: string;
+  href?: string;
+  image?: string;
+  videoUrl?: string;
+  mediaType?: "IMAGE" | "VIDEO";
+  target?: string;
+  variant: AdVariant;
+};
 
 export function AdSlot({
   ad: initialAd,
@@ -26,48 +39,93 @@ export function AdSlot({
   slotKey?: string;
   priority?: boolean;
 }) {
-  const [adData, setAdData] = useState<DisplayAd | null>(
-    slotKey ? null : initialAd || null,
-  );
-  const impressedRef = useRef<string | null>(null);
+  const [adsList, setAdsList] = useState<DisplayAd[]>(() => {
+    if (initialAd) {
+      return [{
+        id: initialAd.id,
+        label: initialAd.label || "विज्ञापन",
+        headline: initialAd.headline,
+        href: initialAd.href,
+        image: initialAd.image,
+        variant: initialAd.variant || "leaderboard",
+        target: "_blank",
+      }];
+    }
+    return [];
+  });
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const impressedSetRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
-    if (!slotKey) return;
+    if (!slotKey) {
+      if (initialAd) {
+        setAdsList([{
+          id: initialAd.id,
+          label: initialAd.label || "विज्ञापन",
+          headline: initialAd.headline,
+          href: initialAd.href,
+          image: initialAd.image,
+          variant: initialAd.variant || "leaderboard",
+          target: "_blank",
+        }]);
+      }
+      return;
+    }
 
     let active = true;
     kamgarApi
       .getAds(slotKey)
       .then((res) => {
         if (!active) return;
-        const topAd = res?.ads?.[0];
-        if (!topAd) {
-          // Slot is configured but has no active campaign — render nothing
-          // so the reserved creative remains visible.
-          setAdData(initialAd || null);
+        const fetched = res?.ads || [];
+        if (fetched.length === 0) {
+          if (initialAd) {
+            setAdsList([{
+              id: initialAd.id,
+              label: initialAd.label || "विज्ञापन",
+              headline: initialAd.headline,
+              href: initialAd.href,
+              image: initialAd.image,
+              variant: initialAd.variant || "leaderboard",
+              target: "_blank",
+            }]);
+          } else {
+            setAdsList([]);
+          }
           return;
         }
 
-        setAdData({
-          id: topAd.adCampaignId,
-          campaignId: topAd.adCampaignId,
-          slotId: topAd.adSlotId,
+        const mapped: DisplayAd[] = fetched.map((adItem) => ({
+          id: adItem.adCampaignId,
+          campaignId: adItem.adCampaignId,
+          slotId: adItem.adSlotId,
           label: initialAd?.label || "विज्ञापन",
-          headline: topAd.title || topAd.imageAlt || initialAd?.headline,
-          href: topAd.clickUrl,
-          image: topAd.imageUrl,
-          target: topAd.target || "_blank",
+          headline: adItem.title || adItem.imageAlt || initialAd?.headline,
+          href: adItem.clickUrl,
+          image: adItem.imageUrl,
+          videoUrl: adItem.videoUrl,
+          mediaType: adItem.mediaType || (adItem.videoUrl ? "VIDEO" : "IMAGE"),
+          target: adItem.target || "_blank",
           variant: initialAd?.variant || "leaderboard",
-        });
+        }));
 
-        const impressionKey = `${topAd.adCampaignId}:${topAd.adSlotId}`;
-        if (impressedRef.current !== impressionKey) {
-          impressedRef.current = impressionKey;
-          kamgarApi.recordAdImpression(topAd.adCampaignId, topAd.adSlotId).catch(() => {});
-        }
+        setAdsList(mapped);
+        setCurrentIndex(0);
       })
       .catch(() => {
-        // Slot missing or API unavailable — fall back to the local placeholder.
-        if (active) setAdData(initialAd || null);
+        if (active && initialAd) {
+          setAdsList([{
+            id: initialAd.id,
+            label: initialAd.label || "विज्ञापन",
+            headline: initialAd.headline,
+            href: initialAd.href,
+            image: initialAd.image,
+            variant: initialAd.variant || "leaderboard",
+            target: "_blank",
+          }]);
+        }
       });
 
     return () => {
@@ -75,43 +133,147 @@ export function AdSlot({
     };
   }, [slotKey, initialAd]);
 
-  if (!adData) return null;
+  // Auto-slide when multiple ads are present
+  useEffect(() => {
+    if (adsList.length <= 1 || isHovered) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % adsList.length);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [adsList.length, isHovered]);
+
+  // Record impression for active ad
+  useEffect(() => {
+    const cur = adsList[currentIndex];
+    if (!cur?.campaignId || !cur?.slotId) return;
+
+    const key = `${cur.campaignId}:${cur.slotId}`;
+    if (!impressedSetRef.current.has(key)) {
+      impressedSetRef.current.add(key);
+      kamgarApi.recordAdImpression(cur.campaignId, cur.slotId).catch(() => {});
+    }
+  }, [adsList, currentIndex]);
+
+  const handlePrev = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setCurrentIndex((prev) => (prev - 1 + adsList.length) % adsList.length);
+  }, [adsList.length]);
+
+  const handleNext = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setCurrentIndex((prev) => (prev + 1) % adsList.length);
+  }, [adsList.length]);
+
+  if (adsList.length === 0) return null;
+
+  const activeAd = adsList[currentIndex] || adsList[0];
+  const isVideo = activeAd.mediaType === "VIDEO" || Boolean(activeAd.videoUrl);
 
   const handleClick = async (e: React.MouseEvent) => {
-    if (adData.campaignId) {
+    if (activeAd.campaignId) {
       e.preventDefault();
       try {
-        const res = await kamgarApi.recordAdClick(adData.campaignId, adData.slotId);
-        const destination = res?.clickUrl || adData.href || "https://kamgartimes.in";
-        window.open(destination, res?.target || adData.target || "_blank");
+        const res = await kamgarApi.recordAdClick(activeAd.campaignId, activeAd.slotId);
+        const destination = res?.clickUrl || activeAd.href || "https://kamgartimes.in";
+        window.open(destination, res?.target || activeAd.target || "_blank");
       } catch {
-        window.open(adData.href || "https://kamgartimes.in", adData.target || "_blank");
+        window.open(activeAd.href || "https://kamgartimes.in", activeAd.target || "_blank");
       }
     }
   };
 
-  const cssClass = variantClass[adData.variant] || styles.adLeaderboard;
+  const cssClass = variantClass[activeAd.variant] || styles.adLeaderboard;
 
   return (
-    <a
-      className={`${styles.ad} ${cssClass}`}
-      href={adData.href}
-      onClick={handleClick}
-      target={adData.target || "_blank"}
-      rel="noopener noreferrer"
-      aria-label={`${adData.label || "विज्ञापन"}: ${adData.headline ?? ""}`}
+    <div
+      className={styles.adSliderContainer}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <Media
-        src={adData.image}
-        alt={adData.headline || "विज्ञापन"}
-        sizes="100vw"
-        priority={priority}
-        className={styles.adMedia}
-      />
-      <span className={styles.adLabel}>{adData.label || "विज्ञापन"}</span>
-      {adData.headline ? (
-        <p className={styles.adHeadline}>{adData.headline}</p>
-      ) : null}
-    </a>
+      <a
+        className={`${styles.ad} ${cssClass}`}
+        href={activeAd.href}
+        onClick={handleClick}
+        target={activeAd.target || "_blank"}
+        rel="noopener noreferrer"
+        aria-label={`${activeAd.label || "विज्ञापन"}: ${activeAd.headline ?? ""}`}
+      >
+        {isVideo ? (
+          <video
+            key={activeAd.videoUrl || activeAd.image}
+            src={activeAd.videoUrl || activeAd.image}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className={styles.adMedia}
+          />
+        ) : (
+          <Media
+            key={activeAd.image}
+            src={activeAd.image || "/img/hero-ads.png"}
+            alt={activeAd.headline || "विज्ञापन"}
+            sizes="100vw"
+            priority={priority}
+            className={styles.adMedia}
+          />
+        )}
+
+        {isVideo && (
+          <span className={styles.adVideoBadge}>
+            <Play size={10} fill="currentColor" /> VIDEO
+          </span>
+        )}
+
+        <span className={styles.adLabel}>{activeAd.label || "विज्ञापन"}</span>
+        {activeAd.headline ? (
+          <p className={styles.adHeadline}>{activeAd.headline}</p>
+        ) : null}
+      </a>
+
+      {/* Multiple Ads Controls: Prev/Next & Dots */}
+      {adsList.length > 1 && (
+        <>
+          <button
+            type="button"
+            className={`${styles.adNavArrow} ${styles.adNavPrev}`}
+            onClick={handlePrev}
+            aria-label="Previous Ad"
+          >
+            <ChevronLeft size={18} />
+          </button>
+
+          <button
+            type="button"
+            className={`${styles.adNavArrow} ${styles.adNavNext}`}
+            onClick={handleNext}
+            aria-label="Next Ad"
+          >
+            <ChevronRight size={18} />
+          </button>
+
+          <div className={styles.adDotsOverlay}>
+            {adsList.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                aria-label={`Go to ad ${idx + 1}`}
+                data-active={idx === currentIndex}
+                className={styles.adDotIndicator}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setCurrentIndex(idx);
+                }}
+              />
+            ))}
+          </div>
+        </>
+      )}
+    </div>
   );
 }

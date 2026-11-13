@@ -98,7 +98,9 @@ export interface PublicAd {
   adCampaignId: string;
   adSlotId: string;
   title: string;
+  mediaType?: 'IMAGE' | 'VIDEO';
   imageUrl: string;
+  videoUrl?: string;
   imageAlt?: string;
   clickUrl: string;
   target?: '_blank' | '_self';
