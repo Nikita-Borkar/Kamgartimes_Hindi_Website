@@ -270,31 +270,65 @@
 }
 
 .footerLogoLink {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   background: #ffffff;
-  padding: 8px 16px;
+  padding: 6px 14px;
   border-radius: 8px;
   margin-bottom: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  max-width: 250px;
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
 }
 
 :global(html[data-theme="dark"]) .footerLogoLink {
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .footerLogoLink:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
 .footerLogoImg {
-  height: 50px;
-  width: auto;
-  object-fit: contain;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 10px;
+  height: 40px !important;
+  max-height: 40px !important;
+  width: auto !important;
+  max-width: 100% !important;
+}
+
+.footerLogoImg img,
+.footerLogoImg :global(img) {
+  height: 40px !important;
+  max-height: 40px !important;
+  width: auto !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
   display: block;
+}
+
+.footerLogoImg :global([class*="logoEmblem"]),
+.footerLogoImg :global([class*="logo"]) {
+  height: 40px !important;
+  width: auto !important;
+  max-height: 40px !important;
+  object-fit: contain !important;
+}
+
+.footerLogoImg :global([class*="textLogo"]) {
+  height: 40px !important;
+  max-height: 40px !important;
+  max-width: 195px !important;
+  width: auto !important;
+  object-fit: contain !important;
 }
 
 /* ---------- Exact Code-Rendered Brand Logo -------------------------------- */
@@ -1677,9 +1711,12 @@ a.navLinkActive {
 }
 
 .footerBlurb {
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 1.55;
   color: var(--muted);
-  margin: var(--space-4) 0;
-  max-width: 34ch;
+  margin: 10px 0 16px;
+  max-width: 32ch;
 }
 
 .footerContacts {
@@ -2139,6 +2176,39 @@ a.footerContact:hover {
     width: 24px;
     height: 24px;
   }
+
+  .footerLogoLink {
+    padding: 5px 12px;
+    margin-bottom: 10px;
+    max-width: 220px;
+  }
+
+  .footerLogoImg {
+    height: 36px !important;
+    max-height: 36px !important;
+    gap: 8px;
+  }
+
+  .footerLogoImg img,
+  .footerLogoImg :global(img),
+  .footerLogoImg :global([class*="logoEmblem"]),
+  .footerLogoImg :global([class*="logo"]) {
+    height: 36px !important;
+    max-height: 36px !important;
+  }
+
+  .footerLogoImg :global([class*="textLogo"]) {
+    height: 36px !important;
+    max-height: 36px !important;
+    max-width: 165px !important;
+  }
+
+  .footerBlurb {
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin: 8px 0 14px;
+    max-width: 100%;
+  }
 }
 
 /* ---------- Very Small Screens (400px and under) ---------- */
@@ -2160,5 +2230,37 @@ a.footerContact:hover {
   .navLink {
     padding: 5px 7px;
     font-size: 12.5px;
+  }
+
+  .footerLogoLink {
+    padding: 4px 10px;
+    margin-bottom: 8px;
+    max-width: 190px;
+  }
+
+  .footerLogoImg {
+    height: 32px !important;
+    max-height: 32px !important;
+    gap: 6px;
+  }
+
+  .footerLogoImg img,
+  .footerLogoImg :global(img),
+  .footerLogoImg :global([class*="logoEmblem"]),
+  .footerLogoImg :global([class*="logo"]) {
+    height: 32px !important;
+    max-height: 32px !important;
+  }
+
+  .footerLogoImg :global([class*="textLogo"]) {
+    height: 32px !important;
+    max-height: 32px !important;
+    max-width: 140px !important;
+  }
+
+  .footerBlurb {
+    font-size: 13px;
+    line-height: 1.45;
+    margin: 6px 0 12px;
   }
 }

@@ -32,8 +32,17 @@ export function ThemeAwareSiteLogo({
       ? "/img/real_logo.png"
       : logoDarkUrl;
 
-  const textWidth = Math.max(380, width > 60 ? width - 56 : 380);
-  const textHeight = Math.max(56, height);
+  const isCompact = height <= 48;
+  const emblemDim = hasSeparateTextLight || hasSeparateTextDark
+    ? (isCompact ? Math.min(40, height) : 52)
+    : width;
+  const emblemHeight = hasSeparateTextLight || hasSeparateTextDark
+    ? (isCompact ? Math.min(40, height) : 52)
+    : height;
+  const textWidth = isCompact
+    ? Math.max(160, width > 50 ? width - emblemDim : 180)
+    : Math.max(380, width > 60 ? width - 56 : 380);
+  const textHeight = isCompact ? height : Math.max(56, height);
 
   return (
     <>
@@ -42,8 +51,8 @@ export function ThemeAwareSiteLogo({
           src={safeLightLogo}
           alt={alt}
           className={`${styles.logo} ${hasSeparateTextLight ? styles.logoEmblem : ""}`}
-          width={hasSeparateTextLight ? 52 : width}
-          height={hasSeparateTextLight ? 52 : height}
+          width={emblemDim}
+          height={emblemHeight}
           unoptimized
           priority
         />
@@ -65,8 +74,8 @@ export function ThemeAwareSiteLogo({
           src={safeDarkLogo}
           alt={alt}
           className={`${styles.logo} ${hasSeparateTextDark ? styles.logoEmblem : ""}`}
-          width={hasSeparateTextDark ? 52 : width}
-          height={hasSeparateTextDark ? 52 : height}
+          width={emblemDim}
+          height={emblemHeight}
           unoptimized
           priority
         />
