@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { ChevronLeft, ChevronRight, Play, Volume2, VolumeX } from "lucide-react";
+import { ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
 import type { Ad, AdVariant } from "@/data/ads";
 import { kamgarApi } from "@/services/apiClient";
 import { Media } from "./Media";
@@ -257,12 +257,6 @@ export function AdSlot({
             priority={priority}
             className={styles.adMedia}
           />
-        )}
-
-        {isVideo && (
-          <span className={styles.adVideoBadge}>
-            <Play size={10} fill="currentColor" /> VIDEO
-          </span>
         )}
 
         <span className={styles.adLabel}>{activeAd.label || "विज्ञापन"}</span>
