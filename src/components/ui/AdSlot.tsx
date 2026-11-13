@@ -214,7 +214,17 @@ export function AdSlot({
             playsInline
             preload="auto"
             className={styles.adMedia}
-          />
+            onCanPlay={(e) => {
+              e.currentTarget.muted = true;
+              e.currentTarget.play().catch(() => {});
+            }}
+            onLoadedData={(e) => {
+              e.currentTarget.muted = true;
+              e.currentTarget.play().catch(() => {});
+            }}
+          >
+            <source src={videoSrc} type="video/mp4" />
+          </video>
         ) : (
           <Media
             key={activeAd.image}
