@@ -1,11 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, Volume2, VolumeX } from "lucide-react";
 import type { Ad, AdVariant } from "@/data/ads";
 import { kamgarApi } from "@/services/apiClient";
 import { Media } from "./Media";
 import styles from "./ui.module.css";
+
+// Global audio preference: default muted for browser autoplay policy.
+// If the user un-mutes once, subsequent ads in the rotation continue with sound.
+let globalAdMuted = true;
 
 const variantClass: Record<string, string> = {
   billboard: styles.adBillboard,
@@ -59,6 +63,7 @@ export function AdSlot({
   const [adsList, setAdsList] = useState<DisplayAd[]>(() => createFromInitial(initialAd));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [isMuted, setIsMuted] = useState<boolean>(() => globalAdMuted);
   const impressedSetRef = useRef<Set<string>>(new Set());
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -162,16 +167,34 @@ export function AdSlot({
       ? activeAd.videoUrl
       : (activeAd?.image && activeAd.image.match(/\.(mp4|webm|mov|ogg)(\?.*)?$/i) ? activeAd.image : "");
 
+  const toggleSound = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (!videoRef.current) return;
+    const nextMuted = !isMuted;
+    globalAdMuted = nextMuted;
+    setIsMuted(nextMuted);
+    videoRef.current.muted = nextMuted;
+    videoRef.current.defaultMuted = nextMuted;
+    if (!nextMuted) {
+      videoRef.current.play().catch(() => {});
+    }
+  }, [isMuted]);
+
   useEffect(() => {
     if (isVideo && videoRef.current) {
-      videoRef.current.defaultMuted = true;
-      videoRef.current.muted = true;
+      videoRef.current.defaultMuted = isMuted;
+      videoRef.current.muted = isMuted;
       const playPromise = videoRef.current.play();
       if (playPromise !== undefined) {
         playPromise.catch(() => {});
       }
     }
-  }, [isVideo, videoSrc, currentIndex]);
+  }, [isVideo, videoSrc, currentIndex, isMuted]);
+
+  useEffect(() => {
+    setIsMuted(globalAdMuted);
+  }, [currentIndex, videoSrc]);
 
   const handleClick = async (e: React.MouseEvent) => {
     if (activeAd.campaignId) {
@@ -210,16 +233,16 @@ export function AdSlot({
             poster={activeAd.image && !activeAd.image.match(/\.(mp4|webm|mov|ogg)(\?.*)?$/i) ? activeAd.image : undefined}
             autoPlay
             loop
-            muted
+            muted={isMuted}
             playsInline
             preload="auto"
             className={styles.adMedia}
             onCanPlay={(e) => {
-              e.currentTarget.muted = true;
+              e.currentTarget.muted = isMuted;
               e.currentTarget.play().catch(() => {});
             }}
             onLoadedData={(e) => {
-              e.currentTarget.muted = true;
+              e.currentTarget.muted = isMuted;
               e.currentTarget.play().catch(() => {});
             }}
           >
@@ -247,6 +270,29 @@ export function AdSlot({
           <p className={styles.adHeadline}>{activeAd.headline}</p>
         ) : null}
       </a>
+
+      {/* Sound Toggle Button for Video Ads */}
+      {isVideo && (
+        <button
+          type="button"
+          className={styles.adSoundBtn}
+          onClick={toggleSound}
+          aria-label={isMuted ? "आवाज़ चालू करें (Unmute)" : "आवाज़ बंद करें (Mute)"}
+          title={isMuted ? "आवाज़ चालू करें" : "आवाज़ बंद करें"}
+        >
+          {isMuted ? (
+            <>
+              <VolumeX size={14} />
+              <span>आवाज़ चालू करें</span>
+            </>
+          ) : (
+            <>
+              <Volume2 size={14} />
+              <span>आवाज़ बंद करें</span>
+            </>
+          )}
+        </button>
+      )}
 
       {/* Multiple Ads Controls: Prev/Next & Dots */}
       {adsList.length > 1 && (
